@@ -1,15 +1,20 @@
 package rox.main;
 
+import rox.main.server.MainServer;
+
 import java.util.Scanner;
 
 public class Main {
+
+    private static MainServer mainServer;
 
     public static void main(String[] args){
 
         Scanner scanner = new Scanner(System.in);
 
-        System.out.println("Started ROX.");
+        new Thread(() -> {  mainServer = new MainServer(8981); mainServer.start(); }).start();
 
+        System.out.println("Started ROX.");
 
 
         String input;
