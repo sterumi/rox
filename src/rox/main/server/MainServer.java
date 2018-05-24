@@ -84,7 +84,7 @@ public class MainServer {
 
         private Object[] objects;
 
-        public ClientThread(Object[] objects){
+        ClientThread(Object[] objects){
             this.objects = objects;
         }
 
