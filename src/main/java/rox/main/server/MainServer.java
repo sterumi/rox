@@ -23,11 +23,11 @@ public class MainServer {
 
     public MainServer(int port){
         this.port = port;
-        database = new MainDatabase("localhost", 3306, "root", "", "rox");
     }
 
     public void start(){
         try {
+            database = new MainDatabase("localhost", 3306, "root", "", "rox");
             serverSocket = new ServerSocket(port);
             isActiv = true;
 
