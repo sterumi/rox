@@ -21,6 +21,8 @@ public class MainServer {
 
     private MainDatabase database;
 
+    private Thread acceptThread;
+
     public MainServer(int port){
         this.port = port;
     }
@@ -30,35 +32,9 @@ public class MainServer {
             database = new MainDatabase("localhost", 3306, "root", "", "rox");
             serverSocket = new ServerSocket(port);
             isActiv = true;
-
-            Socket socket;
-            while((socket = serverSocket.accept()) != null){
-                waitingConnection = false;
-
-                // <name>§<password>
-
-                BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                PrintWriter writer = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()), true);
-
-                String[] input = reader.readLine().split("§");
-
-                if(database.Query("SELECT * FROM users WHERE username='" + input[0] + "' AND password='" + input[1] + "'") != null){
-                    Object[] objects = new Object[8];
-                    objects[0] = input[0]; objects[1] = socket;
-                    Thread thread1 = new ClientThread(objects);
-                    objects[2] = thread1;
-
-                    clients.put(input[0], objects);
-                    writer.println("§SERVER_CONNECTED");
-                }else{
-                    writer.println("§SERVER_WRONG_LOGIN");
-                    socket.close();
-                }
-
-
-                waitingConnection = true;
-            }
-
+            acceptThread = new AcceptThread();
+            acceptThread.start();
+            System.out.println("Main Server started.");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -67,6 +43,12 @@ public class MainServer {
     public void stop(){
         try {
             serverSocket.close();
+            acceptThread.interrupt();
+            clients.forEach(((s, objects) -> {
+                Thread thread = (Thread)objects[2];
+                thread.interrupt();
+            }));
+            clients.clear();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -78,6 +60,48 @@ public class MainServer {
 
     public boolean isWaitingConnection(){
         return waitingConnection;
+    }
+
+    class AcceptThread extends Thread{
+
+        @Override
+        public void run(){
+            try {
+                Socket socket;
+                while((socket = serverSocket.accept()) != null){
+                    waitingConnection = false;
+
+                    // <name>§<password>
+
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                    PrintWriter writer = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()), true);
+
+                    String[] input = reader.readLine().split("§");
+
+                    if(database.Query("SELECT * FROM users WHERE username='" + input[0] + "' AND password='" + input[1] + "'") != null){
+                        Object[] objects = new Object[8];
+                        objects[0] = input[0]; objects[1] = socket;
+                        Thread thread1 = new ClientThread(objects);
+                        objects[2] = thread1;
+                        thread1.start();
+
+
+                        clients.put(input[0], objects);
+                        writer.println("§SERVER_CONNECTED");
+                    }else{
+                        writer.println("§SERVER_WRONG_LOGIN");
+                        socket.close();
+                    }
+
+
+                    waitingConnection = true;
+                }
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+
+        }
+
     }
 
     class ClientThread extends Thread{

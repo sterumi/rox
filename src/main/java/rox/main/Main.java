@@ -54,7 +54,6 @@ public class Main {
         mainServerThread.start();
         discordBotThread.start();
 
-        //mainServer.start();
 
         /*
          * This handle all console inputs
@@ -76,6 +75,39 @@ public class Main {
 
                 case "say":
                     System.out.println(input.substring(scargs[0].length() + 1));
+                    break;
+
+                case "server":
+                    switch (scargs[1]){
+                        case "start":
+                            if(scargs.length == 2){
+                                if(mainServer.isActiv()){
+                                    System.out.println("Server is already running.");
+                                }else{
+                                    System.out.println("Starting Main Server...");
+                                    mainServer.start();
+                                }
+                            }else{
+                                System.out.println("server (start,stop)");
+                            }
+                            break;
+
+                        case "stop":
+                            if(scargs.length == 2){
+                                if(mainServer.isActiv()){
+                                    System.out.println("Main Server stopping...");
+                                    mainServer.stop();
+                                }else{
+                                    System.out.println("Main server isn't running.");
+                                }
+                            }else{
+                                System.out.println("server (start,stop)");
+                            }
+                            break;
+
+                            default: System.out.println("server (start,stop)"); break;
+                    }
+
                     break;
                 case "discord":
 
