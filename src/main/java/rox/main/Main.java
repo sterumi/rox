@@ -81,7 +81,7 @@ public class Main {
                     switch (scargs[1]){
                         case "start":
                             if(scargs.length == 2){
-                                if(mainServer.isActiv()){
+                                if (mainServer.isActive()) {
                                     System.out.println("Server is already running.");
                                 }else{
                                     System.out.println("Starting Main Server...");
@@ -94,7 +94,7 @@ public class Main {
 
                         case "stop":
                             if(scargs.length == 2){
-                                if(mainServer.isActiv()){
+                                if (mainServer.isActive()) {
                                     System.out.println("Main Server stopping...");
                                     mainServer.stop();
                                 }else{
@@ -182,6 +182,14 @@ public class Main {
             }
         }
 
+    }
+
+    public static MainServer getMainServer() {
+        return mainServer;
+    }
+
+    public static DiscordBot getDiscordBot() {
+        return discordBot;
     }
 
 }

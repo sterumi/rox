@@ -4,7 +4,6 @@ import rox.main.server.database.MainDatabase;
 
 import java.io.*;
 import java.net.ServerSocket;
-import java.net.Socket;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class MainServer {
@@ -13,9 +12,7 @@ public class MainServer {
 
     private int port;
 
-    private boolean waitingConnection = true;
-
-    private boolean isActiv = false;
+    private boolean waitingConnection = true, isActive = false;
 
     private ConcurrentHashMap<String, Object[]> clients = new ConcurrentHashMap<>();
 
@@ -31,8 +28,8 @@ public class MainServer {
         try {
             database = new MainDatabase("localhost", 3306, "root", "", "rox");
             serverSocket = new ServerSocket(port);
-            isActiv = true;
-            acceptThread = new AcceptThread();
+            isActive = true;
+            acceptThread = new ClientAcceptHandler();
             acceptThread.start();
             System.out.println("Main Server started.");
         } catch (IOException e) {
@@ -44,105 +41,49 @@ public class MainServer {
         try {
             serverSocket.close();
             acceptThread.interrupt();
-            clients.forEach(((s, objects) -> {
-                Thread thread = (Thread)objects[2];
-                thread.interrupt();
-            }));
+            clients.forEach(((s, objects) -> ((Thread) objects[2]).interrupt()));
             clients.clear();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public boolean isActiv(){
-        return isActiv;
+    ConcurrentHashMap<String, Object[]> getClients() {
+        return clients;
+    }
+
+    void setClients(ConcurrentHashMap<String, Object[]> clients) {
+        if (this.clients != null) this.clients.clear();
+        this.clients = clients;
+    }
+
+    public MainDatabase getDatabase() {
+        return database;
+    }
+
+    void setDatabase(MainDatabase database) {
+        if (this.database != null) this.database.disconnect();
+        this.database = database;
+    }
+
+    public ServerSocket getServerSocket() {
+        return serverSocket;
+    }
+
+    public boolean isActive() {
+        return isActive;
+    }
+
+    void setActive(boolean bool) {
+        isActive = bool;
+    }
+
+    void setWaitingConnection(boolean bool) {
+        waitingConnection = bool;
     }
 
     public boolean isWaitingConnection(){
         return waitingConnection;
     }
 
-    class AcceptThread extends Thread{
-
-        @Override
-        public void run(){
-            try {
-                Socket socket;
-                while((socket = serverSocket.accept()) != null){
-                    waitingConnection = false;
-
-                    // <name>§<password>
-
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                    PrintWriter writer = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()), true);
-
-                    String[] input = reader.readLine().split("§");
-
-                    if(database.Query("SELECT * FROM users WHERE username='" + input[0] + "' AND password='" + input[1] + "'") != null){
-                        Object[] objects = new Object[8];
-                        objects[0] = input[0]; objects[1] = socket;
-                        Thread thread1 = new ClientThread(objects);
-                        objects[2] = thread1;
-                        thread1.start();
-
-
-                        clients.put(input[0], objects);
-                        writer.println("§SERVER_CONNECTED");
-                    }else{
-                        writer.println("§SERVER_WRONG_LOGIN");
-                        socket.close();
-                    }
-
-
-                    waitingConnection = true;
-                }
-            }catch (Exception e){
-                e.printStackTrace();
-            }
-
-        }
-
-    }
-
-    class ClientThread extends Thread{
-
-        private Object[] objects;
-
-        ClientThread(Object[] objects){
-            this.objects = objects;
-        }
-
-
-        @Override
-        public void run() {
-            Socket socket = (Socket) objects[1];
-            try {
-                BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                PrintWriter writer = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()), true);
-
-                String input;
-                while((input = reader.readLine()) != null){
-                    String[] args = input.split(" ");
-                    if(args[0].startsWith("§")){
-                        switch(args[0]){
-                            case "§DISCONNECT":
-                                socket.close();
-                                Thread thread = (Thread)objects[2];
-                                thread.interrupt();
-                                clients.remove(objects[0]);
-                                break;
-                            case "§INFO":
-                                writer.println("MainServer§" + clients.size());
-                                break;
-                        }
-                    }
-                }
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-
-        }
-    }
 }

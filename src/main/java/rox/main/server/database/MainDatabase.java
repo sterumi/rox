@@ -6,8 +6,6 @@ public class MainDatabase {
 
     private Connection conn;
 
-    private String connString = "jdbc:mysql://localhost/db?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
-
     public MainDatabase(String hostname, int port, String username, String password, String database){
         try {
 
@@ -30,4 +28,11 @@ public class MainDatabase {
         return null;
     }
 
+    public void disconnect() {
+        try {
+            conn.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }
