@@ -5,6 +5,7 @@ import rox.main.discord.DiscordBot;
 import rox.main.server.MainServer;
 
 import java.util.Scanner;
+import java.util.UUID;
 
 public class Main {
 
@@ -53,6 +54,8 @@ public class Main {
         loadCommands();
         (threads[2] = new Thread(Main::initCommandHandle)).start();
 
+        System.out.println(UUID.randomUUID());
+
 
     }
 
@@ -62,13 +65,24 @@ public class Main {
         mainCommandLoader.addCommand("say", new SayCommand());
         mainCommandLoader.addCommand("server", new ServerCommand());
         mainCommandLoader.addCommand("token", new TokenCommand());
+        mainCommandLoader.addCommand("help", new HelpCommand());
     }
 
     private static void initCommandHandle() {
         String input;
-        while ((input = new Scanner(System.in).nextLine()) != null) mainCommandLoader.getCommand(input.split(" ")[0])
-                .command(input.split(" ")[0], input.split(" "));
+        while ((input = new Scanner(System.in).nextLine()) != null) {
+            try {
+                mainCommandLoader.getCommand(input.split(" ")[0]).command(input.split(" ")[0], input.split(" "));
+            } catch (Exception e) {
+                e.printStackTrace();
+                System.out.println("Command not found.");
+            }
+        }
 
+    }
+
+    public static MainCommandLoader getMainCommandLoader() {
+        return mainCommandLoader;
     }
 
     public static Thread getThread(int i) {

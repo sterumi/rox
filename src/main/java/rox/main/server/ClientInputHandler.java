@@ -15,25 +15,16 @@ public class ClientInputHandler extends Thread {
 
     @Override
     public void run() {
-        Socket socket = (Socket) objects[1];
         try {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            PrintWriter writer = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()), true);
 
             String input;
-            while ((input = reader.readLine()) != null) {
-                String[] args = input.split(" ");
-                if (args[0].startsWith("§")) {
-                    switch (args[0]) {
-                        case "§DISCONNECT":
-                            socket.close();
-                            ((Thread) objects[2]).interrupt();
-                            Main.getMainServer().getClients().remove(objects[0].toString());
-                            break;
-                        case "§INFO":
-                            writer.println("MainServer§" + Main.getMainServer().getClients().size());
-                            break;
-                    }
+            while ((input = ((BufferedReader) objects[3]).readLine()) != null) {
+                String[] args = input.split("[§ ]+");
+
+                if (input.startsWith("§")) {
+                    Main.getMainServer().getServerCommandLoader().getCommand(args[0]).command(objects, args[0], args);
+                } else {
+                    ((PrintWriter) objects[4]).println("§INVALID_COMMAND_STRUCTURE");
                 }
             }
 

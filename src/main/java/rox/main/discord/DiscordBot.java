@@ -59,7 +59,9 @@ public class DiscordBot {
 
     public boolean isConnected(){ return connected; }
 
-    void setConnected(boolean bool){ connected = bool; }
+    private void setConnected(boolean bool) {
+        connected = bool;
+    }
 
     public void setToken(String token){
         this.token = token;
