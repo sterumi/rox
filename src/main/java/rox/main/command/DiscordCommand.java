@@ -22,7 +22,7 @@ public class DiscordCommand implements MainCommandExecutor {
                 if (args.length == 3) {
                     if (args[2] != null) {
                         Main.getDiscordBot().setToken(args[2]);
-                        Main.setInformations(1, args[2]);
+                        Main.setInformatics(1, args[2]);
                         System.out.println("Token is set.");
                     } else {
                         System.out.println("You must set a token!");

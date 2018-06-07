@@ -15,7 +15,7 @@ public class MainCommandLoader {
         classes.put(name, clazz);
     }
 
-    MainCommandExecutor getCommand(String name) {
+    public MainCommandExecutor getCommand(String name) {
         return classes.get(name);
     }
 

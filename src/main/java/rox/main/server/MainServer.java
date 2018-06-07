@@ -43,8 +43,7 @@ public class MainServer {
             database = new MainDatabase("localhost", 3306, "root", "", "rox");
             serverSocket = new ServerSocket(port);
             isActive = true;
-            acceptThread = new ClientAcceptHandler();
-            acceptThread.start();
+            (acceptThread = new ClientAcceptHandler()).start();
             serverCommandLoader = new ServerCommandLoader();
             staticManager = new StaticManager();
             permissionManager = new PermissionManager();
@@ -61,6 +60,7 @@ public class MainServer {
             acceptThread.interrupt();
             clients.forEach(((s, objects) -> ((Thread) objects[2]).interrupt()));
             clients.clear();
+            System.out.println("Stopped Minecraft System");
         } catch (IOException e) {
             e.printStackTrace();
         }

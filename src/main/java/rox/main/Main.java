@@ -2,10 +2,11 @@ package rox.main;
 
 import rox.main.command.*;
 import rox.main.discord.DiscordBot;
+import rox.main.httpserver.HTTPServer;
+import rox.main.minecraftserver.MinecraftServer;
 import rox.main.server.MainServer;
 
 import java.util.Scanner;
-import java.util.UUID;
 
 public class Main {
 
@@ -13,11 +14,18 @@ public class Main {
 
     private static DiscordBot discordBot;
 
-    private static Object[] informations = new Object[16];
+    private static Object[] informatics = new Object[16];
 
     private static Thread[] threads = new Thread[32];
 
     private static MainCommandLoader mainCommandLoader;
+
+    private static FileConfiguration fileConfiguration;
+
+    private static MinecraftServer minecraftServer;
+
+    private static HTTPServer httpServer;
+
     /*
      * This class is the main class.
      * It will setup all servers in a own thread.
@@ -33,28 +41,30 @@ public class Main {
      *
      * [0] - MAIN SERVER THREAD
      * [1] - DISCORD BOT THREAD
-     * ["] - CONSOLE SCANNER THREAD
+     * [2] - CONSOLE SCANNER THREAD
+     * [3] - MINECRAFT SERVER THREAD
+     * [4] - HTTP SERVER THREAD
      *
      *
      */
 
     public static void main(String[] args) {
         System.out.println("Starting ROX.");
+        fileConfiguration = new FileConfiguration();
         mainCommandLoader = new MainCommandLoader();
 
-        for (String arg : args) {
-            if (arg.contains("discordtoken=")) {
-                String value = arg.split("=")[1];
-                informations[1] = value;
-            }
-        }
-
         (threads[0] = new Thread(() -> mainServer = new MainServer(8981))).start();
-        (threads[1] = new Thread(() -> discordBot = new DiscordBot((String) informations[1]))).start();
+        (threads[1] = new Thread(() -> discordBot = new DiscordBot((String) informatics[1]))).start();
+        (threads[3] = new Thread(() -> minecraftServer = new MinecraftServer(8982))).start();
+        (threads[4] = new Thread(() -> httpServer = new HTTPServer(8081))).start();
         loadCommands();
         (threads[2] = new Thread(Main::initCommandHandle)).start();
-
-        System.out.println(UUID.randomUUID());
+        try {
+            informatics[1] = args[0];
+            discordBot.setToken(args[0]);
+        } catch (ArrayIndexOutOfBoundsException e) {
+            System.out.println("No arguments given.");
+        }
 
 
     }
@@ -66,6 +76,11 @@ public class Main {
         mainCommandLoader.addCommand("server", new ServerCommand());
         mainCommandLoader.addCommand("token", new TokenCommand());
         mainCommandLoader.addCommand("help", new HelpCommand());
+        mainCommandLoader.addCommand("uuid", new UUIDCommand());
+        mainCommandLoader.addCommand("fds", new FastDebugStartCommand());
+        mainCommandLoader.addCommand("exe", new ExecuteCommand());
+        mainCommandLoader.addCommand("mcs", new MCSCommand());
+        mainCommandLoader.addCommand("test", (name, args) -> System.out.println("test"));
     }
 
     private static void initCommandHandle() {
@@ -97,12 +112,12 @@ public class Main {
         }
     }
 
-    public static Object[] getInformations() {
-        return informations;
+    public static Object[] getInformatics() {
+        return informatics;
     }
 
-    public static void setInformations(int i, Object obj) {
-        informations[i] = obj;
+    public static void setInformatics(int i, Object obj) {
+        informatics[i] = obj;
     }
 
     public static MainServer getMainServer() {
@@ -113,4 +128,11 @@ public class Main {
         return discordBot;
     }
 
+    public static FileConfiguration getFileConfiguration() {
+        return fileConfiguration;
+    }
+
+    public static MinecraftServer getMinecraftServer() {
+        return minecraftServer;
+    }
 }

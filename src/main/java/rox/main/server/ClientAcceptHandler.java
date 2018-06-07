@@ -41,9 +41,9 @@ public class ClientAcceptHandler extends Thread {
 
                 String[] input = reader.readLine().split("§");
 
-                if (Main.getMainServer().getDatabase().Query("SELECT * FROM users WHERE username='" + input[0] + "'") == null) {
+                /*if (Main.getMainServer().getDatabase().Query("SELECT * FROM users WHERE username='" + input[0] + "'") == null) {
                     Main.getMainServer().createUser(input[0], input[1]);
-                }
+                }*/
 
                 if (Main.getMainServer().getDatabase().Query("SELECT * FROM users WHERE username='" + input[0] + "' AND password='" + input[1] + "'") != null) {
 
@@ -53,15 +53,15 @@ public class ClientAcceptHandler extends Thread {
                     }
 
                     Object[] objects = new Object[8];
+                    Thread thread;
                     objects[0] = input[0];
                     objects[1] = socket;
                     objects[3] = reader;
                     objects[4] = writer;
                     objects[6] = Main.getMainServer().getStaticManager().getUUID(input[0]);
                     objects[5] = Main.getMainServer().getPermissionManager().getRankDatabase(UUID.fromString((String) objects[6]));
-                    Thread thread1 = new ClientInputHandler(objects);
-                    objects[2] = thread1;
-                    thread1.start();
+                    (thread = new ClientInputHandler(objects)).start();
+                    objects[2] = thread;
 
 
                     Main.getMainServer().getClients().put(Main.getMainServer().getStaticManager().getUUID(input[0]), objects);

@@ -94,10 +94,25 @@
             <version>1.0.1</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.googlecode.json-simple</groupId>
+            <artifactId>json-simple</artifactId>
+            <version>1.1.1</version>
+        </dependency>
+
 
     </dependencies>
 
-
+    <developers>
+        <developer>
+            <name>Bleikind</name>
+            <organization>ROX</organization>
+            <roles>
+                <role>Manager</role>
+            </roles>
+            <email>bleikindonline@gmail.com</email>
+        </developer>
+    </developers>
 
     <repositories>
 
