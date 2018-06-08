@@ -7,7 +7,7 @@ public class MainCommandLoader {
 
     private ConcurrentHashMap<String, MainCommandExecutor> classes = new ConcurrentHashMap<>();
 
-    void addCommand(String name, MainCommandExecutor clazz) {
+    public void addCommand(String name, MainCommandExecutor clazz) {
         if (classes.containsKey(name)) {
             System.out.println("This command is already registered!");
             return;

@@ -42,13 +42,13 @@ public class MainServer {
         try {
             database = new MainDatabase("localhost", 3306, "root", "", "rox");
             serverSocket = new ServerSocket(port);
-            isActive = true;
             (acceptThread = new ClientAcceptHandler()).start();
             serverCommandLoader = new ServerCommandLoader();
             staticManager = new StaticManager();
             permissionManager = new PermissionManager();
             loadCommands();
             System.out.println("Main Server started.");
+            isActive = true;
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -168,6 +168,14 @@ public class MainServer {
 
     void createUser(String username, String password) {
         getDatabase().Update("INSERT INTO users(username, uuid, password, points, rank) VALUES ('" + username + "','" + UUID.randomUUID() + "','" + password + "','0','" + Rank.USER + "')");
+    }
+
+    public boolean isMaintenance() {
+        return (Boolean) Main.getFileConfiguration().getValue("maintenance");
+    }
+
+    public void setMaintenance(String key, Object value) {
+        Main.getFileConfiguration().saveKey(key, value);
     }
 
 }

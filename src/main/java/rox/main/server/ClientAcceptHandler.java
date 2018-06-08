@@ -63,7 +63,6 @@ public class ClientAcceptHandler extends Thread {
                     (thread = new ClientInputHandler(objects)).start();
                     objects[2] = thread;
 
-
                     Main.getMainServer().getClients().put(Main.getMainServer().getStaticManager().getUUID(input[0]), objects);
                     writer.println("§SERVER_CONNECTED");
                 } else {

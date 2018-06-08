@@ -4,6 +4,8 @@ import rox.main.command.*;
 import rox.main.discord.DiscordBot;
 import rox.main.httpserver.HTTPServer;
 import rox.main.minecraftserver.MinecraftServer;
+import rox.main.pluginsystem.JavaScriptEngine;
+import rox.main.pluginsystem.PluginManager;
 import rox.main.server.MainServer;
 
 import java.util.Scanner;
@@ -25,6 +27,10 @@ public class Main {
     private static MinecraftServer minecraftServer;
 
     private static HTTPServer httpServer;
+
+    private static JavaScriptEngine javaScriptEngine;
+
+    private static PluginManager pluginManager;
 
     /*
      * This class is the main class.
@@ -64,6 +70,13 @@ public class Main {
             discordBot.setToken(args[0]);
         } catch (ArrayIndexOutOfBoundsException e) {
             System.out.println("No arguments given.");
+        }
+
+        (javaScriptEngine = new JavaScriptEngine()).init();
+        try {
+            (pluginManager = new PluginManager()).loadPlugins();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
 
@@ -134,5 +147,21 @@ public class Main {
 
     public static MinecraftServer getMinecraftServer() {
         return minecraftServer;
+    }
+
+    public static HTTPServer getHttpServer() {
+        return httpServer;
+    }
+
+    public boolean isDebug() {
+        return (Boolean) fileConfiguration.getValue("debug");
+    }
+
+    public JavaScriptEngine getJavaScriptEngine() {
+        return javaScriptEngine;
+    }
+
+    public PluginManager getPluginManager() {
+        return pluginManager;
     }
 }
