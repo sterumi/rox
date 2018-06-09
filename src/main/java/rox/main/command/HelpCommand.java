@@ -9,7 +9,7 @@ public class HelpCommand implements MainCommandExecutor {
         if (args.length == 1) {
             Main.getMainCommandLoader().getRegisteredCommands().forEach(System.out::println);
         } else {
-            System.out.println("Only help Command.");
+            Main.getLogger().log("ROX", "Only 'help' Command.");
         }
     }
 }

@@ -18,10 +18,10 @@ public class MCSCommand implements MainCommandExecutor {
                     Main.getMinecraftServer().stop();
                     break;
                 default:
-                    System.out.println("mcs (start, stop)");
+                    Main.getLogger().log("ROX", "mcs (start, stop)");
             }
         } else {
-            System.out.println("mcs (start, stop)");
+            Main.getLogger().log("ROX", "mcs (start, stop)");
         }
     }
 }

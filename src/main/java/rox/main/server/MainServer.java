@@ -47,7 +47,7 @@ public class MainServer {
             staticManager = new StaticManager();
             permissionManager = new PermissionManager();
             loadCommands();
-            System.out.println("Main Server started.");
+            Main.getLogger().log("ROX", "Main Server started.");
             isActive = true;
         } catch (IOException e) {
             e.printStackTrace();
@@ -60,7 +60,7 @@ public class MainServer {
             acceptThread.interrupt();
             clients.forEach(((s, objects) -> ((Thread) objects[2]).interrupt()));
             clients.clear();
-            System.out.println("Stopped Minecraft System");
+            Main.getLogger().log("ROX", "Stopped Main Server.");
         } catch (IOException e) {
             e.printStackTrace();
         }

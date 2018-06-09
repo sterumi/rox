@@ -19,7 +19,7 @@ public class InputHandler implements HttpHandler {
         }
 
 
-        InputStream is = getClass().getResourceAsStream("/notFound.html");
+        InputStream is = getClass().getResourceAsStream("/html/notFound.html");
         BufferedReader reader = new BufferedReader(new InputStreamReader(is));
 
         final String[] response = {""};

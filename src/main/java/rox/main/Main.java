@@ -3,7 +3,9 @@ package rox.main;
 import rox.main.command.*;
 import rox.main.discord.DiscordBot;
 import rox.main.httpserver.HTTPServer;
+import rox.main.logger.Logger;
 import rox.main.minecraftserver.MinecraftServer;
+import rox.main.news.NewsSystem;
 import rox.main.pluginsystem.JavaScriptEngine;
 import rox.main.pluginsystem.PluginManager;
 import rox.main.server.MainServer;
@@ -32,6 +34,10 @@ public class Main {
 
     private static PluginManager pluginManager;
 
+    private static NewsSystem newsSystem;
+
+    private static Logger logger;
+
     /*
      * This class is the main class.
      * It will setup all servers in a own thread.
@@ -55,7 +61,8 @@ public class Main {
      */
 
     public static void main(String[] args) {
-        System.out.println("Starting ROX.");
+        logger = new Logger();
+        logger.log("ROX", "Starting ROX.");
         fileConfiguration = new FileConfiguration();
         mainCommandLoader = new MainCommandLoader();
 
@@ -69,7 +76,7 @@ public class Main {
             informatics[1] = args[0];
             discordBot.setToken(args[0]);
         } catch (ArrayIndexOutOfBoundsException e) {
-            System.out.println("No arguments given.");
+            logger.log("ROX", "No arguments given.");
         }
 
         (javaScriptEngine = new JavaScriptEngine()).init();
@@ -79,6 +86,7 @@ public class Main {
             e.printStackTrace();
         }
 
+        newsSystem = new NewsSystem();
 
     }
 
@@ -103,7 +111,7 @@ public class Main {
                 mainCommandLoader.getCommand(input.split(" ")[0]).command(input.split(" ")[0], input.split(" "));
             } catch (Exception e) {
                 e.printStackTrace();
-                System.out.println("Command not found.");
+                logger.log("ROX", "Command not found.");
             }
         }
 
@@ -153,7 +161,7 @@ public class Main {
         return httpServer;
     }
 
-    public boolean isDebug() {
+    public static boolean isDebug() {
         return (Boolean) fileConfiguration.getValue("debug");
     }
 
@@ -163,5 +171,13 @@ public class Main {
 
     public PluginManager getPluginManager() {
         return pluginManager;
+    }
+
+    public static NewsSystem getNewsSystem() {
+        return newsSystem;
+    }
+
+    public static Logger getLogger() {
+        return logger;
     }
 }

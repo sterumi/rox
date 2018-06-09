@@ -1,6 +1,7 @@
 package rox.main.httpserver;
 
 import com.sun.net.httpserver.HttpServer;
+import rox.main.Main;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -32,11 +33,12 @@ public class HTTPServer {
     private void start() {
         try {
             server = HttpServer.create(new InetSocketAddress(port), 0);
-            System.out.println("server started at " + port);
+            Main.getLogger().log("HTTPServer", "server started at " + port);
             server.createContext("/", new InputHandler());
             server.createContext("/header", new HeaderHandler());
             server.createContext("/get", new GetHandler());
             server.createContext("/post", new PostHandler());
+            server.createContext("/news", new NewsHandler());
             server.setExecutor(null);
             server.start();
         } catch (IOException e) {

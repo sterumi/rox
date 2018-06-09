@@ -2,6 +2,7 @@ package rox.main.pluginsystem;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+import rox.main.Main;
 
 import java.io.*;
 import java.net.URL;
@@ -19,7 +20,7 @@ public class PluginManager {
     public void loadPlugins() throws Exception {
         File[] files = new File("plugins/").listFiles();
         if (files == null) {
-            System.out.println("No plugins found.");
+            Main.getLogger().log("PluginSystem", "No plugins found.");
             return;
         }
         for (final File file : files) {
@@ -43,8 +44,7 @@ public class PluginManager {
                                 ROXPlugin roxPlugin = (ROXPlugin) cl.newInstance();
                                 plugins.put(name, roxPlugin);
                                 roxPlugin.onLoad();
-
-
+                                Main.getLogger().log("PluginSystem", "Loaded: " + name);
                             }
                         }
                     }

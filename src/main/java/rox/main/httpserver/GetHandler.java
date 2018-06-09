@@ -15,7 +15,7 @@ public class GetHandler implements HttpHandler {
     @Override
     public void handle(HttpExchange he) throws IOException {
         // parse request
-        Map<String, Object> parameters = new HashMap<String, Object>();
+        Map<String, Object> parameters = new HashMap<>();
         InputStreamReader isr = new InputStreamReader(he.getRequestBody(), "utf-8");
         BufferedReader br = new BufferedReader(isr);
         String query = br.readLine();
@@ -27,7 +27,7 @@ public class GetHandler implements HttpHandler {
             response.append(key).append(" = ").append(parameters.get(key)).append("\n");
         he.sendResponseHeaders(200, response.length());
         OutputStream os = he.getResponseBody();
-        os.write(response.toString().toString().getBytes());
+        os.write(response.toString().getBytes());
         os.close();
     }
 }

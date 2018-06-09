@@ -14,7 +14,7 @@ public class DiscordCommandLoader {
 
     public void addCommand(String name, DiscordCommandExecutor clazz) {
         if (classes.containsKey(name)) {
-            System.out.println("This command is already registered!");
+            Main.getLogger().log("Discord", "This command is already registered!");
             Main.getDiscordBot().getCommandChannel().sendMessage("Der Befehl " + name + " ist bereits registriert!").complete();
             return;
         }

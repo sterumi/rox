@@ -11,7 +11,7 @@ public class DiscordCommand implements MainCommandExecutor {
         // discord (token,start,stop) <tokenCode>
 
         if (args.length == 1) {
-            System.out.println("discord (token,start,stop) <tokenCode>");
+            Main.getLogger().log("ROX", "discord (token,start,stop) <tokenCode>");
             return;
         }
 
@@ -23,25 +23,25 @@ public class DiscordCommand implements MainCommandExecutor {
                     if (args[2] != null) {
                         Main.getDiscordBot().setToken(args[2]);
                         Main.setInformatics(1, args[2]);
-                        System.out.println("Token is set.");
+                        Main.getLogger().log("ROX", "Token is set.");
                     } else {
-                        System.out.println("You must set a token!");
+                        Main.getLogger().log("ROX", "You must set a token!");
                     }
                 } else {
-                    System.out.println("discord (token,start,stop) <tokenCode>");
+                    Main.getLogger().log("ROX", "discord (token,start,stop) <tokenCode>");
                 }
                 break;
 
             case "start":
                 if (args.length == 2) {
                     if (Main.getDiscordBot().isConnected()) {
-                        System.out.println("Discord Bot is already running!");
+                        Main.getLogger().log("ROX", "Discord Bot is already running!");
                     } else {
                         Main.getDiscordBot().connect();
-                        System.out.println("Started Discord Bot.");
+                        Main.getLogger().log("ROX", "Started Discord Bot.");
                     }
                 } else {
-                    System.out.println("discord start");
+                    Main.getLogger().log("ROX", "discord start");
                 }
 
                 break;
@@ -50,12 +50,12 @@ public class DiscordCommand implements MainCommandExecutor {
                 if (args.length == 2) {
                     if (Main.getDiscordBot().isConnected()) {
                         Main.getDiscordBot().disconnect();
-                        System.out.println("Stopped Discord Bot.");
+                        Main.getLogger().log("ROX", "Stopped Discord Bot.");
                     } else {
-                        System.out.println("Discord Bot isn't running.");
+                        Main.getLogger().log("ROX", "Discord Bot isn't running.");
                     }
                 } else {
-                    System.out.println("discord stop");
+                    Main.getLogger().log("ROX", "discord stop");
                 }
                 break;
 
@@ -69,12 +69,12 @@ public class DiscordCommand implements MainCommandExecutor {
                     MessageAction messageAction = textChannel.sendMessage(message.toString());
                     messageAction.complete();
                 } else {
-                    System.out.println("discord say <channel> <message>");
+                    Main.getLogger().log("ROX", "discord say <channel> <message>");
                 }
                 break;
 
             default:
-                System.out.println("discord (token,start,stop) <tokenCode>");
+                Main.getLogger().log("ROX", "discord (token,start,stop) <tokenCode>");
                 break;
 
         }

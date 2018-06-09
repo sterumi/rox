@@ -5,6 +5,7 @@ import rox.main.Main;
 import rox.main.MainCommandExecutor;
 import rox.main.discord.DiscordBot;
 import rox.main.httpserver.HTTPServer;
+import rox.main.logger.Logger;
 import rox.main.minecraftserver.MinecraftServer;
 import rox.main.server.MainServer;
 
@@ -48,5 +49,9 @@ public class Plugin {
 
     public void addMainCommand(String command, MainCommandExecutor mainCommandExecutor) {
         Main.getMainCommandLoader().addCommand(command, mainCommandExecutor);
+    }
+
+    public Logger getLogger() {
+        return Main.getLogger();
     }
 }

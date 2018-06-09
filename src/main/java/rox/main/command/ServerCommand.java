@@ -11,28 +11,28 @@ public class ServerCommand implements MainCommandExecutor {
             switch (args[1]) {
                 case "start":
                     if (Main.getMainServer().isActive()) {
-                        System.out.println("Server is already running.");
+                        Main.getLogger().log("ROX", "Server is already running.");
                     } else {
-                        System.out.println("Starting Main Server...");
+                        Main.getLogger().log("ROX", "Starting Main Server...");
                         Main.getMainServer().start();
                     }
                     break;
 
                 case "stop":
                     if (Main.getMainServer().isActive()) {
-                        System.out.println("Main Server stopping...");
+                        Main.getLogger().log("ROX", "Main Server stopping...");
                         Main.getMainServer().stop();
                     } else {
-                        System.out.println("Main server isn't running.");
+                        Main.getLogger().log("ROX", "Main server isn't running.");
                     }
                     break;
 
                 default:
-                    System.out.println("server (start,stop)");
+                    Main.getLogger().log("ROX", "server (start,stop)");
                     break;
             }
         } else {
-            System.out.println("server (start,stop)");
+            Main.getLogger().log("ROX", "server (start,stop)");
         }
 
     }

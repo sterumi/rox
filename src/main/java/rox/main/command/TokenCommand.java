@@ -10,12 +10,12 @@ public class TokenCommand implements MainCommandExecutor {
             if (args[2] != null) {
                 Main.setInformatics(1, args[2]);
                 Main.getDiscordBot().setToken(args[2]);
-                System.out.println("Token is set.");
+                Main.getLogger().log("ROX", "Token is set.");
             } else {
-                System.out.println("You must set a token!");
+                Main.getLogger().log("ROX", "You must set a token!");
             }
         } else {
-            System.out.println("discord (token,start,stop) <tokenCode>");
+            Main.getLogger().log("ROX", "discord (token,start,stop) <tokenCode>");
         }
     }
 }
