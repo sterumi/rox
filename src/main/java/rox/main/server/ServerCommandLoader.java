@@ -1,5 +1,7 @@
 package rox.main.server;
 
+import rox.main.Main;
+
 import java.util.concurrent.ConcurrentHashMap;
 
 class ServerCommandLoader {
@@ -8,7 +10,7 @@ class ServerCommandLoader {
 
     public void addCommand(String name, ServerCommandExecutor clazz) {
         if (classes.containsKey(name)) {
-            System.out.println("This command is already registered!");
+            Main.getLogger().warn("MainServer", "The command '" + name + "' is already registered.");
             return;
         }
         classes.put(name, clazz);

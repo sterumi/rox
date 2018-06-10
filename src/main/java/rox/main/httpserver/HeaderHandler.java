@@ -21,7 +21,7 @@ public class HeaderHandler implements HttpHandler {
             response.append(entry.toString()).append("\n");
         he.sendResponseHeaders(200, response.length());
         OutputStream os = he.getResponseBody();
-        os.write(response.toString().toString().getBytes());
+        os.write(response.toString().getBytes());
         os.close();
     }
 }

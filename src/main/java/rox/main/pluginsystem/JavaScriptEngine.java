@@ -1,9 +1,9 @@
 package rox.main.pluginsystem;
 
-import javax.script.Invocable;
+import rox.main.Main;
+
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
-import java.io.InputStreamReader;
 
 public class JavaScriptEngine {
 
@@ -16,7 +16,7 @@ public class JavaScriptEngine {
             factory.getEngineFactories().forEach(scriptEngineFactory -> System.out.println(scriptEngineFactory.getNames()));
             this.scriptEngine = factory.getEngineByName("JavaScript");
             if (this.scriptEngine == null) {
-                System.out.println("JavaScript Engine not found!");
+                Main.getLogger().log("JavaScript", "Engine not found!");
             } else {
                 /*Invocable inv = (Invocable) this.scriptEngine;
                 this.scriptEngine.eval(new InputStreamReader(getClass().getResourceAsStream("/js/boot.js")));

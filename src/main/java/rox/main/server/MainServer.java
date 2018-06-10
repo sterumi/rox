@@ -47,7 +47,7 @@ public class MainServer {
             staticManager = new StaticManager();
             permissionManager = new PermissionManager();
             loadCommands();
-            Main.getLogger().log("ROX", "Main Server started.");
+            Main.getLogger().log("MainServer", "Started.");
             isActive = true;
         } catch (IOException e) {
             e.printStackTrace();
@@ -60,7 +60,7 @@ public class MainServer {
             acceptThread.interrupt();
             clients.forEach(((s, objects) -> ((Thread) objects[2]).interrupt()));
             clients.clear();
-            Main.getLogger().log("ROX", "Stopped Main Server.");
+            Main.getLogger().log("MainServer", "Stopped.");
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -14,14 +14,12 @@ public class GetHandler implements HttpHandler {
 
     @Override
     public void handle(HttpExchange he) throws IOException {
-        // parse request
         Map<String, Object> parameters = new HashMap<>();
         InputStreamReader isr = new InputStreamReader(he.getRequestBody(), "utf-8");
         BufferedReader br = new BufferedReader(isr);
         String query = br.readLine();
         HTTPServer.parseQuery(query, parameters);
 
-        // send response
         StringBuilder response = new StringBuilder();
         for (String key : parameters.keySet())
             response.append(key).append(" = ").append(parameters.get(key)).append("\n");

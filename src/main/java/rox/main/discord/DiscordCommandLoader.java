@@ -16,6 +16,7 @@ public class DiscordCommandLoader {
         if (classes.containsKey(name)) {
             Main.getLogger().log("Discord", "This command is already registered!");
             Main.getDiscordBot().getCommandChannel().sendMessage("Der Befehl " + name + " ist bereits registriert!").complete();
+            Main.getLogger().debug("DiscordBot", "Added command: " + name);
             return;
         }
 
@@ -23,9 +24,8 @@ public class DiscordCommandLoader {
     }
 
     public DiscordCommandExecutor getCommand(String name) {
-        return classes.getOrDefault(name, (jda, guild, sender, currentChannel, name1, args) -> {
-            currentChannel.sendMessage("Dieser Befehl exsistiert nicht!").complete();
-        });
+        return classes.getOrDefault(name, (jda, guild, sender, currentChannel, name1, args)
+                -> currentChannel.sendMessage("Dieser Befehl exsistiert nicht!").complete());
     }
 
 }

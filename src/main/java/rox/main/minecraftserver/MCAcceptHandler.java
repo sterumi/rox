@@ -23,6 +23,7 @@ public class MCAcceptHandler extends Thread {
              *   [2] BufferedReader
              *   [3] PrintWriter
              *   [4] UUID
+             *   [5] serverName
              *
              */
 
@@ -36,8 +37,9 @@ public class MCAcceptHandler extends Thread {
                 //<uuid>§<password>
 
                 String[] input = reader.readLine().split("§");
-
-                if (Main.getMainServer().getDatabase().Query("SELECT * FROM mc_servers WHERE uuid='" + input[0] + "'") == null) {
+                try {
+                    Main.getMainServer().getDatabase().Query("SELECT * FROM mc_servers WHERE uuid='" + input[0] + "'");
+                } catch (NullPointerException e) {
                     writer.println("§UUID_NOT_FOUND");
                     return;
                 }
@@ -51,10 +53,12 @@ public class MCAcceptHandler extends Thread {
                     objects[2] = reader;
                     objects[3] = writer;
                     objects[4] = UUID.fromString(input[0]);
+                    objects[5] = Main.getMinecraftServer().getMCI().getServerName((UUID) objects[4]);
                     (thread = new MCInputHandler(objects)).start();
                     objects[1] = thread;
-                    Main.getMinecraftServer().addServer(Main.getMinecraftServer().getMCI().getServerName((UUID) objects[4]), objects);
+                    Main.getMinecraftServer().addServer((UUID) objects[4], objects);
                     writer.println("§MC_SERVER_CONNECTED");
+                    Main.getLogger().log("MinecraftServer", objects[5] + " connected: " + socket.getInetAddress());
                 } else {
                     writer.println("§ACCOUNT_NOT_FOUND");
                     socket.close();

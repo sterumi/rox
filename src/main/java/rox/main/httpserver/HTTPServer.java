@@ -23,6 +23,8 @@ public class HTTPServer {
      * gets/posts currently not saved.
      * Only groundwork.
      *
+     * Used for news system
+     *
      */
 
     public HTTPServer(int port) {
@@ -41,6 +43,7 @@ public class HTTPServer {
             server.createContext("/news", new NewsHandler());
             server.setExecutor(null);
             server.start();
+            Main.getLogger().log("HTTP", "Started.");
         } catch (IOException e) {
             e.printStackTrace();
         }

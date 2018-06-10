@@ -42,6 +42,7 @@ public class DiscordBot {
             setConnected(true);
             loadEvents();
             loadCommands();
+            Main.getLogger().log("DiscordBot", "Started.");
         } catch (Exception e) {
             e.printStackTrace();
         }

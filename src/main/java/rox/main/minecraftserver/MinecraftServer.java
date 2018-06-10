@@ -1,12 +1,15 @@
 package rox.main.minecraftserver;
 
+import rox.main.Main;
+
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class MinecraftServer {
 
-    private ConcurrentHashMap<String, Object[]> serverMap = new ConcurrentHashMap<>();
+    private ConcurrentHashMap<UUID, Object[]> serverMap;
 
     private ServerSocket serverSocket;
 
@@ -24,11 +27,12 @@ public class MinecraftServer {
 
     public void start() {
         try {
+            serverMap = new ConcurrentHashMap<>();
             serverSocket = new ServerSocket(port);
             mci = new MCI();
             (mcAcceptHandlerThread = new MCAcceptHandler()).start();
             active = true;
-            System.out.println("Minecraft System started.");
+            Main.getLogger().log("MinecraftSystem", "Started.");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -62,19 +66,23 @@ public class MinecraftServer {
         return this.mcAcceptHandlerThread;
     }
 
-    public void addServer(String name, Object[] objects) {
-        this.getServerMap().put(name, objects);
+    public void addServer(UUID uuid, Object[] objects) {
+        serverMap.put(uuid, objects);
     }
 
     public ServerSocket getServerSocket() {
         return this.serverSocket;
     }
 
-    public ConcurrentHashMap<String, Object[]> getServerMap() {
-        return this.serverMap;
+    public ConcurrentHashMap<UUID, Object[]> getServerMap() {
+        return serverMap;
     }
 
     public MCI getMCI() {
         return this.mci;
+    }
+
+    public void removeServer(UUID uuid) {
+        serverMap.remove(uuid);
     }
 }

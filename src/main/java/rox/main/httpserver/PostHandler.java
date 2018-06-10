@@ -12,13 +12,11 @@ import java.util.Map;
 public class PostHandler implements HttpHandler {
     @Override
     public void handle(HttpExchange he) throws IOException {
-        // parse request
         Map<String, Object> parameters = new HashMap<>();
         URI requestedUri = he.getRequestURI();
         String query = requestedUri.getRawQuery();
         HTTPServer.parseQuery(query, parameters);
 
-        // send response
         StringBuilder response = new StringBuilder();
         for (String key : parameters.keySet())
             response.append(key).append(" = ").append(parameters.get(key)).append("\n");
