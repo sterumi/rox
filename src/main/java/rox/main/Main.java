@@ -46,7 +46,6 @@ public class Main {
      * [3] - EMPTY
      *
      * Threads Array ->
-     *
      * [0] - MAIN SERVER THREAD
      * [1] - DISCORD BOT THREAD
      * [2] - CONSOLE SCANNER THREAD
