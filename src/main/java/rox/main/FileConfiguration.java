@@ -8,22 +8,18 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class FileConfiguration {
 
-    private File configFile;
-    private File newsFile;
-
-    private FileReader newsFileReader;
+    private File configFile, newsFile;
 
     private JSONParser parser;
 
     private ConcurrentHashMap<String, Object> values;
 
     FileConfiguration() {
-
+        long startTime = System.currentTimeMillis();
         try {
             values = new ConcurrentHashMap<>();
             configFile = new File("config/", "config.json");
             newsFile = new File("config/", "news.json");
-            newsFileReader = new FileReader(newsFile.getPath());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -34,6 +30,7 @@ public class FileConfiguration {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        Main.getLogger().time("FileLoad", startTime);
     }
 
     private void init() throws Exception {
@@ -75,8 +72,9 @@ public class FileConfiguration {
         JSONObject jsonObject;
         try {
             BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(newsFile.getPath())));
-            String jsonString = reader.readLine();
-            jsonObject = (JSONObject) parser.parse(jsonString);
+            StringBuilder jsonString = new StringBuilder();
+            reader.lines().forEach(jsonString::append);
+            jsonObject = (JSONObject) parser.parse(jsonString.toString());
         } catch (Exception e) {
             e.printStackTrace();
             Main.getLogger().log("ROX", "News File is empty.");

@@ -39,6 +39,7 @@ public class MainServer {
     }
 
     public void start(){
+        long startTime = System.currentTimeMillis();
         try {
             database = new MainDatabase("localhost", 3306, "root", "", "rox");
             serverSocket = new ServerSocket(port);
@@ -52,6 +53,7 @@ public class MainServer {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        Main.getLogger().time("MainServerLoad", startTime);
     }
 
     public void stop(){

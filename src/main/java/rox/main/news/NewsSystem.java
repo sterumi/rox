@@ -61,7 +61,7 @@ public class NewsSystem {
     private void save() throws Exception {
         Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(Main.getFileConfiguration().getNewsFile()), "utf-8"));
         JSONObject jsonObject = new JSONObject();
-        getAllNews().forEach((integer, jsonArray) -> jsonObject.put(integer, jsonArray));
+        getAllNews().forEach(jsonObject::put);
         writer.write(jsonObject.toJSONString());
         writer.flush();
         writer.close();
@@ -78,7 +78,7 @@ public class NewsSystem {
 
     public String getAllNewsAsString() {
         JSONObject jsonObject = new JSONObject();
-        getAllNews().forEach((integer, jsonArray) -> jsonObject.put(integer, jsonArray));
+        getAllNews().forEach(jsonObject::put);
         return jsonObject.toJSONString();
     }
 

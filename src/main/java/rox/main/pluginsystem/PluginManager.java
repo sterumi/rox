@@ -26,39 +26,36 @@ public class PluginManager {
 
 
     private void loadPlugins() throws Exception {
+        long startTime = System.currentTimeMillis();
         File[] files = new File("plugins/").listFiles();
-        if (files == null) {
-            Main.getLogger().log("PluginSystem", "No plugins found.");
-            return;
-        }
-        for (final File file : files) {
-            if (file.getPath().toLowerCase().endsWith(".jar")) {
+        if (files != null) {
+            for (final File file : files) {
+                if (file.getPath().toLowerCase().endsWith(".jar")) {
 
-                JarFile jarFile = new JarFile(file.getCanonicalPath());
+                    JarFile jarFile = new JarFile(file.getCanonicalPath());
 
-                final Enumeration<JarEntry> entries = jarFile.entries();
-                while (entries.hasMoreElements()) {
-                    final JarEntry entry = entries.nextElement();
-                    if (entry.getName().equals("plugin.json")) {
-                        JarEntry fileEntry = jarFile.getJarEntry(entry.getName());
-                        InputStream input = jarFile.getInputStream(fileEntry);
-                        JSONObject object = (JSONObject) new JSONParser().parse(new BufferedReader(new InputStreamReader(input)).readLine());
-                        String name = String.valueOf(object.get("name"));
-                        String mainClassName = String.valueOf(object.get("mainName"));
-                        Class cl = new URLClassLoader(new URL[]{new File(file.getPath()).toURL()}).loadClass(mainClassName);
-                        Class[] interfaces = cl.getInterfaces();
-                        for (Class anInterface : interfaces) {
-                            if (anInterface.getName().equals("rox.main.pluginsystem.ROXPlugin")) {
-                                ROXPlugin roxPlugin = (ROXPlugin) cl.newInstance();
-                                plugins.put(name, roxPlugin);
-                                roxPlugin.onLoad();
-                                Main.getLogger().log("PluginSystem", "Loaded: " + name);
+                    final Enumeration<JarEntry> entries = jarFile.entries();
+                    while (entries.hasMoreElements()) {
+                        final JarEntry entry = entries.nextElement();
+                        if (entry.getName().equals("plugin.json")) {
+                            JSONObject object = (JSONObject) new JSONParser().parse(new BufferedReader(new InputStreamReader(jarFile.getInputStream(jarFile.getJarEntry(entry.getName())))).readLine());
+                            Class cl = new URLClassLoader(new URL[]{new File(file.getPath()).toURL()}).loadClass(String.valueOf(object.get("mainName")));
+                            for (Class anInterface : cl.getInterfaces()) {
+                                if (anInterface.getName().equals("rox.main.pluginsystem.ROXPlugin")) {
+                                    ROXPlugin roxPlugin = (ROXPlugin) cl.newInstance();
+                                    plugins.put(String.valueOf(object.get("name")), roxPlugin);
+                                    roxPlugin.onLoad();
+                                    Main.getLogger().log("PluginSystem", "Loaded: " + String.valueOf(object.get("name")));
+                                }
                             }
                         }
                     }
                 }
             }
+        } else {
+            Main.getLogger().log("PluginSystem", "No plugins found.");
         }
+        Main.getLogger().time("PluginLoad", startTime);
     }
 
     public void stop() {

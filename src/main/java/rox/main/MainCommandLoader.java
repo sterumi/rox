@@ -12,7 +12,7 @@ public class MainCommandLoader {
 
     public void addCommand(String name, MainCommandExecutor clazz) {
         if (classes.containsKey(name)) {
-            System.out.println("This command is already registered!");
+            Main.getLogger().warn("CommandLoader", "The command '" + name + "' is already registered!");
             return;
         }
         classes.put(name, clazz);
@@ -49,8 +49,11 @@ public class MainCommandLoader {
             try {
                 this.getCommand(input.split(" ")[0]).command(input.split(" ")[0], input.split(" "));
             } catch (Exception e) {
-                e.printStackTrace();
-                Main.getLogger().log("ROX", "Command not found.");
+                if (e instanceof NullPointerException) {
+                    Main.getLogger().log("ROX", "Command not found.");
+                } else {
+                    e.printStackTrace();
+                }
             }
         }
     }

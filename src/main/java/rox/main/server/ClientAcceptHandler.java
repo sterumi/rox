@@ -28,10 +28,10 @@ public class ClientAcceptHandler extends Thread {
              *
              *
              */
-
-
+            long startTime = System.currentTimeMillis();
             Socket socket;
             while ((socket = Main.getMainServer().getServerSocket().accept()) != null) {
+                Main.getLogger().time("MSWaited", startTime);
                 Main.getMainServer().setWaitingConnection(false);
 
                 // <name>§<password>
@@ -66,6 +66,7 @@ public class ClientAcceptHandler extends Thread {
                     socket.close();
                 }
                 Main.getMainServer().setWaitingConnection(true);
+                startTime = System.currentTimeMillis();
             }
         } catch (Exception e) {
             e.printStackTrace();

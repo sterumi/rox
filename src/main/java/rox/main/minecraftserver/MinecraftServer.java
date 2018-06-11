@@ -26,6 +26,7 @@ public class MinecraftServer {
     }
 
     public void start() {
+        long startTime = System.currentTimeMillis();
         try {
             serverMap = new ConcurrentHashMap<>();
             serverSocket = new ServerSocket(port);
@@ -36,6 +37,7 @@ public class MinecraftServer {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        Main.getLogger().time("MinecraftSystemLoad", startTime);
     }
 
     public void stop() {

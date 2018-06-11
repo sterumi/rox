@@ -58,15 +58,18 @@ public class Main {
      */
 
     public static void main(String[] args) {
+        long startTime = System.currentTimeMillis();
         logger = new Logger();
         logger.log("ROX", "Starting ROX.");
         fileConfiguration = new FileConfiguration();
         (mainCommandLoader = new MainCommandLoader()).loadCommands();
         loadThreads();
         computeArgs(args);
+        logger.time("MainLoad", startTime);
     }
 
     private static void loadThreads() {
+        long startTime = System.currentTimeMillis();
         (threads[0] = new Thread(() -> mainServer = new MainServer(8981))).start();
         (threads[1] = new Thread(() -> discordBot = new DiscordBot((String) informatics[1]))).start();
         (threads[2] = new Thread(() -> mainCommandLoader.initCommandHandle())).start();
@@ -76,6 +79,7 @@ public class Main {
         (threads[6] = new Thread(() -> pluginManager = new PluginManager())).start();
         (threads[7] = new Thread(() -> javaScriptEngine = new JavaScriptEngine())).start();
         Runtime.getRuntime().addShutdownHook(new Thread(Main::shutdown));
+        logger.time("ThreadLoad", startTime);
     }
 
     private static void computeArgs(String[] args) {
@@ -145,7 +149,9 @@ public class Main {
     }
 
     public static boolean isDebug() {
-        return (Boolean) fileConfiguration.getValue("debug");
+
+        //return (Boolean) fileConfiguration.getValue("debug");
+        return true;
     }
 
     public JavaScriptEngine getJavaScriptEngine() {
