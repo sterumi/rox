@@ -9,7 +9,11 @@ public class JavaScriptEngine {
 
     private ScriptEngine scriptEngine = null;
 
-    public void init() {
+    public JavaScriptEngine() {
+        init();
+    }
+
+    private void init() {
 
         try {
             ScriptEngineManager factory = new ScriptEngineManager();

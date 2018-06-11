@@ -41,10 +41,6 @@ public class ClientAcceptHandler extends Thread {
 
                 String[] input = reader.readLine().split("§");
 
-                /*if (Main.getMainServer().getDatabase().Query("SELECT * FROM users WHERE username='" + input[0] + "'") == null) {
-                    Main.getMainServer().createUser(input[0], input[1]);
-                }*/
-
                 if (Main.getMainServer().getDatabase().Query("SELECT * FROM users WHERE username='" + input[0] + "' AND password='" + input[1] + "'") != null) {
 
                     if (Main.getMainServer().isBanned(Main.getMainServer().getStaticManager().getUUID(input[0]))) {

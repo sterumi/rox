@@ -16,8 +16,16 @@ public class PluginManager {
 
     private ConcurrentHashMap<String, ROXPlugin> plugins = new ConcurrentHashMap<>();
 
+    public PluginManager() {
+        try {
+            loadPlugins();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
-    public void loadPlugins() throws Exception {
+
+    private void loadPlugins() throws Exception {
         File[] files = new File("plugins/").listFiles();
         if (files == null) {
             Main.getLogger().log("PluginSystem", "No plugins found.");
