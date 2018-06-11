@@ -88,6 +88,7 @@ public class DiscordBot {
         discordCommandLoader.addCommand("!mp", new MediaPlayerCommand());
         discordCommandLoader.addCommand("!say", new SayCommand());
         discordCommandLoader.addCommand("!warn", new WarnCommand());
+        discordCommandLoader.addCommand("!user", new UserCommand());
     }
 
     public DiscordCommandLoader getCommandLoader() {

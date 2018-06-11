@@ -7,23 +7,17 @@ var __boot = null;
 
 
     __boot = function (plugin, engine, classLoader) {
-        let initScriptFile = new File(jsPlugins, initScript);
+        var logger = plugin.logger, initScriptFile = new File(jsPlugins, initScript);
 
         if (!jsPlugins.exists()) {
             logger.info('Directory ' + jsPlugins.canonicalPath + ' does not exist.');
-            logger.info(
-                'Initializing ' +
-                jsPlugins.canonicalPath +
-                ' directory with contents from plugin archive.'
-            );
+            logger.info('Initializing ' + jsPlugins.canonicalPath + ' directory with contents from plugin archive.');
             jsPlugins.mkdirs();
         }
         try {
             engine.eval(new FileReader(initScriptFile));
             __onEnable(engine, plugin, initScriptFile);
         } catch (e) {
-            var msg = 'Error evaluating ' + initScriptFile + ': ' + e;
-            logger.severe(msg);
             throw e;
         }
     };
