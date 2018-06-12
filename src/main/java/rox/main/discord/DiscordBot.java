@@ -37,6 +37,11 @@ public class DiscordBot {
 
     public void connect(){
         try {
+
+            if (!Main.getMainServer().getDatabase().isConnected()) {
+                Main.getLogger().err("DiscordBot", "Could not start DiscordBot.");
+                return;
+            }
             jda = new JDABuilder(AccountType.BOT).setToken(token).buildBlocking();
             discordCommandLoader = new DiscordCommandLoader();
             setConnected(true);

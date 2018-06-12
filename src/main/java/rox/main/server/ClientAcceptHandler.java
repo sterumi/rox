@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.nio.charset.Charset;
 import java.util.UUID;
 
 public class ClientAcceptHandler extends Thread {
@@ -36,10 +37,10 @@ public class ClientAcceptHandler extends Thread {
 
                 // <name>§<password>
 
-                BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                PrintWriter writer = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()), true);
+                BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream(), Charset.forName("UTF-8")));
+                PrintWriter writer = new PrintWriter(new OutputStreamWriter(socket.getOutputStream(), Charset.forName("UTF-8")), true);
 
-                String[] input = reader.readLine().split("§");
+                String[] input = reader.readLine().substring(1).split("§");
 
                 if (Main.getMainServer().getDatabase().Query("SELECT * FROM users WHERE username='" + input[0] + "' AND password='" + input[1] + "'") != null) {
 
@@ -55,7 +56,8 @@ public class ClientAcceptHandler extends Thread {
                     objects[3] = reader;
                     objects[4] = writer;
                     objects[6] = Main.getMainServer().getStaticManager().getUUID(input[0]);
-                    objects[5] = Main.getMainServer().getPermissionManager().getRankDatabase(UUID.fromString((String) objects[6]));
+                    System.out.println(objects[6]);
+                    objects[5] = Main.getMainServer().getPermissionManager().getRankDatabase((UUID) objects[6]);
                     (thread = new ClientInputHandler(objects)).start();
                     objects[2] = thread;
 

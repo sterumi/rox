@@ -2,6 +2,7 @@ package rox.main.server.permission;
 
 import rox.main.Main;
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.UUID;
 
@@ -38,7 +39,11 @@ public class PermissionManager {
 
     public Rank getRankDatabase(UUID uuid) {
         try {
-            return Rank.valueOf(Main.getMainServer().getDatabase().Query("SELECT rank FROM users WHERE uuid='" + uuid + "'").getString("rank"));
+
+            ResultSet rs = Main.getMainServer().getDatabase().Query("SELECT rank FROM users WHERE uuid='" + uuid + "'");
+            while (rs.next()) {
+                return Rank.valueOf(rs.getString("rank"));
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }

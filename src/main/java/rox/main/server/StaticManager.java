@@ -3,6 +3,7 @@ package rox.main.server;
 import rox.main.Main;
 
 import java.sql.Date;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.UUID;
 
@@ -37,7 +38,10 @@ public class StaticManager {
 
     public UUID getUUID(String name) {
         try {
-            return UUID.fromString(Main.getMainServer().getDatabase().Query("SELECT * FROM users WHERE username='" + name + "'").getString("uuid"));
+            ResultSet rs = Main.getMainServer().getDatabase().Query("SELECT * FROM users WHERE username='" + name + "'");
+            while (rs.next()) {
+                return UUID.fromString(rs.getString("uuid"));
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -46,7 +50,10 @@ public class StaticManager {
 
     public int getBannedUsers() {
         try {
-            return Main.getMainServer().getDatabase().Query("SELECT * FROM users WHERE bantime IS NOT NULL").getMetaData().getColumnCount();
+            ResultSet rs = Main.getMainServer().getDatabase().Query("SELECT * FROM users WHERE bantime IS NOT NULL");
+            while (rs.next()) {
+                return rs.getMetaData().getColumnCount();
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -55,7 +62,11 @@ public class StaticManager {
 
     public Date getBanDate(UUID uuid) {
         try {
-            return Date.valueOf(Main.getMainServer().getDatabase().Query("SELECT * FROM users WHERE uuid='" + uuid.toString() + "'").getString("bantime"));
+
+            ResultSet rs = Main.getMainServer().getDatabase().Query("SELECT * FROM users WHERE uuid='" + uuid.toString() + "'");
+            while (rs.next()) {
+                return Date.valueOf(rs.getString("bantime"));
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

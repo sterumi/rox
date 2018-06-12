@@ -9,6 +9,8 @@ import rox.main.server.permission.Rank;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.sql.Date;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -42,6 +44,10 @@ public class MainServer {
         long startTime = System.currentTimeMillis();
         try {
             database = new MainDatabase("localhost", 3306, "root", "", "rox");
+            if (!database.isConnected()) {
+                Main.getLogger().err("MainServer", "Could not start MainServer.");
+                return;
+            }
             serverSocket = new ServerSocket(port);
             (acceptThread = new ClientAcceptHandler()).start();
             serverCommandLoader = new ServerCommandLoader();
@@ -161,7 +167,11 @@ public class MainServer {
 
     boolean isBanned(UUID uuid) {
         try {
-            return (getDatabase().Query("SELECT * FROM users WHERE uuid='" + uuid + "'").getString("bandate") != null);
+
+            ResultSet rs = Main.getMainServer().getDatabase().Query("SELECT * FROM users WHERE uuid='" + uuid + "'");
+            while (rs.next()) {
+                return rs.getString("bandate") != null;
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }

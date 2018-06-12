@@ -27,6 +27,12 @@ public class MinecraftServer {
 
     public void start() {
         long startTime = System.currentTimeMillis();
+
+        if (!Main.getMainServer().getDatabase().isConnected()) {
+            Main.getLogger().err("MinecraftSysetm", "Could not start MinecraftSystem.");
+            return;
+        }
+
         try {
             serverMap = new ConcurrentHashMap<>();
             serverSocket = new ServerSocket(port);
