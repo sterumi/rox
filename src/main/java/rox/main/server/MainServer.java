@@ -9,7 +9,6 @@ import rox.main.server.permission.Rank;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
@@ -36,32 +35,46 @@ public class MainServer {
 
     private PermissionManager permissionManager;
 
+
+    /**
+     * Sets port for clients listening.
+     *
+     * @param port The port for the server
+     */
+
     public MainServer(int port){
         this.port = port;
     }
 
+
+    /**
+     * Connect to Database and create server socket. Open a new thread for listening new clients are connecting.
+     */
     public void start(){
-        long startTime = System.currentTimeMillis();
+        long startTime = System.currentTimeMillis(); // Load Time
         try {
-            database = new MainDatabase("localhost", 3306, "root", "", "rox");
+            database = new MainDatabase("localhost", 3306, "root", "", "rox"); // Connecting to database
             if (!database.isConnected()) {
-                Main.getLogger().err("MainServer", "Could not start MainServer.");
+                Main.getLogger().err("MainServer", "Could not start MainServer."); // If can not connect to database
                 return;
             }
-            serverSocket = new ServerSocket(port);
-            (acceptThread = new ClientAcceptHandler()).start();
-            serverCommandLoader = new ServerCommandLoader();
-            staticManager = new StaticManager();
-            permissionManager = new PermissionManager();
-            loadCommands();
+            serverSocket = new ServerSocket(port); // Create server socket
+            (acceptThread = new ClientAcceptHandler()).start(); // Open new thread for new clients input
+            serverCommandLoader = new ServerCommandLoader(); // Command handler if client send a message
+            staticManager = new StaticManager(); // Methods where i don't know where to write them.
+            permissionManager = new PermissionManager(); // Permissions System for clients, Admins, Mods, Members,..
+            loadCommands(); // Loading all commands for the clients
             Main.getLogger().log("MainServer", "Started.");
-            isActive = true;
+            isActive = true; // Global boolean to check if server is active
         } catch (IOException e) {
             e.printStackTrace();
         }
-        Main.getLogger().time("MainServerLoad", startTime);
+        Main.getLogger().time("MainServerLoad", startTime); // Write to console how long it took to start the server
     }
 
+    /**
+     * Closing everything and clear lists.
+     */
     public void stop(){
         try {
             serverSocket.close();

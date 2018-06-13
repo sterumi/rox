@@ -11,6 +11,16 @@ public class MainDatabase {
 
     private boolean connected = false;
 
+    /**
+     * Create the database connection and save them to the conn var
+     *
+     * @param hostname The hostname of the database            (localhost)
+     * @param port     The port of the database                (3306)
+     * @param username The username to connect                 (root)
+     * @param password The password to connect                 ('')
+     * @param database The database name with all tables etc   (rox)
+     */
+
     public MainDatabase(String hostname, int port, String username, String password, String database) {
         long startTime = System.currentTimeMillis();
         try {
@@ -31,6 +41,10 @@ public class MainDatabase {
         return connected;
     }
 
+
+    /**
+     * @param qry The update string to add a table, a column or whatever
+     */
     public void Update(String qry) {
         long startTime = System.currentTimeMillis();
         try {
@@ -40,6 +54,13 @@ public class MainDatabase {
         }
         Main.getLogger().time("DatabaseUpdate", startTime);
     }
+
+    /**
+     * Returns a whole table or a column or some data about shit
+     *
+     * @param sql The query string
+     * @return The ResultSet with the asked shit
+     */
 
     public ResultSet Query(String sql) {
         long startTime = System.currentTimeMillis();

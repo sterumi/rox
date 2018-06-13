@@ -56,30 +56,44 @@ public class Main {
      * [7] - SCRIPT ENGINE THREAD
      */
 
+    /**
+     * The start up function to load everything.
+     *
+     * @param args All arguments given to the program
+     */
+
+
     public static void main(String[] args) {
-        long startTime = System.currentTimeMillis();
-        logger = new Logger();
+        long startTime = System.currentTimeMillis(); //Boot Start Time
+        logger = new Logger(); // Init logger
         logger.log("ROX", "Starting ROX.");
-        fileConfiguration = new FileConfiguration();
-        (mainCommandLoader = new MainCommandLoader()).loadCommands();
+        fileConfiguration = new FileConfiguration(); // Load files for information
+        (mainCommandLoader = new MainCommandLoader()).loadCommands(); // Loading all system commands
         loadThreads();
-        computeArgs(args);
-        logger.time("MainLoad", startTime);
+        computeArgs(args); // calculate args
+        logger.time("MainLoad", startTime); // writing to console how long it take to startup everything
     }
 
-    private static void loadThreads() {
-        long startTime = System.currentTimeMillis();
-        (threads[0] = new Thread(() -> mainServer = new MainServer(8981))).start();
-        (threads[1] = new Thread(() -> discordBot = new DiscordBot((String) informatics[1]))).start();
-        (threads[2] = new Thread(() -> mainCommandLoader.initCommandHandle())).start();
-        (threads[3] = new Thread(() -> minecraftServer = new MinecraftServer(8982))).start();
-        (threads[4] = new Thread(() -> httpServer = new HTTPServer(8081))).start();
-        (threads[5] = new Thread(() -> newsSystem = new NewsSystem())).start();
-        (threads[6] = new Thread(() -> pluginManager = new PluginManager())).start();
-        (threads[7] = new Thread(() -> javaScriptEngine = new JavaScriptEngine())).start();
-        Runtime.getRuntime().addShutdownHook(new Thread(Main::shutdown));
-        logger.time("ThreadLoad", startTime);
+    private static void loadThreads() { // starts all servers and some system functions in a own thread
+        long startTime = System.currentTimeMillis(); //Loading Time
+        (threads[0] = new Thread(() -> mainServer = new MainServer(8981))).start(); // main server
+        (threads[1] = new Thread(() -> discordBot = new DiscordBot((String) informatics[1]))).start(); // discord bot
+        (threads[2] = new Thread(() -> mainCommandLoader.initCommandHandle())).start(); // system command handler
+        (threads[3] = new Thread(() -> minecraftServer = new MinecraftServer(8982))).start(); // minecraft server
+        (threads[4] = new Thread(() -> httpServer = new HTTPServer(8081))).start(); // http server
+        (threads[5] = new Thread(() -> newsSystem = new NewsSystem())).start(); // news system
+        (threads[6] = new Thread(() -> pluginManager = new PluginManager())).start(); // plugin system
+        (threads[7] = new Thread(() -> javaScriptEngine = new JavaScriptEngine())).start(); // javascript engine
+        Runtime.getRuntime().addShutdownHook(new Thread(Main::shutdown)); // Function if system exit
+        logger.time("ThreadLoad", startTime); // writing to console how long it take to init threads
     }
+
+    /**
+     * Calculate arguments and save them
+     *
+     * @param args Arguments from main method.
+     * @see Main#main
+     */
 
     private static void computeArgs(String[] args) {
         try {
@@ -90,10 +104,17 @@ public class Main {
         }
     }
 
+    /**
+     * Event if system exit
+     * <p>
+     * stops everything and disconnect all systems from clients or servers
+     */
+
     private static void shutdown() {
-        for (int i = 0; i < threads.length; i++) {
-            if (threads[i] != null) {
-                threads[i].interrupt();
+
+        for (Thread thread : threads) {
+            if (thread != null) {
+                thread.interrupt();
             }
             pluginManager.stop();
             discordBot.disconnect();
