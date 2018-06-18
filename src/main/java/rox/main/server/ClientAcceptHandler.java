@@ -75,6 +75,8 @@ public class ClientAcceptHandler extends Thread {
                 }
                 Main.getMainServer().setWaitingConnection(true); // server is again waiting for new connections
                 startTime = System.currentTimeMillis();
+
+
             }
         } catch (Exception e) {
             e.printStackTrace();

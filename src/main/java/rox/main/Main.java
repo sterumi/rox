@@ -1,7 +1,10 @@
 package rox.main;
 
 import rox.main.discord.DiscordBot;
+import rox.main.event.EventManager;
+import rox.main.event.events.MainStartEvent;
 import rox.main.httpserver.HTTPServer;
+import rox.main.listener.ClientConnectedListener;
 import rox.main.logger.Logger;
 import rox.main.minecraftserver.MinecraftServer;
 import rox.main.news.NewsSystem;
@@ -34,6 +37,8 @@ public class Main {
 
     private static Logger logger;
 
+    private static EventManager eventManager;
+
     /*
      * This class is the main class.
      * It will setup all servers in a own thread.
@@ -59,19 +64,22 @@ public class Main {
     /**
      * The start up function to load everything.
      *
-     * @param args All arguments given to the program
+     * @param args  All arguments given to the program
      */
 
 
     public static void main(String[] args) {
+        ;
         long startTime = System.currentTimeMillis(); //Boot Start Time
         logger = new Logger(); // Init logger
         logger.log("ROX", "Starting ROX.");
         fileConfiguration = new FileConfiguration(); // Load files for information
+        (eventManager = new EventManager()).loadEvents();
         (mainCommandLoader = new MainCommandLoader()).loadCommands(); // Loading all system commands
         loadThreads();
         computeArgs(args); // calculate args
         logger.time("MainLoad", startTime); // writing to console how long it take to startup everything
+        eventManager.callEvent(new MainStartEvent());
     }
 
     private static void loadThreads() { // starts all servers and some system functions in a own thread
@@ -91,8 +99,8 @@ public class Main {
     /**
      * Calculate arguments and save them
      *
-     * @param args Arguments from main method.
-     * @see Main#main
+     * @param args  Arguments from main method.
+     * @see         Main#main
      */
 
     private static void computeArgs(String[] args) {
@@ -106,9 +114,10 @@ public class Main {
 
     /**
      * Event if system exit
-     * <p>
+     *
      * stops everything and disconnect all systems from clients or servers
      */
+
 
     private static void shutdown() {
 
@@ -188,5 +197,9 @@ public class Main {
 
     public static Logger getLogger() {
         return logger;
+    }
+
+    public static EventManager getEventManager() {
+        return eventManager;
     }
 }
