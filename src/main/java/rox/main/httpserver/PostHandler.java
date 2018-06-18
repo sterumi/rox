@@ -2,6 +2,8 @@ package rox.main.httpserver;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
+import rox.main.Main;
+import rox.main.event.events.HTTPPostEvent;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -20,6 +22,8 @@ public class PostHandler implements HttpHandler {
         StringBuilder response = new StringBuilder();
         for (String key : parameters.keySet())
             response.append(key).append(" = ").append(parameters.get(key)).append("\n");
+
+        Main.getEventManager().callEvent(new HTTPPostEvent(Main.getHttpServer().getServer(), he));
         he.sendResponseHeaders(200, response.length());
         OutputStream os = he.getResponseBody();
         os.write(response.toString().getBytes());

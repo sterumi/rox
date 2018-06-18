@@ -2,9 +2,8 @@ package rox.main;
 
 import rox.main.discord.DiscordBot;
 import rox.main.event.EventManager;
-import rox.main.event.events.MainStartEvent;
+import rox.main.event.events.MainStartedEvent;
 import rox.main.httpserver.HTTPServer;
-import rox.main.listener.ClientConnectedListener;
 import rox.main.logger.Logger;
 import rox.main.minecraftserver.MinecraftServer;
 import rox.main.news.NewsSystem;
@@ -69,17 +68,17 @@ public class Main {
 
 
     public static void main(String[] args) {
-        ;
+
         long startTime = System.currentTimeMillis(); //Boot Start Time
+        (eventManager = new EventManager()).loadEvents();
         logger = new Logger(); // Init logger
         logger.log("ROX", "Starting ROX.");
         fileConfiguration = new FileConfiguration(); // Load files for information
-        (eventManager = new EventManager()).loadEvents();
         (mainCommandLoader = new MainCommandLoader()).loadCommands(); // Loading all system commands
         loadThreads();
         computeArgs(args); // calculate args
         logger.time("MainLoad", startTime); // writing to console how long it take to startup everything
-        eventManager.callEvent(new MainStartEvent());
+        eventManager.callEvent(new MainStartedEvent());
     }
 
     private static void loadThreads() { // starts all servers and some system functions in a own thread

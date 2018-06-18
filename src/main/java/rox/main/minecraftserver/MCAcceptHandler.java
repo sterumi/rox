@@ -1,6 +1,7 @@
 package rox.main.minecraftserver;
 
 import rox.main.Main;
+import rox.main.event.events.MinecraftServerAcceptEvent;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -19,7 +20,7 @@ public class MCAcceptHandler extends Thread {
             /*
              *   ServerMap:
              *   [0] socket
-             *   [1] mcInputHandler
+             *   [1] mcInputHandlerThread
              *   [2] BufferedReader
              *   [3] PrintWriter
              *   [4] UUID
@@ -37,6 +38,11 @@ public class MCAcceptHandler extends Thread {
                 //<uuid>§<password>
 
                 String[] input = reader.readLine().split("§");
+
+                MinecraftServerAcceptEvent event = new MinecraftServerAcceptEvent(socket, reader, writer, input);
+                Main.getEventManager().callEvent(event);
+                if (event.isCancelled()) return;
+
                 try {
                     Main.getMainServer().getDatabase().Query("SELECT * FROM mc_servers WHERE uuid='" + input[0] + "'");
                 } catch (NullPointerException e) {

@@ -1,6 +1,8 @@
 package rox.main.minecraftserver;
 
 import rox.main.Main;
+import rox.main.event.events.MinecraftServerStartingEvent;
+import rox.main.event.events.MinecraftServerStoppingEvent;
 
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -27,6 +29,10 @@ public class MinecraftServer {
 
     public void start() {
         long startTime = System.currentTimeMillis();
+        MinecraftServerStartingEvent event = new MinecraftServerStartingEvent();
+        Main.getEventManager().callEvent(event);
+        if (event.isCancelled()) return;
+
 
         if (!Main.getMainServer().getDatabase().isConnected()) {
             Main.getLogger().err("MinecraftSysetm", "Could not start MinecraftSystem.");
@@ -48,6 +54,11 @@ public class MinecraftServer {
 
     public void stop() {
         try {
+
+            MinecraftServerStoppingEvent event = new MinecraftServerStoppingEvent();
+            Main.getEventManager().callEvent(event);
+            if (event.isCancelled()) return;
+
             serverMap.forEach((name, objects) -> {
                 try {
                     ((Thread) objects[1]).interrupt();

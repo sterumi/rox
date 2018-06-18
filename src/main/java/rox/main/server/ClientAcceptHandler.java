@@ -1,6 +1,7 @@
 package rox.main.server;
 
 import rox.main.Main;
+import rox.main.event.events.MainServerClientConnectingEvent;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -66,6 +67,13 @@ public class ClientAcceptHandler extends Thread {
                     objects[5] = Main.getMainServer().getPermissionManager().getRankDatabase((UUID) objects[6]); // the rank of the user
                     (thread = new ClientInputHandler(objects)).start(); // starting input thread
                     objects[2] = thread; //thread
+
+                    MainServerClientConnectingEvent event = new MainServerClientConnectingEvent(objects);
+                    Main.getEventManager().callEvent(event);
+                    if (event.isCancelled()) {
+                        writer.println("§CONNECTION_CANCELLED");
+                        return;
+                    }
 
                     Main.getMainServer().getClients().put(Main.getMainServer().getStaticManager().getUUID(input[0]), objects); // saving user to a async hashMap
                     writer.println("§SERVER_CONNECTED"); // writing user he is connected

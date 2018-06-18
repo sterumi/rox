@@ -2,6 +2,8 @@ package rox.main.httpserver;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
+import rox.main.Main;
+import rox.main.event.events.HTTPGetEvent;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -14,6 +16,9 @@ public class GetHandler implements HttpHandler {
 
     @Override
     public void handle(HttpExchange he) throws IOException {
+        HTTPGetEvent event = new HTTPGetEvent(Main.getHttpServer().getServer(), he);
+        Main.getEventManager().callEvent(event);
+        if (event.isCancelled()) return;
         Map<String, Object> parameters = new HashMap<>();
         InputStreamReader isr = new InputStreamReader(he.getRequestBody(), "utf-8");
         BufferedReader br = new BufferedReader(isr);

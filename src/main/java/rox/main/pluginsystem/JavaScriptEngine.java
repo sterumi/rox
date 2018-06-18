@@ -1,6 +1,7 @@
 package rox.main.pluginsystem;
 
 import rox.main.Main;
+import rox.main.event.events.JavaScriptLoadEvent;
 
 import javax.script.Invocable;
 import javax.script.ScriptEngine;
@@ -17,6 +18,10 @@ public class JavaScriptEngine {
     }
 
     private void init() {
+
+        JavaScriptLoadEvent event = new JavaScriptLoadEvent();
+        Main.getEventManager().callEvent(event);
+        if (event.isCancelled()) return;
 
         try {
             ScriptEngineManager factory = new ScriptEngineManager();

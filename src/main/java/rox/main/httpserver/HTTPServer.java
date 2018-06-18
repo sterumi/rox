@@ -2,6 +2,8 @@ package rox.main.httpserver;
 
 import com.sun.net.httpserver.HttpServer;
 import rox.main.Main;
+import rox.main.event.events.HTTPParseQueryEvent;
+import rox.main.event.events.HTTPStartingEvent;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -33,7 +35,10 @@ public class HTTPServer {
     }
 
     private void start() {
+        HTTPStartingEvent event = new HTTPStartingEvent(server);
+        Main.getEventManager().callEvent(event);
         try {
+            if (event.isCancelled()) return;
             server = HttpServer.create(new InetSocketAddress(port), 0);
             Main.getLogger().log("HTTPServer", "server started at " + port);
             server.createContext("/", new InputHandler());
@@ -55,6 +60,10 @@ public class HTTPServer {
 
     static void parseQuery(String query, Map<String, Object> parameters) throws UnsupportedEncodingException {
 
+        HTTPParseQueryEvent event = new HTTPParseQueryEvent(query, parameters);
+        Main.getEventManager().callEvent(event);
+
+        if (event.isCancelled()) return;
         if (query != null) {
             String pairs[] = query.split("[&]");
             for (String pair : pairs) {

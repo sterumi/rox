@@ -1,6 +1,7 @@
 package rox.main.server;
 
 import rox.main.Main;
+import rox.main.event.events.MainServerCommandExecuteEvent;
 
 import java.io.*;
 
@@ -25,6 +26,11 @@ public class ClientInputHandler extends Thread {
                 String[] args = input.split("[§ ]+"); // splitting message to string array
 
                 if (input.startsWith("§")) { // if the message start with § then execute
+
+                    MainServerCommandExecuteEvent event = new MainServerCommandExecuteEvent(objects, args[0], args);
+                    Main.getEventManager().callEvent(event);
+                    if (event.isCancelled()) return;
+
                     Main.getMainServer().getServerCommandLoader().getCommand(args[0]).command(objects, args[0], args); // execute command if exist
                 } else {
                     ((PrintWriter) objects[4]).println("§INVALID_COMMAND_STRUCTURE"); // sending if command doesn't start with §

@@ -1,6 +1,7 @@
 package rox.main.minecraftserver;
 
 import rox.main.Main;
+import rox.main.event.events.MinecraftServerInputEvent;
 
 import java.io.BufferedReader;
 import java.io.PrintWriter;
@@ -22,6 +23,11 @@ public class MCInputHandler extends Thread {
             while ((input = ((BufferedReader) objects[2]).readLine()) != null) {
                 String[] args = input.split("[§ ]+");
                 if (input.startsWith("§")) {
+
+                    MinecraftServerInputEvent event = new MinecraftServerInputEvent(objects, input);
+                    Main.getEventManager().callEvent(event);
+                    if (event.isCancelled()) return;
+
                     switch (args[0]) {
                         case "info":
                             switch (args[1]) {

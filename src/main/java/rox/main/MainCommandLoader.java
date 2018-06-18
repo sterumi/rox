@@ -1,6 +1,7 @@
 package rox.main;
 
 import rox.main.command.*;
+import rox.main.event.events.MainCommandExecuteEvent;
 
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -76,6 +77,10 @@ public class MainCommandLoader {
         String input;
         while ((input = new Scanner(System.in).nextLine()) != null) {
             try {
+                MainCommandExecuteEvent event = new MainCommandExecuteEvent(input.split(" ")[0], input.split(" "));
+                Main.getEventManager().callEvent(event);
+                if (event.isCancelled()) return;
+
                 this.getCommand(input.split(" ")[0]).command(input.split(" ")[0], input.split(" "));
             } catch (Exception e) {
                 if (e instanceof NullPointerException) {

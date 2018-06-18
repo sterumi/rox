@@ -3,6 +3,7 @@ package rox.main.pluginsystem;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import rox.main.Main;
+import rox.main.event.events.PluginLoadEvent;
 
 import java.io.*;
 import java.net.URL;
@@ -43,6 +44,11 @@ public class PluginManager {
                             for (Class anInterface : cl.getInterfaces()) {
                                 if (anInterface.getName().equals("rox.main.pluginsystem.ROXPlugin")) {
                                     ROXPlugin roxPlugin = (ROXPlugin) cl.newInstance();
+
+                                    PluginLoadEvent event = new PluginLoadEvent(roxPlugin, String.valueOf(object.get("name")));
+                                    Main.getEventManager().callEvent(event);
+                                    if (event.isCancelled()) return;
+
                                     plugins.put(String.valueOf(object.get("name")), roxPlugin);
                                     roxPlugin.onLoad();
                                     Main.getLogger().log("PluginSystem", "Loaded: " + String.valueOf(object.get("name")));

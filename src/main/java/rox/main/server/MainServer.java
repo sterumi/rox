@@ -1,6 +1,8 @@
 package rox.main.server;
 
 import rox.main.Main;
+import rox.main.event.events.MainServerStartingEvent;
+import rox.main.event.events.MainServerStoppingEvent;
 import rox.main.server.command.*;
 import rox.main.server.database.MainDatabase;
 import rox.main.server.permission.PermissionManager;
@@ -51,6 +53,11 @@ public class MainServer {
      * Connect to Database and create server socket. Open a new thread for listening new clients are connecting.
      */
     public void start(){
+
+        MainServerStartingEvent event = new MainServerStartingEvent();
+        Main.getEventManager().callEvent(event);
+        if (event.isCancelled()) return;
+
         long startTime = System.currentTimeMillis(); // Load Time
         try {
             database = new MainDatabase("localhost", 3306, "root", "", "rox"); // Connecting to database
@@ -77,6 +84,11 @@ public class MainServer {
      */
     public void stop(){
         try {
+
+            MainServerStoppingEvent event = new MainServerStoppingEvent();
+            Main.getEventManager().callEvent(event);
+            if (event.isCancelled()) return;
+
             serverSocket.close();
             acceptThread.interrupt();
             clients.forEach(((s, objects) -> ((Thread) objects[2]).interrupt()));

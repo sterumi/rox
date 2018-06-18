@@ -10,6 +10,7 @@ import rox.main.Main;
 import rox.main.discord.commands.*;
 import rox.main.discord.listener.MessageReceivedListener;
 import rox.main.discord.listener.UserJoinListener;
+import rox.main.event.events.DiscordStartingEvent;
 
 import java.sql.SQLException;
 import java.time.LocalDateTime;
@@ -36,6 +37,11 @@ public class DiscordBot {
     public DiscordBot(String token){ this.token = token; }
 
     public void connect(){
+
+        DiscordStartingEvent event = new DiscordStartingEvent(jda);
+        Main.getEventManager().callEvent(event);
+        if (event.isCancelled()) return;
+
         try {
 
             if (!Main.getMainServer().getDatabase().isConnected()) {

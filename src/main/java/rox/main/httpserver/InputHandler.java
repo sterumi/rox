@@ -1,6 +1,8 @@
 package rox.main.httpserver;
 
 import com.sun.net.httpserver.*;
+import rox.main.Main;
+import rox.main.event.events.HTTPInputEvent;
 
 import java.io.*;
 
@@ -24,6 +26,11 @@ public class InputHandler implements HttpHandler {
             } else {
                 new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/html/notFound.html"))).lines().forEach(response::append);
             }
+
+            HTTPInputEvent event = new HTTPInputEvent(Main.getHttpServer().getServer(), e, file);
+            Main.getEventManager().callEvent(event);
+            if (event.isCancelled()) return;
+
             e.sendResponseHeaders(200, response.toString().length());
             e.getResponseBody().write(response.toString().getBytes());
             e.getResponseBody().close();

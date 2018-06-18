@@ -1,8 +1,7 @@
 package rox.main.event;
 
 import rox.main.Main;
-import rox.main.listener.ClientConnectedListener;
-import rox.main.listener.MainStartListener;
+import rox.main.listener.MainStartedListener;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -12,8 +11,9 @@ public class EventManager {
 
     public void loadEvents() {
         try {
-            registerEvents(new ClientConnectedListener(), this);
-            registerEvents(new MainStartListener(), this);
+
+            registerEvents(new MainStartedListener(), this);
+
         } catch (Exception e) {
             e.printStackTrace();
         }

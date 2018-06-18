@@ -3,6 +3,8 @@ package rox.main.httpserver;
 import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
+import rox.main.Main;
+import rox.main.event.events.HTTPHeaderEvent;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -14,6 +16,9 @@ public class HeaderHandler implements HttpHandler {
 
     @Override
     public void handle(HttpExchange he) throws IOException {
+        HTTPHeaderEvent event = new HTTPHeaderEvent(Main.getHttpServer().getServer(), he);
+        Main.getEventManager().callEvent(event);
+        if (event.isCancelled()) return;
         Headers headers = he.getRequestHeaders();
         Set<Map.Entry<String, List<String>>> entries = headers.entrySet();
         StringBuilder response = new StringBuilder();

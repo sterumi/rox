@@ -9,9 +9,11 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.UUID;
 
-public class ClientConnectedEvent extends Event {
+public class MainServerClientConnectingEvent extends Event {
 
     private static IHandler list = new IHandler();
+
+    private boolean cancel;
 
     @Override
     public IHandler getHandler() {
@@ -24,7 +26,7 @@ public class ClientConnectedEvent extends Event {
 
     private Object[] clientObject;
 
-    public ClientConnectedEvent(Object[] clientObject) {
+    public MainServerClientConnectingEvent(Object[] clientObject) {
         this.clientObject = clientObject;
     }
 
@@ -54,6 +56,14 @@ public class ClientConnectedEvent extends Event {
 
     public UUID getUUID() {
         return (UUID) clientObject[6];
+    }
+
+    public boolean isCancelled() {
+        return cancel;
+    }
+
+    public void setCancelled(boolean b) {
+        this.cancel = b;
     }
 
 

@@ -2,6 +2,10 @@ package rox.main.server.database;
 
 import com.mysql.cj.jdbc.exceptions.CommunicationsException;
 import rox.main.Main;
+import rox.main.event.events.DatabaseConnectEvent;
+import rox.main.event.events.DatabaseDisconnectEvent;
+import rox.main.event.events.DatabaseQueryEvent;
+import rox.main.event.events.DatabaseUpdateEvent;
 
 import java.sql.*;
 
@@ -24,7 +28,9 @@ public class MainDatabase {
     public MainDatabase(String hostname, int port, String username, String password, String database) {
         long startTime = System.currentTimeMillis();
         try {
-
+            DatabaseConnectEvent event = new DatabaseConnectEvent();
+            Main.getEventManager().callEvent(event);
+            if (event.isCancelled()) return;
             conn = DriverManager.getConnection("jdbc:mysql://" + hostname + ":" + port + "/" + database + "?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", username, password);
             connected = true;
         } catch (Exception e) {
@@ -48,6 +54,10 @@ public class MainDatabase {
     public void Update(String qry) {
         long startTime = System.currentTimeMillis();
         try {
+            DatabaseUpdateEvent event = new DatabaseUpdateEvent(qry);
+            Main.getEventManager().callEvent(event);
+            if (event.isCancelled()) return;
+
             conn.prepareStatement(qry).executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();
@@ -64,6 +74,10 @@ public class MainDatabase {
 
     public ResultSet Query(String sql) {
         long startTime = System.currentTimeMillis();
+        DatabaseQueryEvent event = new DatabaseQueryEvent(sql);
+        Main.getEventManager().callEvent(event);
+        if (event.isCancelled()) return null;
+
         ResultSet rs = null;
         try {
             rs = conn.prepareStatement(sql).executeQuery();
@@ -76,6 +90,10 @@ public class MainDatabase {
 
     public void disconnect() {
         try {
+            DatabaseDisconnectEvent event = new DatabaseDisconnectEvent();
+            Main.getEventManager().callEvent(event);
+            if (event.isCancelled()) return;
+
             conn.close();
             connected = false;
         } catch (Exception e) {

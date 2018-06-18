@@ -3,6 +3,10 @@ package rox.main.news;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import rox.main.Main;
+import rox.main.event.events.NewsAddEvent;
+import rox.main.event.events.NewsGetEvent;
+import rox.main.event.events.NewsLoadEvent;
+import rox.main.event.events.NewsSaveEvent;
 
 import java.io.*;
 import java.time.LocalDateTime;
@@ -29,6 +33,10 @@ public class NewsSystem {
 
     public void addNews(String text, String author) {
         try {
+
+            NewsAddEvent event = new NewsAddEvent(text, author);
+            Main.getEventManager().callEvent(event);
+            if (event.isCancelled()) return;
 
             JSONObject jsonObject = new JSONObject();
 
@@ -59,6 +67,10 @@ public class NewsSystem {
     }
 
     private void save() throws Exception {
+        NewsSaveEvent event = new NewsSaveEvent();
+        Main.getEventManager().callEvent(event);
+        if (event.isCancelled()) return;
+
         Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(Main.getFileConfiguration().getNewsFile()), "utf-8"));
         JSONObject jsonObject = new JSONObject();
         getAllNews().forEach(jsonObject::put);
@@ -73,6 +85,9 @@ public class NewsSystem {
     }
 
     public JSONArray getNews(int index) {
+        NewsGetEvent event = new NewsGetEvent(index, news.get(index));
+        Main.getEventManager().callEvent(event);
+        if (event.isCancelled()) return event.getReturn();
         return news.get(index);
     }
 
@@ -87,6 +102,9 @@ public class NewsSystem {
     }
 
     private void loadNews() {
+        NewsLoadEvent event = new NewsLoadEvent();
+        Main.getEventManager().callEvent(event);
+        if (event.isCancelled()) return;
         fileContent.forEach((integer, jsonArray) -> news.put(Integer.parseInt(String.valueOf(integer)), (JSONArray) jsonArray));
     }
 
