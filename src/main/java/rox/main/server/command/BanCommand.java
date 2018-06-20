@@ -16,9 +16,9 @@ public class BanCommand implements ServerCommandExecutor {
             if ((Main.getMainServer().getPermissionManager().hasRank((UUID) user[6], Rank.MAIN_SUPPORTER))) {
                 UUID targetUUID = Main.getMainServer().getStaticManager().getUUID(command.split("§")[1]);
                 if (Main.getMainServer().getStaticManager().isUserOnline(targetUUID)) {
-                    Main.getMainServer().banUser(targetUUID);
+                    Main.getMainServer().getStaticManager().banUser(targetUUID);
                 } else {
-                    Main.getMainServer().banOfflineUser(targetUUID);
+                    Main.getMainServer().getStaticManager().banOfflineUser(targetUUID);
                 }
             } else {
                 ((PrintWriter) user[4]).println("§ban§NO_PERM");

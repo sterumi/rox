@@ -7,6 +7,7 @@ import rox.main.server.command.*;
 import rox.main.server.database.MainDatabase;
 import rox.main.server.permission.PermissionManager;
 import rox.main.server.permission.Rank;
+import rox.main.util.BaseServer;
 
 import java.io.*;
 import java.net.ServerSocket;
@@ -17,7 +18,7 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class MainServer {
+public class MainServer implements BaseServer {
 
     private ServerSocket serverSocket;
 
@@ -52,18 +53,18 @@ public class MainServer {
     /**
      * Connect to Database and create server socket. Open a new thread for listening new clients are connecting.
      */
-    public void start(){
+    public boolean start(){
 
         MainServerStartingEvent event = new MainServerStartingEvent();
         Main.getEventManager().callEvent(event);
-        if (event.isCancelled()) return;
+        if (event.isCancelled()) return false;
 
         long startTime = System.currentTimeMillis(); // Load Time
         try {
             database = new MainDatabase("localhost", 3306, "root", "", "rox"); // Connecting to database
             if (!database.isConnected()) {
                 Main.getLogger().err("MainServer", "Could not start MainServer."); // If can not connect to database
-                return;
+                return false;
             }
             serverSocket = new ServerSocket(port); // Create server socket
             (acceptThread = new ClientAcceptHandler()).start(); // Open new thread for new clients input
@@ -73,37 +74,46 @@ public class MainServer {
             loadCommands(); // Loading all commands for the clients
             Main.getLogger().log("MainServer", "Started.");
             isActive = true; // Global boolean to check if server is active
+            return true;
         } catch (IOException e) {
             e.printStackTrace();
         }
         Main.getLogger().time("MainServerLoad", startTime); // Write to console how long it took to start the server
+        return false;
     }
 
     /**
      * Closing everything and clear lists.
      */
-    public void stop(){
+    public boolean stop(){
         try {
 
             MainServerStoppingEvent event = new MainServerStoppingEvent();
             Main.getEventManager().callEvent(event);
-            if (event.isCancelled()) return;
+            if (event.isCancelled()) return false;
 
             serverSocket.close();
             acceptThread.interrupt();
             clients.forEach(((s, objects) -> ((Thread) objects[2]).interrupt()));
             clients.clear();
             Main.getLogger().log("MainServer", "Stopped.");
+            return true;
         } catch (IOException e) {
             e.printStackTrace();
         }
+        return false;
     }
 
     public ConcurrentHashMap<UUID, Object[]> getClients() {
         return clients;
     }
 
-    void setClients(ConcurrentHashMap<UUID, Object[]> clients) {
+    @Override
+    public boolean isConnected() {
+        return serverSocket.isClosed();
+    }
+
+    public void setClients(ConcurrentHashMap<UUID, Object[]> clients) {
         if (this.clients != null) this.clients.clear();
         this.clients = clients;
     }
@@ -112,7 +122,7 @@ public class MainServer {
         return database;
     }
 
-    void setDatabase(MainDatabase database) {
+    public void setDatabase(MainDatabase database) {
         if (this.database != null) this.database.disconnect();
         this.database = database;
     }
@@ -161,47 +171,6 @@ public class MainServer {
         return permissionManager;
     }
 
-    public Object[] getUser(String name) {
-        final Object[][] objects = new Object[1][1];
-        Main.getMainServer().getClients().forEach((uuid, obj) -> {
-            if (obj[1].equals(name)) {
-                objects[0] = obj;
-            }
-        });
-        return objects[0];
-    }
-
-    public void banUser(UUID uuid) {
-        try {
-            this.getDatabase().Update("UPDATE users SET bantime='" + LocalDateTime.now() + "' WHERE uuid ='" + uuid + "'");
-            ((PrintWriter) clients.get(uuid)[4]).println("§BANNED");
-            ((Thread) clients.get(uuid)[2]).interrupt();
-            ((Socket) clients.get(uuid)[1]).close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void banOfflineUser(UUID uuid) {
-        try {
-            this.getDatabase().Update("UPDATE users SET bantime='" + LocalDateTime.now() + "' WHERE uuid ='" + uuid + "'");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    boolean isBanned(UUID uuid) {
-        try {
-
-            ResultSet rs = Main.getMainServer().getDatabase().Query("SELECT * FROM users WHERE uuid='" + uuid + "'");
-            while (rs.next()) {
-                return rs.getString("bandate") != null;
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
 
     void createUser(String username, String password) {
         getDatabase().Update("INSERT INTO users(username, uuid, password, points, rank) VALUES ('" + username + "','" + UUID.randomUUID() + "','" + password + "','0','" + Rank.USER + "')");

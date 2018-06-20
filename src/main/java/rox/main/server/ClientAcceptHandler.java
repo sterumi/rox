@@ -51,7 +51,7 @@ public class ClientAcceptHandler extends Thread {
                 if (Main.getMainServer().getDatabase().Query("SELECT * FROM users WHERE username='" + input[0] + "' AND password='" + input[1] + "'") != null) {
                     // if the username is registered in the database
 
-                    if (Main.getMainServer().isBanned(Main.getMainServer().getStaticManager().getUUID(input[0]))) {
+                    if (Main.getMainServer().getStaticManager().isBanned(Main.getMainServer().getStaticManager().getUUID(input[0]))) {
                         // return if user is banned
                         writer.println("§BANNED");
                         return;
