@@ -39,7 +39,11 @@ public class PluginManager {
                     while (entries.hasMoreElements()) {
                         final JarEntry entry = entries.nextElement();
                         if (entry.getName().equals("plugin.json")) {
-                            JSONObject object = (JSONObject) new JSONParser().parse(new BufferedReader(new InputStreamReader(jarFile.getInputStream(jarFile.getJarEntry(entry.getName())))).readLine());
+
+                            StringBuilder content = new StringBuilder();
+                            new BufferedReader(new InputStreamReader(jarFile.getInputStream(jarFile.getJarEntry(entry.getName())))).lines().forEach(content::append);
+
+                            JSONObject object = (JSONObject) new JSONParser().parse(content.toString());
                             Class cl = new URLClassLoader(new URL[]{new File(file.getPath()).toURL()}).loadClass(String.valueOf(object.get("mainName")));
                             for (Class anInterface : cl.getInterfaces()) {
                                 if (anInterface.getName().equals("rox.main.pluginsystem.ROXPlugin")) {

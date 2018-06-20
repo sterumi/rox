@@ -75,8 +75,8 @@ public class Main {
         logger.log("ROX", "Starting ROX.");
         fileConfiguration = new FileConfiguration(); // Load files for information
         (mainCommandLoader = new MainCommandLoader()).loadCommands(); // Loading all system commands
-        loadThreads();
         computeArgs(args); // calculate args
+        loadThreads();
         logger.time("MainLoad", startTime); // writing to console how long it take to startup everything
         eventManager.callEvent(new MainStartedEvent());
     }
