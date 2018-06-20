@@ -82,6 +82,7 @@ public class Main {
     }
 
     private static void loadThreads() { // starts all servers and some system functions in a own thread
+
         long startTime = System.currentTimeMillis(); //Loading Time
         (threads[0] = new Thread(() -> mainServer = new MainServer(8981))).start(); // main server
         (threads[1] = new Thread(() -> discordBot = new DiscordBot((String) informatics[1]))).start(); // discord bot
