@@ -34,7 +34,7 @@ public class MinecraftServer {
         if (event.isCancelled()) return;
 
 
-        if (!Main.getMainServer().getDatabase().isConnected()) {
+        if (!Main.getDatabase().isConnected()) {
             Main.getLogger().err("MinecraftSysetm", "Could not start MinecraftSystem.");
             return;
         }

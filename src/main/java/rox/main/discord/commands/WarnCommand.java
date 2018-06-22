@@ -13,7 +13,7 @@ public class WarnCommand implements DiscordCommandExecutor {
         if (args.length == 2) {
             if (sender.getRoles().get(0).getPosition() >= 7) {
 
-                if (Main.getMainServer().getDatabase().Query("SELECT * FROM users WHERE discord_user_id='" + sender.getUser().getId() + "'") == null) {
+                if (Main.getDatabase().Query("SELECT * FROM users WHERE discord_user_id='" + sender.getUser().getId() + "'") == null) {
                     sender.getUser().openPrivateChannel().queue((channel) -> channel.sendMessage("Dieser User muss eine eingetragene ID haben in der Datenbank. Bitte melde dies dem Main-Manager.").complete());
                     return;
                 }

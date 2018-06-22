@@ -48,7 +48,7 @@ public class ClientAcceptHandler extends Thread {
 
                 String[] input = reader.readLine().substring(1).split("§"); // split incoming message to array with §. Connectionstring with informations
 
-                if (Main.getMainServer().getDatabase().Query("SELECT * FROM users WHERE username='" + input[0] + "' AND password='" + input[1] + "'") != null) {
+                if (Main.getDatabase().Query("SELECT * FROM users WHERE username='" + input[0] + "' AND password='" + input[1] + "'") != null) {
                     // if the username is registered in the database
 
                     if (Main.getMainServer().getStaticManager().isBanned(Main.getMainServer().getStaticManager().getUUID(input[0]))) {

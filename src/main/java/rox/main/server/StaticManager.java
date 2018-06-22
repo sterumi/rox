@@ -15,7 +15,7 @@ public class StaticManager {
 
     public int getRegisteredUser() {
         try {
-            return Main.getMainServer().getDatabase().Query("SELECT MAX(ID) FROM users").getInt("id");
+            return Main.getDatabase().Query("SELECT MAX(ID) FROM users").getInt("id");
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -33,7 +33,7 @@ public class StaticManager {
 
     public int getOnlineAdmins() {
         try {
-            return Main.getMainServer().getDatabase().Query("SELECT * FROM users WHERE rank >= '4'").getMetaData().getColumnCount();
+            return Main.getDatabase().Query("SELECT * FROM users WHERE rank >= '4'").getMetaData().getColumnCount();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -42,7 +42,7 @@ public class StaticManager {
 
     public UUID getUUID(String name) {
         try {
-            ResultSet rs = Main.getMainServer().getDatabase().Query("SELECT * FROM users WHERE username='" + name + "'");
+            ResultSet rs = Main.getDatabase().Query("SELECT * FROM users WHERE username='" + name + "'");
             while (rs.next()) {
                 return UUID.fromString(rs.getString("uuid"));
             }
@@ -54,7 +54,7 @@ public class StaticManager {
 
     public int getBannedUsers() {
         try {
-            ResultSet rs = Main.getMainServer().getDatabase().Query("SELECT * FROM users WHERE bantime IS NOT NULL");
+            ResultSet rs = Main.getDatabase().Query("SELECT * FROM users WHERE bantime IS NOT NULL");
             while (rs.next()) {
                 return rs.getMetaData().getColumnCount();
             }
@@ -67,7 +67,7 @@ public class StaticManager {
     public Date getBanDate(UUID uuid) {
         try {
 
-            ResultSet rs = Main.getMainServer().getDatabase().Query("SELECT * FROM users WHERE uuid='" + uuid.toString() + "'");
+            ResultSet rs = Main.getDatabase().Query("SELECT * FROM users WHERE uuid='" + uuid.toString() + "'");
             while (rs.next()) {
                 return Date.valueOf(rs.getString("bantime"));
             }
@@ -90,7 +90,7 @@ public class StaticManager {
 
     public void banUser(UUID uuid) {
         try {
-            Main.getMainServer().getDatabase().Update("UPDATE users SET bantime='" + LocalDateTime.now() + "' WHERE uuid ='" + uuid + "'");
+            Main.getDatabase().Update("UPDATE users SET bantime='" + LocalDateTime.now() + "' WHERE uuid ='" + uuid + "'");
             ((PrintWriter) Main.getMainServer().getClients().get(uuid)[4]).println("§BANNED");
             ((Thread) Main.getMainServer().getClients().get(uuid)[2]).interrupt();
             ((Socket) Main.getMainServer().getClients().get(uuid)[1]).close();
@@ -101,7 +101,7 @@ public class StaticManager {
 
     public void banOfflineUser(UUID uuid) {
         try {
-            Main.getMainServer().getDatabase().Update("UPDATE users SET bantime='" + LocalDateTime.now() + "' WHERE uuid ='" + uuid + "'");
+            Main.getDatabase().Update("UPDATE users SET bantime='" + LocalDateTime.now() + "' WHERE uuid ='" + uuid + "'");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -110,7 +110,7 @@ public class StaticManager {
     boolean isBanned(UUID uuid) {
         try {
 
-            ResultSet rs = Main.getMainServer().getDatabase().Query("SELECT * FROM users WHERE uuid='" + uuid + "'");
+            ResultSet rs = Main.getDatabase().Query("SELECT * FROM users WHERE uuid='" + uuid + "'");
             while (rs.next()) {
                 return rs.getString("bandate") != null;
             }

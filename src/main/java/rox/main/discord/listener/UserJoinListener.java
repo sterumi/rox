@@ -17,7 +17,7 @@ public class UserJoinListener implements EventListener {
 
             GuildMemberJoinEvent guildMemberJoinEvent = (GuildMemberJoinEvent) event;
             guildMemberJoinEvent.getMember().getUser().openPrivateChannel().queue((channel) -> channel.sendMessage("Willkommen, " + guildMemberJoinEvent.getMember().getNickname() + "! Bitte schau in den #regeln Chat dir die Regeln an!").complete());
-            Main.getMainServer().getDatabase().Update("INSERT INTO users(username, password, discord_user_id) VALUES ('" + guildMemberJoinEvent.getUser().getName() + "','" + RandomStringUtils.random(10, possibleCharacters) + "','" + guildMemberJoinEvent.getUser().getId() + "')");
+            Main.getDatabase().Update("INSERT INTO users(username, password, discord_user_id) VALUES ('" + guildMemberJoinEvent.getUser().getName() + "','" + RandomStringUtils.random(10, possibleCharacters) + "','" + guildMemberJoinEvent.getUser().getId() + "')");
 
         }
 

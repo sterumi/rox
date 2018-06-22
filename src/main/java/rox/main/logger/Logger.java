@@ -16,6 +16,8 @@ public class Logger {
         Main.getEventManager().callEvent(event);
         if (event.isCancelled()) return;
 
+        if(name.startsWith("[") || name.endsWith("]"))name = name.substring(1, name.length() - 1);
+
         System.out.println("[INFO] " + construct.replace("[TIME]", "[" + LocalDateTime.now() + "]")
                 .replace("[CLASS]", "[" + name + "]").replace("[MESSAGE]", message));
     }
@@ -25,6 +27,8 @@ public class Logger {
         LoggerEvent event = new LoggerEvent(construct, "[INFO]", name, message);
         Main.getEventManager().callEvent(event);
         if (event.isCancelled()) return;
+
+        if(name.startsWith("[") || name.endsWith("]"))name = name.substring(1, name.length() - 1);
 
         System.out.println("[WARN] " + construct.replace("[WARN]", "[" + LocalDateTime.now() + "]")
                 .replace("[CLASS]", "[" + name + "]").replace("[MESSAGE]", message));
@@ -36,6 +40,8 @@ public class Logger {
         Main.getEventManager().callEvent(event);
         if (event.isCancelled()) return;
 
+        if(name.startsWith("[") || name.endsWith("]"))name = name.substring(1, name.length() - 1);
+
         System.out.println("[ERROR] " + construct.replace("[TIME]", "[" + LocalDateTime.now() + "]")
                 .replace("[CLASS]", "[" + name + "]").replace("[MESSAGE]", message));
     }
@@ -46,15 +52,20 @@ public class Logger {
         Main.getEventManager().callEvent(event);
         if (event.isCancelled()) return;
 
-        if (Main.isDebug())
+        if (Main.isDebug()){
+            if(name.startsWith("[") || name.endsWith("]"))name = name.substring(1, name.length() - 1);
             System.out.println("[DEBUG] " + construct.replace("[TIME]", "[" + LocalDateTime.now() + "]")
                     .replace("[CLASS]", "[" + name + "]").replace("[MESSAGE]", message));
+        }
     }
 
     public void time(String name, long startTime) {
 
-        if (Main.isDebug()) System.out.println("[DEBUG] " + construct.replace("[TIME]", "[" + LocalDateTime.now() + "]")
-                .replace("[CLASS]", "[" + name + "]").replace("[MESSAGE]", "LoadTime: " + (System.currentTimeMillis() - startTime) + "ms"));
+        if (Main.isDebug()){
+            if(name.startsWith("[") || name.endsWith("]"))name = name.substring(1, name.length() - 1);
+            System.out.println("[DEBUG] " + construct.replace("[TIME]", "[" + LocalDateTime.now() + "]")
+                    .replace("[CLASS]", "[" + name + "]").replace("[MESSAGE]", "LoadTime: " + (System.currentTimeMillis() - startTime) + "ms"));
+        }
     }
 
 }

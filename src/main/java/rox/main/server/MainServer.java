@@ -4,17 +4,12 @@ import rox.main.Main;
 import rox.main.event.events.MainServerStartingEvent;
 import rox.main.event.events.MainServerStoppingEvent;
 import rox.main.server.command.*;
-import rox.main.server.database.MainDatabase;
 import rox.main.server.permission.PermissionManager;
 import rox.main.server.permission.Rank;
 import rox.main.util.BaseServer;
 
 import java.io.*;
 import java.net.ServerSocket;
-import java.net.Socket;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.time.LocalDateTime;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -28,7 +23,6 @@ public class MainServer implements BaseServer {
 
     private ConcurrentHashMap<UUID, Object[]> clients = new ConcurrentHashMap<>();
 
-    private MainDatabase database;
 
     private Thread acceptThread;
 
@@ -61,8 +55,7 @@ public class MainServer implements BaseServer {
 
         long startTime = System.currentTimeMillis(); // Load Time
         try {
-            database = new MainDatabase("localhost", 3306, "root", "", "rox"); // Connecting to database
-            if (!database.isConnected()) {
+            if (!Main.getDatabase().isConnected()) {
                 Main.getLogger().err("MainServer", "Could not start MainServer."); // If can not connect to database
                 return false;
             }
@@ -118,15 +111,6 @@ public class MainServer implements BaseServer {
         this.clients = clients;
     }
 
-    public MainDatabase getDatabase() {
-        return database;
-    }
-
-    public void setDatabase(MainDatabase database) {
-        if (this.database != null) this.database.disconnect();
-        this.database = database;
-    }
-
     public ServerSocket getServerSocket() {
         return serverSocket;
     }
@@ -164,7 +148,7 @@ public class MainServer implements BaseServer {
     }
 
     public void saveUser(UUID uuid) {
-        getDatabase().Update("UPDATE users SET rank='" + getClients().get(uuid)[5].toString().toUpperCase() + "'");
+        Main.getDatabase().Update("UPDATE users SET rank='" + getClients().get(uuid)[5].toString().toUpperCase() + "'");
     }
 
     public PermissionManager getPermissionManager() {
@@ -173,7 +157,7 @@ public class MainServer implements BaseServer {
 
 
     void createUser(String username, String password) {
-        getDatabase().Update("INSERT INTO users(username, uuid, password, points, rank) VALUES ('" + username + "','" + UUID.randomUUID() + "','" + password + "','0','" + Rank.USER + "')");
+        Main.getDatabase().Update("INSERT INTO users(username, uuid, password, points, rank) VALUES ('" + username + "','" + UUID.randomUUID() + "','" + password + "','0','" + Rank.USER + "')");
     }
 
     public boolean isMaintenance() {

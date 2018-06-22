@@ -44,13 +44,13 @@ public class MCAcceptHandler extends Thread {
                 if (event.isCancelled()) return;
 
                 try {
-                    Main.getMainServer().getDatabase().Query("SELECT * FROM mc_servers WHERE uuid='" + input[0] + "'");
+                    Main.getDatabase().Query("SELECT * FROM mc_servers WHERE uuid='" + input[0] + "'");
                 } catch (NullPointerException e) {
                     writer.println("§UUID_NOT_FOUND");
                     return;
                 }
 
-                if (Main.getMainServer().getDatabase().Query("SELECT * FROM users WHERE username='" + input[0] + "' AND password='" + input[1] + "'") != null) {
+                if (Main.getDatabase().Query("SELECT * FROM users WHERE username='" + input[0] + "' AND password='" + input[1] + "'") != null) {
 
                     Object[] objects = new Object[8];
 

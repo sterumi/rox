@@ -1,5 +1,7 @@
 package rox.main;
 
+import rox.main.database.DBData;
+import rox.main.database.Database;
 import rox.main.discord.DiscordBot;
 import rox.main.event.EventManager;
 import rox.main.event.events.MainStartedEvent;
@@ -10,7 +12,11 @@ import rox.main.news.NewsSystem;
 import rox.main.pluginsystem.JavaScriptEngine;
 import rox.main.pluginsystem.PluginManager;
 import rox.main.server.MainServer;
+import rox.main.util.MathUtil;
+
 public class Main {
+
+    private static Database database;
 
     private static MainServer mainServer;
 
@@ -38,6 +44,8 @@ public class Main {
 
     private static EventManager eventManager;
 
+    private static MathUtil mathUtil = new MathUtil();
+
     /*
      * This class is the main class.
      * It will setup all servers in a own thread.
@@ -50,14 +58,15 @@ public class Main {
      * [3] - EMPTY
      *
      * Threads Array ->
-     * [0] - MAIN SERVER THREAD
-     * [1] - DISCORD BOT THREAD
-     * [2] - CONSOLE SCANNER THREAD
-     * [3] - MINECRAFT SERVER THREAD
-     * [4] - HTTP SERVER THREAD
-     * [5] - NEWS SYSTEM THREAD
-     * [6] - PLUGIN LOADER THREAD
-     * [7] - SCRIPT ENGINE THREAD
+     * [0] - DATABASE THREAD
+     * [1] - MAIN SERVER THREAD
+     * [2] - DISCORD BOT THREAD
+     * [3] - CONSOLE SCANNER THREAD
+     * [4] - MINECRAFT SERVER THREAD
+     * [5] - HTTP SERVER THREAD
+     * [6] - NEWS SYSTEM THREAD
+     * [7] - PLUGIN LOADER THREAD
+     * [8] - SCRIPT ENGINE THREAD
      */
 
     /**
@@ -68,7 +77,6 @@ public class Main {
 
 
     public static void main(String[] args) {
-
         long startTime = System.currentTimeMillis(); //Boot Start Time
         (eventManager = new EventManager()).loadEvents();
         logger = new Logger(); // Init logger
@@ -84,14 +92,15 @@ public class Main {
     private static void loadThreads() { // starts all servers and some system functions in a own thread
 
         long startTime = System.currentTimeMillis(); //Loading Time
-        (threads[0] = new Thread(() -> mainServer = new MainServer(8981))).start(); // main server
-        (threads[1] = new Thread(() -> discordBot = new DiscordBot((String) informatics[1]))).start(); // discord bot
-        (threads[2] = new Thread(() -> mainCommandLoader.initCommandHandle())).start(); // system command handler
-        (threads[3] = new Thread(() -> minecraftServer = new MinecraftServer(8982))).start(); // minecraft server
-        (threads[4] = new Thread(() -> httpServer = new HTTPServer(8081))).start(); // http server
-        (threads[5] = new Thread(() -> newsSystem = new NewsSystem())).start(); // news system
-        (threads[6] = new Thread(() -> pluginManager = new PluginManager())).start(); // plugin system
-        (threads[7] = new Thread(() -> javaScriptEngine = new JavaScriptEngine())).start(); // javascript engine
+        (threads[0] = new Thread(() -> database = new Database(new DBData("localhost", 3306, "root", "", "rox")))).start(); // main server
+        (threads[1] = new Thread(() -> mainServer = new MainServer(8981))).start(); // main server
+        (threads[2] = new Thread(() -> discordBot = new DiscordBot((String) informatics[1]))).start(); // discord bot
+        (threads[3] = new Thread(() -> mainCommandLoader.initCommandHandle())).start(); // system command handler
+        (threads[4] = new Thread(() -> minecraftServer = new MinecraftServer(8982))).start(); // minecraft server
+        (threads[5] = new Thread(() -> httpServer = new HTTPServer(8081))).start(); // http server
+        (threads[6] = new Thread(() -> newsSystem = new NewsSystem())).start(); // news system
+        (threads[7] = new Thread(() -> pluginManager = new PluginManager())).start(); // plugin system
+        (threads[8] = new Thread(() -> javaScriptEngine = new JavaScriptEngine())).start(); // javascript engine
         Runtime.getRuntime().addShutdownHook(new Thread(Main::shutdown)); // Function if system exit
         logger.time("ThreadLoad", startTime); // writing to console how long it take to init threads
     }
@@ -201,5 +210,13 @@ public class Main {
 
     public static EventManager getEventManager() {
         return eventManager;
+    }
+
+    public static Database getDatabase() {
+        return database;
+    }
+
+    public static MathUtil getMathUtil(){
+        return mathUtil;
     }
 }

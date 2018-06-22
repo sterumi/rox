@@ -60,7 +60,7 @@ public class PermissionManager {
      * @param uuid UUID of the user
      */
     private void save(UUID uuid) {
-        Main.getMainServer().getDatabase().Update("UPDATE users SET rank='" + Main.getMainServer().getClients().get(uuid)[5].toString().toUpperCase() + "'");
+        Main.getDatabase().Update("UPDATE users SET rank='" + Main.getMainServer().getClients().get(uuid)[5].toString().toUpperCase() + "'");
     }
 
     /**
@@ -86,7 +86,7 @@ public class PermissionManager {
     public Rank getRankDatabase(UUID uuid) {
         try {
 
-            ResultSet rs = Main.getMainServer().getDatabase().Query("SELECT rank FROM users WHERE uuid='" + uuid + "'");
+            ResultSet rs = Main.getDatabase().Query("SELECT rank FROM users WHERE uuid='" + uuid + "'");
             while (rs.next()) {
                 return Rank.valueOf(rs.getString("rank"));
             }

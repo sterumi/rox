@@ -14,7 +14,7 @@ public class MCI {
         try {
             ResultSet rs;
 
-            while ((rs = Main.getMainServer().getDatabase().Query("SELECT * FROM mc_servers WHERE uuid='" + uuid.toString() + "'")).next()) {
+            while ((rs = Main.getDatabase().Query("SELECT * FROM mc_servers WHERE uuid='" + uuid.toString() + "'")).next()) {
                 return rs.getString("servername");
             }
         } catch (Exception e) {

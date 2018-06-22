@@ -1,7 +1,6 @@
 package rox.main.util;
 
 import rox.main.exception.IllegalVariableChangeException;
-import rox.main.server.database.MainDatabase;
 
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -20,10 +19,4 @@ public interface BaseServer {
 
     boolean isConnected();
 
-    MainDatabase getDatabase();
-
-    void setDatabase(MainDatabase mainDatabase) throws IllegalVariableChangeException;
-
-
-    
 }
