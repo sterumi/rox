@@ -1,10 +1,10 @@
-#rox
+<h1>rox</h1>
 
-#Rationale of ROX
+<h1>Rationale of ROX</h1>
 ROX is a full system that includes systems. It is usable for networks with a discord or a teamspeak server and a game server.
 It will send information to the main server and later it is readable via web or a external client.
 
-##Features
+<h2>Features</h2>
  - Switchable between Redis and MySql
  - Discord Bot
  - Full event system
@@ -20,12 +20,12 @@ It will send information to the main server and later it is readable via web or 
 Currently is the client service in development.<br>
 All information in files or internet is sent via JSON.
 
-##Planning Currently
+<h2>Planning Currently</h2>
 
-###Systems
+<h3>###Systems</h3>
  - Client in C++
 
-###Bots
+<h3>Bots</h3>
  - Arma 3 Addon
  - CS:GO
  - Factorio
@@ -35,7 +35,7 @@ All information in files or internet is sent via JSON.
  - Minecraft as mod
  
  
-###Libraries using
+<h3>Libraries using</h3>
  - Cassandra
  - Commons-Collection
  - JavaMP3
