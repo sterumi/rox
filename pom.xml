@@ -114,6 +114,12 @@
             <scope>compile</scope>
         </dependency>
 
+        <dependency>
+            <groupId>com.github.theholywaffle</groupId>
+            <artifactId>teamspeak3-api</artifactId>
+            <version>RELEASE</version>
+        </dependency>
+
     </dependencies>
 
     <developers>

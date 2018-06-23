@@ -73,6 +73,14 @@ public class MinecraftServer {
         }
     }
 
+    public void registerServer(String serverName, UUID uuid, String password){
+        Main.getDatabase().Update("INSERT INTO mc_servers(servername, uuid, password) VALUES ('" + serverName + "','" + uuid.toString() + "','" + password + "')");
+    }
+
+    public void unregisterServer(UUID uuid){
+        Main.getDatabase().Update("DELETE FROM mc_servers WHERE uuid='" + uuid.toString() + "'");
+    }
+
     public boolean isActive() {
         return this.active;
     }

@@ -13,6 +13,7 @@ import rox.main.news.NewsSystem;
 import rox.main.pluginsystem.JavaScriptEngine;
 import rox.main.pluginsystem.PluginManager;
 import rox.main.server.MainServer;
+import rox.main.teamspeak.TsBot;
 import rox.main.util.MathUtil;
 
 public class Main {
@@ -47,6 +48,8 @@ public class Main {
 
     private static Jedis jedisClient;
 
+    private static TsBot tsBot;
+
     private static MathUtil mathUtil = new MathUtil();
 
     /*
@@ -67,9 +70,10 @@ public class Main {
      * [3] - CONSOLE SCANNER THREAD
      * [4] - MINECRAFT SERVER THREAD
      * [5] - HTTP SERVER THREAD
-     * [6] - NEWS SYSTEM THREAD
-     * [7] - PLUGIN LOADER THREAD
-     * [8] - SCRIPT ENGINE THREAD
+     * [6] - TEAMSPEAK BOT THREAD
+     * [7] - NEWS SYSTEM THREAD
+     * [8] - PLUGIN LOADER THREAD
+     * [9] - SCRIPT ENGINE THREAD
      */
 
     /**
@@ -111,9 +115,10 @@ public class Main {
         (threads[3] = new Thread(() -> mainCommandLoader.initCommandHandle())).start(); // system command handler
         (threads[4] = new Thread(() -> minecraftServer = new MinecraftServer(8982))).start(); // minecraft server
         (threads[5] = new Thread(() -> httpServer = new HTTPServer(8081))).start(); // http server
-        (threads[6] = new Thread(() -> newsSystem = new NewsSystem())).start(); // news system
-        (threads[7] = new Thread(() -> pluginManager = new PluginManager())).start(); // plugin system
-        (threads[8] = new Thread(() -> javaScriptEngine = new JavaScriptEngine())).start(); // javascript engine
+        (threads[6] = new Thread(() -> tsBot = new TsBot((String)fileConfiguration.getTsValues().get("hostname"), (String)fileConfiguration.getTsValues().get("username"), (String)fileConfiguration.getTsValues().get("password")))).start(); // ts bot
+        (threads[7] = new Thread(() -> newsSystem = new NewsSystem())).start(); // news system
+        (threads[8] = new Thread(() -> pluginManager = new PluginManager())).start(); // plugin system
+        (threads[9] = new Thread(() -> javaScriptEngine = new JavaScriptEngine())).start(); // javascript engine
         Runtime.getRuntime().addShutdownHook(new Thread(Main::shutdown)); // Function if system exit
         logger.time("ThreadLoad", startTime); // writing to console how long it take to init threads
     }
@@ -235,5 +240,13 @@ public class Main {
 
     public static Jedis getJedisClient() {
         return jedisClient;
+    }
+
+    public static TsBot getTsBot() {
+        return tsBot;
+    }
+
+    public static Thread[] getThreads() {
+        return threads;
     }
 }

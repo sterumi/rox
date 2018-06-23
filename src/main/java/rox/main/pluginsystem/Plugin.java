@@ -3,12 +3,16 @@ package rox.main.pluginsystem;
 import rox.main.FileConfiguration;
 import rox.main.Main;
 import rox.main.MainCommandExecutor;
+import rox.main.database.Database;
 import rox.main.discord.DiscordBot;
 import rox.main.event.EventManager;
 import rox.main.httpserver.HTTPServer;
 import rox.main.logger.Logger;
 import rox.main.minecraftserver.MinecraftServer;
+import rox.main.news.NewsSystem;
 import rox.main.server.MainServer;
+import rox.main.teamspeak.TsBot;
+import rox.main.util.MathUtil;
 
 public class Plugin {
 
@@ -58,5 +62,19 @@ public class Plugin {
 
     public Logger getLogger() {
         return Main.getLogger();
+    }
+
+    public TsBot getTSBot(){ return Main.getTsBot(); }
+
+    public NewsSystem getNewsSystem(){
+        return Main.getNewsSystem();
+    }
+
+    public Database getDatabase(){
+        return Main.getDatabase();
+    }
+
+    public MathUtil getMathUtil(){
+        return Main.getMathUtil();
     }
 }

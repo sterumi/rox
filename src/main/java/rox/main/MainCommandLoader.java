@@ -65,6 +65,7 @@ public class MainCommandLoader {
         this.addCommand("exe", new ExecuteCommand());
         this.addCommand("mcs", new MCSCommand());
         this.addCommand("mem", new MemoryCommand());
+        this.addCommand("ts", new TSCommand());
         this.addCommand("test", (name, args) -> System.out.println("test"));
     }
 

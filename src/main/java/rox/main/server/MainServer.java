@@ -101,7 +101,6 @@ public class MainServer implements BaseServer {
         return clients;
     }
 
-    @Override
     public boolean isConnected() {
         return serverSocket.isClosed();
     }

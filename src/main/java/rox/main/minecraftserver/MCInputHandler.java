@@ -21,28 +21,16 @@ public class MCInputHandler extends Thread {
         try {
             String input;
             while ((input = ((BufferedReader) objects[2]).readLine()) != null) {
-                String[] args = input.split("[§ ]+");
+                //String[] args = input.split("[§ ]+");
+                String[] args = input.split("§");
                 if (input.startsWith("§")) {
 
                     MinecraftServerInputEvent event = new MinecraftServerInputEvent(objects, input);
                     Main.getEventManager().callEvent(event);
                     if (event.isCancelled()) return;
 
-                    switch (args[0]) {
-                        case "info":
-                            switch (args[1]) {
-                                case "playerSize":
-                                    Main.getMinecraftServer().getMCI().setInformation((UUID) objects[4], "playerSize", Integer.valueOf(args[2]));
-                                    break;
-                                case "maxPlayers":
-                                    Main.getMinecraftServer().getMCI().setInformation((UUID) objects[4], "maxPlayers", Integer.valueOf(args[2]));
-                                    break;
-                                case "whitelistSize":
-                                    Main.getMinecraftServer().getMCI().setInformation((UUID) objects[4], "whitelistSize", Integer.valueOf(args[2]));
-                                    break;
-                            }
-                            break;
-                    }
+                    Main.getMinecraftServer().getMCI().setInformation((UUID)objects[4], args[0], args[1]);
+
                 } else {
                     ((PrintWriter) objects[3]).println("§INVALID_COMMAND_STRUCTURE");
                 }
@@ -57,3 +45,19 @@ public class MCInputHandler extends Thread {
         }
     }
 }
+
+                    /*switch (args[0]) {
+                        case "info":
+                            switch (args[1]) {
+                                case "playerSize":
+                                    Main.getMinecraftServer().getMCI().setInformation((UUID) objects[4], "playerSize", Integer.valueOf(args[2]));
+                                    break;
+                                case "maxPlayers":
+                                    Main.getMinecraftServer().getMCI().setInformation((UUID) objects[4], "maxPlayers", Integer.valueOf(args[2]));
+                                    break;
+                                case "whitelistSize":
+                                    Main.getMinecraftServer().getMCI().setInformation((UUID) objects[4], "whitelistSize", Integer.valueOf(args[2]));
+                                    break;
+                            }
+                            break;
+                    }*/

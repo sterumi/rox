@@ -12,7 +12,7 @@ public class FileConfiguration {
 
     private JSONParser parser;
 
-    private ConcurrentHashMap<String, Object> values;
+    private ConcurrentHashMap<String, Object> values, ts_values;
 
     private boolean setting_up;
 
@@ -25,7 +25,9 @@ public class FileConfiguration {
         long startTime = System.currentTimeMillis();
         try {
             values = new ConcurrentHashMap<>();
+            ts_values = new ConcurrentHashMap<>();
             files.put("config", new File("config/", "config.json"));
+            files.put("tsbot", new File("config/", "tsbot.json"));
             files.put("news", new File("config/", "news.json"));
             for (File file : new File("config/").listFiles()) {
                 if(!files.containsKey(file.getName().replace(".json", "").toLowerCase())) files.put(file.getName().replace(".json", ""), file);
@@ -60,7 +62,6 @@ public class FileConfiguration {
         if (!files.get("config").exists()) {
             PrintWriter writer = new PrintWriter(new OutputStreamWriter(new FileOutputStream(files.get("config")), "utf-8"), true); // create writer to file
             JSONObject object = new JSONObject();
-            System.out.println(object.put("discordToken", "TOKEN"));
             object.put("maintenance", false);
             object.put("debug", false);
             object.put("maxConnections", 20);
@@ -70,6 +71,19 @@ public class FileConfiguration {
             object.forEach((o, o2) -> values.put((String)o, o2));
         } else {
             ((JSONObject) new JSONParser().parse(new FileReader(files.get("config").getPath()))).forEach((key, value) -> values.put((String) key, value)); // loads content of news file to a hashmap
+        }
+
+        if (!files.get("tsbot").exists()) {
+            PrintWriter writer = new PrintWriter(new OutputStreamWriter(new FileOutputStream(files.get("tsbot")), "utf-8"), true); // create writer to file
+            JSONObject object = new JSONObject();
+            object.put("hostname", "localhost");
+            object.put("username", "serveradmin");
+            object.put("password", "serveradminpassword");
+            writer.write(object.toJSONString()); // write json string to file
+            writer.close(); // close writer after finish
+            object.forEach((o, o2) -> values.put((String)o, o2));
+        } else {
+            ((JSONObject) new JSONParser().parse(new FileReader(files.get("tsbot").getPath()))).forEach((key, value) -> ts_values.put((String) key, value)); // loads content of news file to a hashmap
         }
 
     }
@@ -117,6 +131,10 @@ public class FileConfiguration {
             return new JSONObject();
         }
         return jsonObject;
+    }
+
+    public ConcurrentHashMap<String, Object> getTsValues() {
+        return ts_values;
     }
 
     public boolean existFile(String name){
