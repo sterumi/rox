@@ -2,6 +2,7 @@ package rox.main;
 
 import rox.main.database.DBData;
 import rox.main.database.Database;
+import rox.main.database.Jedis;
 import rox.main.discord.DiscordBot;
 import rox.main.event.EventManager;
 import rox.main.event.events.MainStartedEvent;
@@ -44,6 +45,8 @@ public class Main {
 
     private static EventManager eventManager;
 
+    private static Jedis jedisClient;
+
     private static MathUtil mathUtil = new MathUtil();
 
     /*
@@ -58,7 +61,7 @@ public class Main {
      * [3] - EMPTY
      *
      * Threads Array ->
-     * [0] - DATABASE THREAD
+     * [0] - MYSQL/JEDIS CLIENT THREAD
      * [1] - MAIN SERVER THREAD
      * [2] - DISCORD BOT THREAD
      * [3] - CONSOLE SCANNER THREAD
@@ -92,7 +95,17 @@ public class Main {
     private static void loadThreads() { // starts all servers and some system functions in a own thread
 
         long startTime = System.currentTimeMillis(); //Loading Time
-        (threads[0] = new Thread(() -> database = new Database(new DBData("localhost", 3306, "root", "", "rox")))).start(); // main server
+        switch(((String) fileConfiguration.getValue("databaseType")).toLowerCase()){
+            default:
+            case "mysql":
+                (threads[0] = new Thread(() -> database = new Database(new DBData("localhost", 3306, "root", "", "rox")))).start(); // main server
+                break;
+
+            case "jedis":
+                (threads[0] = new Thread(() -> jedisClient = new Jedis(new DBData("localhost", 3306, "root", "", "rox")))).start(); // Jed
+                break;
+
+        }
         (threads[1] = new Thread(() -> mainServer = new MainServer(8981))).start(); // main server
         (threads[2] = new Thread(() -> discordBot = new DiscordBot((String) informatics[1]))).start(); // discord bot
         (threads[3] = new Thread(() -> mainCommandLoader.initCommandHandle())).start(); // system command handler
@@ -218,5 +231,9 @@ public class Main {
 
     public static MathUtil getMathUtil(){
         return mathUtil;
+    }
+
+    public static Jedis getJedisClient() {
+        return jedisClient;
     }
 }

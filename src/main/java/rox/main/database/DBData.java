@@ -33,7 +33,7 @@ public class DBData {
         return username;
     }
 
-    public String toString(){
+    public String toJDBCString(){
         return "jdbc:mysql://" + hostname + ":" + port + "/" + database + "?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
     }
 

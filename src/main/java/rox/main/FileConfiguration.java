@@ -8,34 +8,41 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class FileConfiguration {
 
-    private File configFile, newsFile;
+    private ConcurrentHashMap<String, File> files = new ConcurrentHashMap<>();
 
     private JSONParser parser;
 
     private ConcurrentHashMap<String, Object> values;
 
+    private boolean setting_up;
 
     /**
      * Load all files to a var.
      */
 
     FileConfiguration() {
+        setting_up = true;
         long startTime = System.currentTimeMillis();
         try {
             values = new ConcurrentHashMap<>();
-            configFile = new File("config/", "config.json"); // load config file
-            newsFile = new File("config/", "news.json"); // load news file
+            files.put("config", new File("config/", "config.json"));
+            files.put("news", new File("config/", "news.json"));
+            for (File file : new File("config/").listFiles()) {
+                if(!files.containsKey(file.getName().replace(".json", "").toLowerCase())) files.put(file.getName().replace(".json", ""), file);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
 
         parser = new JSONParser(); // parser for json
+
         try {
             init(); // execute init method
         } catch (Exception e) {
             e.printStackTrace();
         }
         Main.getLogger().time("FileLoad", startTime);
+        setting_up = false;
     }
 
     /**
@@ -44,19 +51,25 @@ public class FileConfiguration {
      * @throws Exception Mostly JsonExceptions or IOExceptions
      */
 
+    public boolean isSettingUp(){
+        return setting_up;
+    }
+
     private void init() throws Exception {
-        configFile.getParentFile().mkdirs(); // creates root dir if not exist
-        if (!configFile.exists()) {
-            PrintWriter writer = new PrintWriter(new OutputStreamWriter(new FileOutputStream(configFile), "utf-8"), true); // create writer to file
+        files.get("config").getParentFile().mkdirs(); // creates root dir if not exist
+        if (!files.get("config").exists()) {
+            PrintWriter writer = new PrintWriter(new OutputStreamWriter(new FileOutputStream(files.get("config")), "utf-8"), true); // create writer to file
             JSONObject object = new JSONObject();
-            object.put("discordToken", "TOKEN");
+            System.out.println(object.put("discordToken", "TOKEN"));
             object.put("maintenance", false);
             object.put("debug", false);
             object.put("maxConnections", 20);
+            object.put("databaseType", "mysql");
             writer.write(object.toJSONString()); // write json string to file
             writer.close(); // close writer after finish
+            object.forEach((o, o2) -> values.put((String)o, o2));
         } else {
-            ((JSONObject) new JSONParser().parse(new FileReader(configFile.getPath()))).forEach((key, value) -> values.put((String) key, value)); // loads content of news file to a hashmap
+            ((JSONObject) new JSONParser().parse(new FileReader(files.get("config").getPath()))).forEach((key, value) -> values.put((String) key, value)); // loads content of news file to a hashmap
         }
 
     }
@@ -74,9 +87,9 @@ public class FileConfiguration {
 
     public void saveKey(String key, Object value) {
         try {
-            JSONObject object1 = (JSONObject) new JSONParser().parse(new FileReader(configFile.getPath())); // reloading full config file
+            JSONObject object1 = (JSONObject) new JSONParser().parse(new FileReader(files.get("config").getPath())); // reloading full config file
             object1.put(key, value); // adding new key and value
-            PrintWriter writer = new PrintWriter(new OutputStreamWriter(new FileOutputStream(configFile), "utf-8"), true); // set a new writer
+            PrintWriter writer = new PrintWriter(new OutputStreamWriter(new FileOutputStream(files.get("config")), "utf-8"), true); // set a new writer
             writer.write(object1.toJSONString()); // write the content to the config file
             writer.close(); // close writer
         } catch (Exception e) {
@@ -93,7 +106,7 @@ public class FileConfiguration {
     public JSONObject getNewsIndex() {
         JSONObject jsonObject;
         try {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(newsFile.getPath())));
+            BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(files.get("news").getPath())));
             StringBuilder jsonString = new StringBuilder();
             reader.lines().forEach(jsonString::append);
             jsonObject = (JSONObject) parser.parse(jsonString.toString());
@@ -106,8 +119,17 @@ public class FileConfiguration {
         return jsonObject;
     }
 
+    public boolean existFile(String name){
+        return files.containsKey(name);
+    }
+
+    public File getFile(String name){
+        if(!files.containsKey(name)) return null;
+        return files.get(name);
+    }
+
     public File getNewsFile() {
-        return newsFile;
+        return files.get("config");
     }
 
 }

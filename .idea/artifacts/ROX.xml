@@ -1,6 +1,6 @@
 <component name="ArtifactManager">
   <artifact type="jar" build-on-make="true" name="ROX">
-    <output-path>D:/JavaProjects/roxROX/artifacts/ROX</output-path>
+    <output-path>D:/ROX/server</output-path>
     <root id="archive" name="ROX.jar">
       <element id="module-output" name="rox" />
       <element id="directory" name="META-INF">

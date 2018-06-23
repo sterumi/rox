@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class Database {
+public class Database implements DatabaseStructure{
 
     private DBData dbData;
 
@@ -30,7 +30,6 @@ public class Database {
     public Database(DBData dbData){
         this.dbData = dbData;
         connect();
-        setup();
     }
 
     /**
@@ -38,14 +37,15 @@ public class Database {
      *
      */
 
-    private void connect(){
+    public void connect(){
         long startTime = System.currentTimeMillis();
         try{
             DatabaseConnectEvent event = new DatabaseConnectEvent();
             Main.getEventManager().callEvent(event);
             if (event.isCancelled()) return;
 
-            conn = DriverManager.getConnection(dbData.toString(), dbData.getUsername(), dbData.getPassword());
+            conn = DriverManager.getConnection(dbData.toJDBCString(), dbData.getUsername(), dbData.getPassword());
+            setup();
             connected = true;
 
         }catch (Exception e){
