@@ -5,16 +5,17 @@ ROX is a full system that includes systems. It is usable for networks with a dis
 It will send information to the main server and later it is readable via web or a external client.
 
 <h2>Features</h2>
- - Switchable between Redis and MySql
- - Discord Bot
- - Full event system
- - Full command system
- - A http server to get information in JSON and a dynamic http content viewer
- - Minecraft System to get information from a registered minecraft server with a own plugin
- - A plugin system to develop own plugins for rox
- - A teamspeak bot to get information from your teamspeak server
- - A main server for a external client service
- - A news system -> with http
+ - Switchable between Redis and MySql<br>
+ - Discord Bot<br>
+ - Full event system<br>
+ - Full command system<br>
+ - A http server to get information in JSON and a dynamic http content viewer<br>
+ - Minecraft System to get information from a registered minecraft server with a own plugin<br>
+ - A plugin system to develop own plugins for rox<br>
+ - A teamspeak bot to get information from your teamspeak server<br>
+ - A main server for a external client service<br>
+ - A news system -> with http<br>
+ - Lua Script Engine<br><br>
  
 
 Currently is the client service in development.<br>
@@ -26,29 +27,30 @@ All information in files or internet is sent via JSON.
  - Client in C++
 
 <h3>Bots</h3>
- - Arma 3 Addon
- - CS:GO
- - Factorio
- - Avorion
- - ARK
- - CS:S
- - Minecraft as mod
+ - Arma 3 Addon<br>
+ - CS:GO<br>
+ - Factorio<br>
+ - Avorion<br>
+ - ARK<br>
+ - CS:S<br>
+ - Minecraft as mod<br><br>
  
  
 <h3>Libraries using</h3>
- - Cassandra
- - Commons-Collection
- - JavaMP3
- - JDA
- - Jedis
- - JNA
- - JSON
- - JSON-Simple
- - MySql-Connector
- - NV-WebSocket-Client
- - OKHttp
- - Okio
- - SLF4J
- - TeamSpeak3-API
- - Trove4J
+ - Cassandra<br>
+ - Commons-Collection<br>
+ - JavaMP3<br>
+ - JDA<br>
+ - Jedis<br>
+ - JNA<br>
+ - JSON<br>
+ - JSON-Simple<br>
+ - MySql-Connector<br>
+ - NV-WebSocket-Client<br>
+ - OKHttp<br>
+ - Okio<br>
+ - SLF4J<br>
+ - TeamSpeak3-API<br>
+ - Trove4J<br>
+ - LuaJ<br>
  
