@@ -18,7 +18,7 @@ public class ScriptsCommand implements MainCommandExecutor {
                         ((JSONArray) Main.getFileConfiguration().getValue("scriptEngine")).parallelStream().forEach(o -> {
                             switch ((String) o) {
                                 case "lua":
-                                    Main.getLuaLoader().load();
+                                    Main.getLuaLoader().init();
                                     break;
 
                                 case "javascript":

@@ -18,10 +18,10 @@ public class LuaLoader implements Script {
     private File mainFile;
 
     public LuaLoader() {
-        load();
+        init();
     }
 
-    public void load(){
+    public void init(){
         if (rootPath.mkdirs()) Main.getLogger().log("ROX", "Created lua scripts folder.");
         engineManager = new ScriptEngineManager();
         scriptEngine = (LuaScriptEngine) engineManager.getEngineByExtension(".lua");
@@ -70,7 +70,7 @@ public class LuaLoader implements Script {
         return scriptEngine;
     }
 
-    public ScriptEngineManager getEngineManager() {
+    public ScriptEngineManager getScriptEngineManager() {
         return engineManager;
     }
 

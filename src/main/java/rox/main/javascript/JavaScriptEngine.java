@@ -81,4 +81,8 @@ public class JavaScriptEngine implements Script {
     public File getRootPath() {
         return rootPath;
     }
+
+    public ScriptEngineManager getScriptEngineManager() {
+        return scriptEngineManager;
+    }
 }
