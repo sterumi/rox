@@ -126,4 +126,8 @@ public class DiscordBot {
         AuditableRestAction auditableRestAction = guild.getController().ban(userid, -1, "Du hast die maximale Anzahl an Verwarnungen bekommen. Du kannst auch auf der Webseite einen Entbannungsantrag stellen. Deine UUID: " + uuid.toString());
         auditableRestAction.complete();
     }
+
+    public String getToken() {
+        return token;
+    }
 }

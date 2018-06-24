@@ -62,8 +62,8 @@ public class MainCommandLoader {
         this.addCommand("help", new HelpCommand());
         this.addCommand("uuid", new UUIDCommand());
         this.addCommand("fds", new FastDebugStartCommand());
+        this.addCommand("gs", new GSCommand());
         this.addCommand("exe", new ExecuteCommand());
-        this.addCommand("mcs", new MCSCommand());
         this.addCommand("mem", new MemoryCommand());
         this.addCommand("ts", new TSCommand());
         this.addCommand("scripts", new ScriptsCommand());
@@ -92,5 +92,13 @@ public class MainCommandLoader {
                 }
             }
         }
+    }
+
+    public ConcurrentHashMap<String, MainCommandExecutor> getClasses() {
+        return classes;
+    }
+
+    public void setClasses(ConcurrentHashMap<String, MainCommandExecutor> classes) {
+        this.classes = classes;
     }
 }

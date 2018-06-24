@@ -39,4 +39,11 @@ public class MathUtil {
         return RandomStringUtils.random(length, possibleCharacters);
     }
 
+    public char[] getPossibleCharacters() {
+        return possibleCharacters;
+    }
+
+    public void setPossibleCharacters(char[] possibleCharacters) {
+        this.possibleCharacters = possibleCharacters;
+    }
 }

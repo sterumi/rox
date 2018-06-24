@@ -56,4 +56,11 @@ public class TSCommandLoader {
         return str;
     }
 
+    public ConcurrentHashMap<String, TSCommandExecutor> getClasses() {
+        return classes;
+    }
+
+    public void setClasses(ConcurrentHashMap<String, TSCommandExecutor> classes) {
+        this.classes = classes;
+    }
 }

@@ -7,10 +7,10 @@ import rox.main.database.Jedis;
 import rox.main.discord.DiscordBot;
 import rox.main.event.EventManager;
 import rox.main.event.events.MainStartedEvent;
+import rox.main.gamesystem.GameSystem;
 import rox.main.httpserver.HTTPServer;
 import rox.main.logger.Logger;
 import rox.main.lua.LuaLoader;
-import rox.main.minecraftserver.MinecraftServer;
 import rox.main.news.NewsSystem;
 import rox.main.javascript.JavaScriptEngine;
 import rox.main.pluginsystem.PluginManager;
@@ -34,8 +34,6 @@ public class Main {
 
     private static FileConfiguration fileConfiguration;
 
-    private static MinecraftServer minecraftServer;
-
     private static HTTPServer httpServer;
 
     private static JavaScriptEngine javaScriptEngine;
@@ -53,6 +51,8 @@ public class Main {
     private static TsBot tsBot;
 
     private static LuaLoader luaLoader;
+
+    private static GameSystem gameSytem;
 
     private static MathUtil mathUtil = new MathUtil();
 
@@ -117,7 +117,7 @@ public class Main {
         (threads[1] = new Thread(() -> mainServer = new MainServer(8981))).start(); // main server
         (threads[2] = new Thread(() -> discordBot = new DiscordBot((String) informatics[1]))).start(); // discord bot
         (threads[3] = new Thread(() -> mainCommandLoader.initCommandHandle())).start(); // system command handler
-        (threads[4] = new Thread(() -> minecraftServer = new MinecraftServer(8982))).start(); // minecraft server
+        (threads[4] = new Thread(() -> gameSytem = new GameSystem(8982))).start(); // game system
         (threads[5] = new Thread(() -> httpServer = new HTTPServer(8081))).start(); // http server
         (threads[6] = new Thread(() -> tsBot = new TsBot((String) fileConfiguration.getTsValues().get("hostname"), (String) fileConfiguration.getTsValues().get("username"), (String) fileConfiguration.getTsValues().get("password")))).start(); // ts bot
         (threads[7] = new Thread(() -> newsSystem = new NewsSystem())).start(); // news system
@@ -169,7 +169,7 @@ public class Main {
             }
             pluginManager.stop();
             discordBot.disconnect();
-            minecraftServer.stop();
+            gameSytem.stop();
             httpServer.getServer().stop(0);
             mainServer.stop();
         }
@@ -211,10 +211,6 @@ public class Main {
         return fileConfiguration;
     }
 
-    public static MinecraftServer getMinecraftServer() {
-        return minecraftServer;
-    }
-
     public static HTTPServer getHttpServer() {
         return httpServer;
     }
@@ -249,9 +245,7 @@ public class Main {
         return database;
     }
 
-    public static MathUtil getMathUtil() {
-        return mathUtil;
-    }
+    public static MathUtil getMathUtil() { return mathUtil; }
 
     public static Jedis getJedisClient() {
         return jedisClient;
@@ -269,5 +263,23 @@ public class Main {
         return luaLoader;
     }
 
+    public static GameSystem getGameSytem() {
+        return gameSytem;
+    }
 
+    public static void setLogger(Logger logger) {
+        Main.logger = logger;
+    }
+
+    public static void setThreads(Thread[] threads) {
+        Main.threads = threads;
+    }
+
+    public static void setFileConfiguration(FileConfiguration fileConfiguration) {
+        Main.fileConfiguration = fileConfiguration;
+    }
+
+    public static void setInformatics(Object[] informatics) {
+        Main.informatics = informatics;
+    }
 }

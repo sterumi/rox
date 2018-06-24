@@ -102,4 +102,68 @@ public class CTH {
         this.start = 0L;
         this.timingDepth = 0L;
     }
+
+    public String getName() {
+        return name;
+    }
+
+    public CTH getParent() {
+        return parent;
+    }
+
+    public long getCount() {
+        return count;
+    }
+
+    public long getCurTickTotal() {
+        return curTickTotal;
+    }
+
+    public long getStart() {
+        return start;
+    }
+
+    public long getTimingDepth() {
+        return timingDepth;
+    }
+
+    public long getTotalTime() {
+        return totalTime;
+    }
+
+    public long getViolations() {
+        return violations;
+    }
+
+    public static Queue<CTH> getHANDLERS() {
+        return HANDLERS;
+    }
+
+    public void setCount(long count) {
+        this.count = count;
+    }
+
+    public void setCurTickTotal(long curTickTotal) {
+        this.curTickTotal = curTickTotal;
+    }
+
+    public static void setHANDLERS(Queue<CTH> HANDLERS) {
+        CTH.HANDLERS = HANDLERS;
+    }
+
+    public void setStart(long start) {
+        this.start = start;
+    }
+
+    public void setTimingDepth(long timingDepth) {
+        this.timingDepth = timingDepth;
+    }
+
+    public void setTotalTime(long totalTime) {
+        this.totalTime = totalTime;
+    }
+
+    public void setViolations(long violations) {
+        this.violations = violations;
+    }
 }

@@ -68,4 +68,11 @@ public class Logger {
         }
     }
 
+    public String getConstruct() {
+        return construct;
+    }
+
+    public void setConstruct(String construct) {
+        this.construct = construct;
+    }
 }

@@ -71,13 +71,11 @@ public class HTTPServer {
                 String key = null;
                 String value = null;
                 if (param.length > 0) {
-                    key = URLDecoder.decode(param[0],
-                            System.getProperty("file.encoding"));
+                    key = URLDecoder.decode(param[0], System.getProperty("file.encoding"));
                 }
 
                 if (param.length > 1) {
-                    value = URLDecoder.decode(param[1],
-                            System.getProperty("file.encoding"));
+                    value = URLDecoder.decode(param[1], System.getProperty("file.encoding"));
                 }
 
                 if (parameters.containsKey(key)) {
@@ -99,4 +97,7 @@ public class HTTPServer {
         }
     }
 
+    public int getPort() {
+        return port;
+    }
 }

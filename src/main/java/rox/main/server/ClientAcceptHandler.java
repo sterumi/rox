@@ -92,4 +92,38 @@ public class ClientAcceptHandler extends Thread {
 
     }
 
+    @Override
+    public UncaughtExceptionHandler getUncaughtExceptionHandler() {
+        return super.getUncaughtExceptionHandler();
+    }
+
+    @Override
+    public State getState() {
+        return super.getState();
+    }
+
+    @Override
+    public long getId() {
+        return super.getId();
+    }
+
+    @Override
+    public StackTraceElement[] getStackTrace() {
+        return super.getStackTrace();
+    }
+
+    @Override
+    public ClassLoader getContextClassLoader() {
+        return super.getContextClassLoader();
+    }
+
+    @Override
+    public void setUncaughtExceptionHandler(UncaughtExceptionHandler eh) {
+        super.setUncaughtExceptionHandler(eh);
+    }
+
+    @Override
+    public void setContextClassLoader(ClassLoader cl) {
+        super.setContextClassLoader(cl);
+    }
 }

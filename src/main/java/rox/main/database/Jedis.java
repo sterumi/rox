@@ -6,7 +6,7 @@ public class Jedis implements DatabaseStructure{
 
     private redis.clients.jedis.Jedis jedis;
 
-    private DBData dbData;
+    private final DBData dbData;
 
     private ArrayList<String> updatedKeys = new ArrayList<>();
 
@@ -35,6 +35,23 @@ public class Jedis implements DatabaseStructure{
         return jedis.del(key);
     }
 
+    public DBData getDbData() {
+        return dbData;
+    }
 
+    public ArrayList<String> getUpdatedKeys() {
+        return updatedKeys;
+    }
 
+    public redis.clients.jedis.Jedis getJedis() {
+        return jedis;
+    }
+
+    public void setJedis(redis.clients.jedis.Jedis jedis) {
+        this.jedis = jedis;
+    }
+
+    public void setUpdatedKeys(ArrayList<String> updatedKeys) {
+        this.updatedKeys = updatedKeys;
+    }
 }

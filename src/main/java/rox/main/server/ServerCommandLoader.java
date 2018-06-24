@@ -27,5 +27,11 @@ class ServerCommandLoader {
         return classes.get(name);
     }
 
+    public ConcurrentHashMap<String, ServerCommandExecutor> getClasses() {
+        return classes;
+    }
 
+    public void setClasses(ConcurrentHashMap<String, ServerCommandExecutor> classes) {
+        this.classes = classes;
+    }
 }

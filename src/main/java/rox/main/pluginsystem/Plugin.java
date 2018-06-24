@@ -6,9 +6,9 @@ import rox.main.MainCommandExecutor;
 import rox.main.database.Database;
 import rox.main.discord.DiscordBot;
 import rox.main.event.EventManager;
+import rox.main.gamesystem.GameSystem;
 import rox.main.httpserver.HTTPServer;
 import rox.main.logger.Logger;
-import rox.main.minecraftserver.MinecraftServer;
 import rox.main.news.NewsSystem;
 import rox.main.server.MainServer;
 import rox.main.teamspeak.TsBot;
@@ -28,10 +28,6 @@ public class Plugin {
         return Main.getDiscordBot();
     }
 
-    public static MinecraftServer getMinecraftServer() {
-        return Main.getMinecraftServer();
-    }
-
     public static Object[] getInformatics() {
         return Main.getInformatics();
     }
@@ -40,19 +36,19 @@ public class Plugin {
         return Main.getThread(i);
     }
 
-    public void setThread(int i, Thread thread) {
+    public static void setThread(int i, Thread thread) {
         Main.setThread(i, thread);
     }
 
-    public FileConfiguration getFileConfiguration() {
+    public static FileConfiguration getFileConfiguration() {
         return Main.getFileConfiguration();
     }
 
-    public void setInformatics(int i, Object object) {
+    public static void setInformatics(int i, Object object) {
         Main.setInformatics(i, object);
     }
 
-    public void addMainCommand(String command, MainCommandExecutor mainCommandExecutor) {
+    public static void addMainCommand(String command, MainCommandExecutor mainCommandExecutor) {
         Main.getMainCommandLoader().addCommand(command, mainCommandExecutor);
     }
 
@@ -60,21 +56,26 @@ public class Plugin {
         return Main.getEventManager();
     }
 
-    public Logger getLogger() {
+    public static Logger getLogger() {
         return Main.getLogger();
     }
 
-    public TsBot getTSBot(){ return Main.getTsBot(); }
+    public static TsBot getTSBot(){ return Main.getTsBot(); }
 
-    public NewsSystem getNewsSystem(){
+    public static NewsSystem getNewsSystem(){
         return Main.getNewsSystem();
     }
 
-    public Database getDatabase(){
+    public static Database getDatabase(){
         return Main.getDatabase();
     }
 
-    public MathUtil getMathUtil(){
+    public static MathUtil getMathUtil(){
         return Main.getMathUtil();
     }
+
+    public static GameSystem getGameSystem(){
+        return Main.getGameSytem();
+    }
+
 }

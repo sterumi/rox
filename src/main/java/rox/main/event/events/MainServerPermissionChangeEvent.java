@@ -6,7 +6,7 @@ import rox.main.server.permission.Rank;
 
 import java.util.UUID;
 
-public class MinecraftServerPermissionChangeEvent extends Event {
+public class MainServerPermissionChangeEvent extends Event {
 
     private static IHandler list = new IHandler();
 
@@ -18,13 +18,13 @@ public class MinecraftServerPermissionChangeEvent extends Event {
 
     private String name;
 
-    public MinecraftServerPermissionChangeEvent(UUID uuid, Rank beforeChange, Rank newRank) {
+    public MainServerPermissionChangeEvent(UUID uuid, Rank beforeChange, Rank newRank) {
         this.uuid = uuid;
         this.beforeChange = beforeChange;
         this.newRank = newRank;
     }
 
-    public MinecraftServerPermissionChangeEvent(String name, Rank beforeChange, Rank newRank) {
+    public MainServerPermissionChangeEvent(String name, Rank beforeChange, Rank newRank) {
         this.name = name;
         this.beforeChange = beforeChange;
         this.newRank = newRank;

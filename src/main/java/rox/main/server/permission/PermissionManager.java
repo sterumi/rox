@@ -1,7 +1,7 @@
 package rox.main.server.permission;
 
 import rox.main.Main;
-import rox.main.event.events.MinecraftServerPermissionChangeEvent;
+import rox.main.event.events.MainServerPermissionChangeEvent;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -20,7 +20,7 @@ public class PermissionManager {
     public boolean setRank(UUID uuid, Rank rank) {
         if (Main.getMainServer().getClients().containsKey(uuid)) {
 
-            MinecraftServerPermissionChangeEvent event = new MinecraftServerPermissionChangeEvent(uuid, (Rank) Main.getMainServer().getClients().get(uuid)[5], rank);
+            MainServerPermissionChangeEvent event = new MainServerPermissionChangeEvent(uuid, (Rank) Main.getMainServer().getClients().get(uuid)[5], rank);
             Main.getEventManager().callEvent(event);
             if (event.isCancelled()) return false;
 
@@ -42,7 +42,7 @@ public class PermissionManager {
 
         //TODO
 
-        MinecraftServerPermissionChangeEvent event = new MinecraftServerPermissionChangeEvent(name, null, rank);
+        MainServerPermissionChangeEvent event = new MainServerPermissionChangeEvent(name, null, rank);
         Main.getEventManager().callEvent(event);
         if (event.isCancelled()) return;
 

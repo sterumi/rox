@@ -2,8 +2,8 @@ package rox.main.database;
 
 public class DBData {
 
-    private String hostname, username, password, database;
-    private int port;
+    private final String hostname, username, password, database;
+    private final int port;
 
     public DBData(String hostname, int port, String username, String password, String database){
         this.hostname = hostname;

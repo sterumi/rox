@@ -81,4 +81,24 @@ public class LuaLoader implements Script {
     public File getBootFile() {
         return mainFile;
     }
+
+    public ScriptEngineManager getEngineManager() {
+        return engineManager;
+    }
+
+    public void setScriptEngine(LuaScriptEngine scriptEngine) {
+        this.scriptEngine = scriptEngine;
+    }
+
+    public void setRootPath(File rootPath) {
+        this.rootPath = rootPath;
+    }
+
+    public void setEngineManager(ScriptEngineManager engineManager) {
+        this.engineManager = engineManager;
+    }
+
+    public void setBootFile(File mainFile) {
+        this.mainFile = mainFile;
+    }
 }

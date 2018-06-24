@@ -123,4 +123,5 @@ public class StaticManager {
     public boolean isUserOnline(UUID uuid) {
         return Main.getMainServer().getClients().containsKey(uuid);
     }
+
 }

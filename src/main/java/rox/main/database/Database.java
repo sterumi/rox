@@ -17,7 +17,7 @@ import java.util.UUID;
 
 public class Database implements DatabaseStructure{
 
-    private DBData dbData;
+    private final DBData dbData;
 
     private Connection conn;
 
@@ -91,11 +91,13 @@ public class Database implements DatabaseStructure{
                                 ") ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;");
                         break;
 
-                    case "mc_server":
-                        Update("CREATE TABLE `mc_servers` (\n" +
+                    case "gameserver":
+                        Update("CREATE TABLE `gameserver` (\n" +
                                 "  `id` int(11) NOT NULL AUTO_INCREMENT,\n" +
-                                "  `servername` text NOT NULL,\n" +
+                                "  `name` text NOT NULL,\n" +
                                 "  `uuid` text NOT NULL,\n" +
+                                "  `gametype` enum('ARK','MINECRAFT','ARMA3','CSS','CSGO','AVORTION','FACTORIO') NOT NULL,\n" +
+                                "  `lastlogin` mediumtext NOT NULL,\n" +
                                 "  `password` text NOT NULL,\n" +
                                 "  PRIMARY KEY (`id`)\n" +
                                 ") ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;");
@@ -178,4 +180,31 @@ public class Database implements DatabaseStructure{
         }
     }
 
+    public DBData getDbData() {
+        return dbData;
+    }
+
+    public BaseContent getBaseContent() {
+        return baseContent;
+    }
+
+    public Connection getConn() {
+        return conn;
+    }
+
+    public void setBaseContent(BaseContent baseContent) {
+        this.baseContent = baseContent;
+    }
+
+    public void setConn(Connection conn) {
+        this.conn = conn;
+    }
+
+    public void setConnected(boolean connected) {
+        this.connected = connected;
+    }
+
+    public void setNewCreatedTables(List<String> newCreatedTables) {
+        this.newCreatedTables = newCreatedTables;
+    }
 }

@@ -17,7 +17,7 @@ public class MainServer implements BaseServer {
 
     private ServerSocket serverSocket;
 
-    private int port;
+    private final int port;
 
     private boolean waitingConnection = true, isActive = false;
 
@@ -167,4 +167,27 @@ public class MainServer implements BaseServer {
         Main.getFileConfiguration().saveKey(key, value);
     }
 
+    public void setAcceptThread(Thread acceptThread) {
+        this.acceptThread = acceptThread;
+    }
+
+    public void setServerSocket(ServerSocket serverSocket) {
+        this.serverSocket = serverSocket;
+    }
+
+    public void setPermissionManager(PermissionManager permissionManager) {
+        this.permissionManager = permissionManager;
+    }
+
+    public void setServerCommandLoader(ServerCommandLoader serverCommandLoader) {
+        this.serverCommandLoader = serverCommandLoader;
+    }
+
+    public Thread getAcceptThread() {
+        return acceptThread;
+    }
+
+    public int getPort() {
+        return port;
+    }
 }

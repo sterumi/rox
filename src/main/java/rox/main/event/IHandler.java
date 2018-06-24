@@ -135,5 +135,23 @@ public class IHandler {
         }
     }
 
+    public static ArrayList<IHandler> getLists() {
+        return lists;
+    }
 
+    public EnumMap<EPriority, ArrayList<RegisteredListener>> getEnumMap() {
+        return enumMap;
+    }
+
+    public RegisteredListener[] getHandlers() {
+        return handlers;
+    }
+
+    public void setHandlers(RegisteredListener[] handlers) {
+        this.handlers = handlers;
+    }
+
+    public static void setLists(ArrayList<IHandler> lists) {
+        IHandler.lists = lists;
+    }
 }

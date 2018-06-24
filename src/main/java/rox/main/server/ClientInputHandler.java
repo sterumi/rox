@@ -7,7 +7,7 @@ import java.io.*;
 
 public class ClientInputHandler extends Thread {
 
-    private Object[] objects;
+    private final Object[] objects;
 
     ClientInputHandler(Object[] objects) {
         this.objects = objects;
@@ -41,6 +41,45 @@ public class ClientInputHandler extends Thread {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public StackTraceElement[] getStackTrace() {
+        return super.getStackTrace();
+    }
+
+    @Override
+    public ClassLoader getContextClassLoader() {
+        return super.getContextClassLoader();
+    }
+
+    @Override
+    public long getId() {
+        return super.getId();
+    }
+
+    @Override
+    public State getState() {
+        return super.getState();
+    }
+
+    public Object[] getObjects() {
+        return objects;
+    }
+
+    @Override
+    public UncaughtExceptionHandler getUncaughtExceptionHandler() {
+        return super.getUncaughtExceptionHandler();
+    }
+
+    @Override
+    public void setContextClassLoader(ClassLoader cl) {
+        super.setContextClassLoader(cl);
+    }
+
+    @Override
+    public void setUncaughtExceptionHandler(UncaughtExceptionHandler eh) {
+        super.setUncaughtExceptionHandler(eh);
     }
 
 }

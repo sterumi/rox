@@ -29,4 +29,7 @@ public class RegisteredListener {
         this.executor.execute(this.listener, event);
     }
 
+    public EExecutor getExecutor() {
+        return executor;
+    }
 }

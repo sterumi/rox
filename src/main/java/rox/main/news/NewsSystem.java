@@ -108,4 +108,15 @@ public class NewsSystem {
         fileContent.forEach((integer, jsonArray) -> news.put(Integer.parseInt(String.valueOf(integer)), (JSONArray) jsonArray));
     }
 
+    public ConcurrentHashMap<Integer, JSONArray> getNews() {
+        return news;
+    }
+
+    public void setFileContent(JSONObject fileContent) {
+        this.fileContent = fileContent;
+    }
+
+    public void setNews(ConcurrentHashMap<Integer, JSONArray> news) {
+        this.news = news;
+    }
 }

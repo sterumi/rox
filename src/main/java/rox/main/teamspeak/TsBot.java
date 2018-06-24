@@ -110,4 +110,16 @@ public class TsBot implements BaseClient {
     public String getHostname() {
         return hostname;
     }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
+    public void setApi(TS3Api api) {
+        this.api = api;
+    }
+
+    public void setCommandLoader(TSCommandLoader commandLoader) {
+        this.commandLoader = commandLoader;
+    }
 }

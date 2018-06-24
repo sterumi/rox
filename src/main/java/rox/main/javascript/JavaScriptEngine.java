@@ -85,4 +85,16 @@ public class JavaScriptEngine implements Script {
     public ScriptEngineManager getScriptEngineManager() {
         return scriptEngineManager;
     }
+
+    public void setRootPath(File rootPath) {
+        this.rootPath = rootPath;
+    }
+
+    public void setScriptEngine(ScriptEngine scriptEngine) {
+        this.scriptEngine = scriptEngine;
+    }
+
+    public void setScriptEngineManager(ScriptEngineManager scriptEngineManager) {
+        this.scriptEngineManager = scriptEngineManager;
+    }
 }

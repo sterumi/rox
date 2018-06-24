@@ -170,4 +170,28 @@ public class FileConfiguration {
     public ConcurrentHashMap<String, Object> getLuaValues() {
         return lua_values;
     }
+
+    public ConcurrentHashMap<String, File> getFiles() {
+        return files;
+    }
+
+    public ConcurrentHashMap<String, Object> getValues() {
+        return values;
+    }
+
+    public JSONParser getParser() {
+        return parser;
+    }
+
+    public void setFiles(ConcurrentHashMap<String, File> files) {
+        this.files = files;
+    }
+
+    public void setParser(JSONParser parser) {
+        this.parser = parser;
+    }
+
+    public void setValues(ConcurrentHashMap<String, Object> values) {
+        this.values = values;
+    }
 }

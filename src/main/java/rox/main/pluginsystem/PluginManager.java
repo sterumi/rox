@@ -76,4 +76,7 @@ public class PluginManager {
         return plugins;
     }
 
+    public void setPlugins(ConcurrentHashMap<String, ROXPlugin> plugins) {
+        this.plugins = plugins;
+    }
 }

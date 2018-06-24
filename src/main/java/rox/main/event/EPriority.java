@@ -12,4 +12,8 @@ public enum EPriority {
     public int getSlot() {
         return slot;
     }
+
+    public static EPriority getDefault() {
+        return NORMAL;
+    }
 }

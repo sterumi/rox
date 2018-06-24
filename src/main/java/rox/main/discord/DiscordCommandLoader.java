@@ -28,4 +28,11 @@ public class DiscordCommandLoader {
                 -> currentChannel.sendMessage("Dieser Befehl exsistiert nicht!").complete());
     }
 
+    public ConcurrentHashMap<String, DiscordCommandExecutor> getClasses() {
+        return classes;
+    }
+
+    public void setClasses(ConcurrentHashMap<String, DiscordCommandExecutor> classes) {
+        this.classes = classes;
+    }
 }
