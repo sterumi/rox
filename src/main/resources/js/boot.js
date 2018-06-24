@@ -2,8 +2,8 @@ var __boot = null;
 (function () {
     var File = java.io.File, FileReader = java.io.FileReader, FileOutputStream = java.io.FileOutputStream,
         ZipInputStream = java.util.zip.ZipInputStream,
-        jsPlugins = new File('plugins/ROX'),
-        initScript = 'js/ROX.js';
+        jsPlugins = new File('scripts/javascript'),
+        initScript = 'ROX.js';
 
 
     __boot = function (plugin, engine, classLoader) {

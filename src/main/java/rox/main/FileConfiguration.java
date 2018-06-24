@@ -1,9 +1,11 @@
 package rox.main;
 
+import org.json.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
 import java.io.*;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class FileConfiguration {
@@ -12,7 +14,7 @@ public class FileConfiguration {
 
     private JSONParser parser;
 
-    private ConcurrentHashMap<String, Object> values, ts_values;
+    private ConcurrentHashMap<String, Object> values, ts_values, lua_values;
 
     private boolean setting_up;
 
@@ -26,11 +28,14 @@ public class FileConfiguration {
         try {
             values = new ConcurrentHashMap<>();
             ts_values = new ConcurrentHashMap<>();
+            lua_values = new ConcurrentHashMap<>();
             files.put("config", new File("config/", "config.json"));
             files.put("tsbot", new File("config/", "tsbot.json"));
             files.put("news", new File("config/", "news.json"));
-            for (File file : new File("config/").listFiles()) {
-                if(!files.containsKey(file.getName().replace(".json", "").toLowerCase())) files.put(file.getName().replace(".json", ""), file);
+            files.put("lua", new File("config/", "lua.json"));
+            for (File file : Objects.requireNonNull(new File("config/").listFiles())) {
+                if (!files.containsKey(file.getName().replace(".json", "").toLowerCase()))
+                    files.put(file.getName().replace(".json", ""), file);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -53,7 +58,7 @@ public class FileConfiguration {
      * @throws Exception Mostly JsonExceptions or IOExceptions
      */
 
-    public boolean isSettingUp(){
+    public boolean isSettingUp() {
         return setting_up;
     }
 
@@ -66,12 +71,13 @@ public class FileConfiguration {
             object.put("debug", false);
             object.put("maxConnections", 20);
             object.put("databaseType", "mysql");
+            object.put("scriptEngine", new JSONArray().put("javascript").put("lua"));
             writer.write(object.toJSONString()); // write json string to file
             writer.close(); // close writer after finish
-            object.forEach((o, o2) -> values.put((String)o, o2));
-        } else {
-            ((JSONObject) new JSONParser().parse(new FileReader(files.get("config").getPath()))).forEach((key, value) -> values.put((String) key, value)); // loads content of news file to a hashmap
+            object.forEach((o, o2) -> values.put((String) o, o2));
         }
+        ((JSONObject) new JSONParser().parse(new FileReader(files.get("config").getPath()))).forEach((key, value) -> values.put((String) key, value)); // loads content of news file to a hashmap
+
 
         if (!files.get("tsbot").exists()) {
             PrintWriter writer = new PrintWriter(new OutputStreamWriter(new FileOutputStream(files.get("tsbot")), "utf-8"), true); // create writer to file
@@ -81,10 +87,21 @@ public class FileConfiguration {
             object.put("password", "serveradminpassword");
             writer.write(object.toJSONString()); // write json string to file
             writer.close(); // close writer after finish
-            object.forEach((o, o2) -> values.put((String)o, o2));
-        } else {
-            ((JSONObject) new JSONParser().parse(new FileReader(files.get("tsbot").getPath()))).forEach((key, value) -> ts_values.put((String) key, value)); // loads content of news file to a hashmap
+            object.forEach((o, o2) -> values.put((String) o, o2));
         }
+        ((JSONObject) new JSONParser().parse(new FileReader(files.get("tsbot").getPath()))).forEach((key, value) -> ts_values.put((String) key, value)); // loads content of news file to a hashmap
+
+
+        if (!files.get("lua").exists()) {
+            PrintWriter writer = new PrintWriter(new OutputStreamWriter(new FileOutputStream(files.get("lua")), "utf-8"), true); // create writer to file
+            JSONObject object = new JSONObject();
+            object.put("mainFile", "boot.lua");
+            object.put("loadExternal", false);
+            writer.write(object.toJSONString()); // write json string to file
+            writer.close(); // close writer after finish
+            object.forEach((o, o2) -> values.put((String) o, o2));
+        }
+        ((JSONObject) new JSONParser().parse(new FileReader(files.get("lua").getPath()))).forEach((key, value) -> lua_values.put((String) key, value)); // loads content of news file to a hashmap
 
     }
 
@@ -137,12 +154,12 @@ public class FileConfiguration {
         return ts_values;
     }
 
-    public boolean existFile(String name){
+    public boolean existFile(String name) {
         return files.containsKey(name);
     }
 
-    public File getFile(String name){
-        if(!files.containsKey(name)) return null;
+    public File getFile(String name) {
+        if (!files.containsKey(name)) return null;
         return files.get(name);
     }
 
@@ -150,4 +167,7 @@ public class FileConfiguration {
         return files.get("config");
     }
 
+    public ConcurrentHashMap<String, Object> getLuaValues() {
+        return lua_values;
+    }
 }

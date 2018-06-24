@@ -1,5 +1,6 @@
 package rox.main;
 
+import org.json.simple.JSONArray;
 import rox.main.database.DBData;
 import rox.main.database.Database;
 import rox.main.database.Jedis;
@@ -8,9 +9,10 @@ import rox.main.event.EventManager;
 import rox.main.event.events.MainStartedEvent;
 import rox.main.httpserver.HTTPServer;
 import rox.main.logger.Logger;
+import rox.main.lua.LuaLoader;
 import rox.main.minecraftserver.MinecraftServer;
 import rox.main.news.NewsSystem;
-import rox.main.pluginsystem.JavaScriptEngine;
+import rox.main.javascript.JavaScriptEngine;
 import rox.main.pluginsystem.PluginManager;
 import rox.main.server.MainServer;
 import rox.main.teamspeak.TsBot;
@@ -50,6 +52,8 @@ public class Main {
 
     private static TsBot tsBot;
 
+    private static LuaLoader luaLoader;
+
     private static MathUtil mathUtil = new MathUtil();
 
     /*
@@ -79,7 +83,7 @@ public class Main {
     /**
      * The start up function to load everything.
      *
-     * @param args  All arguments given to the program
+     * @param args All arguments given to the program
      */
 
 
@@ -99,7 +103,7 @@ public class Main {
     private static void loadThreads() { // starts all servers and some system functions in a own thread
 
         long startTime = System.currentTimeMillis(); //Loading Time
-        switch(((String) fileConfiguration.getValue("databaseType")).toLowerCase()){
+        switch (((String) fileConfiguration.getValue("databaseType")).toLowerCase()) {
             default:
             case "mysql":
                 (threads[0] = new Thread(() -> database = new Database(new DBData("localhost", 3306, "root", "", "rox")))).start(); // main server
@@ -115,10 +119,21 @@ public class Main {
         (threads[3] = new Thread(() -> mainCommandLoader.initCommandHandle())).start(); // system command handler
         (threads[4] = new Thread(() -> minecraftServer = new MinecraftServer(8982))).start(); // minecraft server
         (threads[5] = new Thread(() -> httpServer = new HTTPServer(8081))).start(); // http server
-        (threads[6] = new Thread(() -> tsBot = new TsBot((String)fileConfiguration.getTsValues().get("hostname"), (String)fileConfiguration.getTsValues().get("username"), (String)fileConfiguration.getTsValues().get("password")))).start(); // ts bot
+        (threads[6] = new Thread(() -> tsBot = new TsBot((String) fileConfiguration.getTsValues().get("hostname"), (String) fileConfiguration.getTsValues().get("username"), (String) fileConfiguration.getTsValues().get("password")))).start(); // ts bot
         (threads[7] = new Thread(() -> newsSystem = new NewsSystem())).start(); // news system
         (threads[8] = new Thread(() -> pluginManager = new PluginManager())).start(); // plugin system
-        (threads[9] = new Thread(() -> javaScriptEngine = new JavaScriptEngine())).start(); // javascript engine
+
+        ((JSONArray) Main.getFileConfiguration().getValue("scriptEngine")).parallelStream().forEach(o -> {
+            switch ((String) o) {
+                case "lua":
+                    (threads[10] = new Thread(() -> luaLoader = new LuaLoader())).start(); // javascript engine
+                    break;
+
+                case "javascript":
+                    (threads[9] = new Thread(() -> javaScriptEngine = new JavaScriptEngine())).start(); // javascript engine
+                    break;
+            }
+        });
         Runtime.getRuntime().addShutdownHook(new Thread(Main::shutdown)); // Function if system exit
         logger.time("ThreadLoad", startTime); // writing to console how long it take to init threads
     }
@@ -126,8 +141,8 @@ public class Main {
     /**
      * Calculate arguments and save them
      *
-     * @param args  Arguments from main method.
-     * @see         Main#main
+     * @param args Arguments from main method.
+     * @see Main#main
      */
 
     private static void computeArgs(String[] args) {
@@ -141,7 +156,7 @@ public class Main {
 
     /**
      * Event if system exit
-     *
+     * <p>
      * stops everything and disconnect all systems from clients or servers
      */
 
@@ -210,11 +225,11 @@ public class Main {
         return true;
     }
 
-    public JavaScriptEngine getJavaScriptEngine() {
+    public static JavaScriptEngine getJavaScriptEngine() {
         return javaScriptEngine;
     }
 
-    public PluginManager getPluginManager() {
+    public static PluginManager getPluginManager() {
         return pluginManager;
     }
 
@@ -234,7 +249,7 @@ public class Main {
         return database;
     }
 
-    public static MathUtil getMathUtil(){
+    public static MathUtil getMathUtil() {
         return mathUtil;
     }
 
@@ -249,4 +264,10 @@ public class Main {
     public static Thread[] getThreads() {
         return threads;
     }
+
+    public static LuaLoader getLuaLoader() {
+        return luaLoader;
+    }
+
+
 }

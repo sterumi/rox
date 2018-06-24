@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="luaj-jme-3.0.1">
+    <CLASSES>
+      <root url="jar://D:/ROX/server/lib/luaj-jme-3.0.1.jar!/" />
+      <root url="jar://D:/ROX/server/lib/luaj-jse-3.0.1.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://D:/ROX/server/lib/luaj-sources-3.0.1.jar!/" />
+    </SOURCES>
+  </library>
+</component>
