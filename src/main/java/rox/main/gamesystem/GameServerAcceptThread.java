@@ -17,11 +17,11 @@ public class GameServerAcceptThread extends Thread {
     public void run() {
         try {
             Socket socket;
-            while ((socket = Main.getGameSytem().getServerSocket().accept()) != null) {
+            while ((socket = Main.getGameSystem().getServerSocket().accept()) != null) {
                     BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                     PrintWriter writer = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()), true);
 
-                if(Main.getGameSytem().getConnections().size() <= Main.getGameSytem().getMaxConnections()) {
+                if(Main.getGameSystem().getConnections().size() <= Main.getGameSystem().getMaxConnections()) {
                     String connectString = reader.readLine();
 
                     String[] args = connectString.split("§");
@@ -31,9 +31,9 @@ public class GameServerAcceptThread extends Thread {
                         int version = Integer.parseInt(args[1]);
                         GameType gameType = GameType.valueOf(args[0]);
 
-                        if(Main.getGameSytem().getVersions().get(gameType) == version){
+                        if(Main.getGameSystem().getVersions().get(gameType) == version){
                             DataService dataService = new DataService(getName(UUID.fromString(args[2])), UUID.fromString(args[2]), socket, reader, writer, gameType, version);
-                            Main.getGameSytem().getConnections().put(dataService.getUUID(), dataService);
+                            Main.getGameSystem().getConnections().put(dataService.getUUID(), dataService);
                             dataService.setInputThread(new Thread(() -> new GameServerInputThread(dataService)));
                             writer.println("CONNECTION_ACCEPTED");
                         }else {

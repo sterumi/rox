@@ -17,10 +17,10 @@ public class GSCommand implements MainCommandExecutor {
         switch (args[1]) {
             case "start":
                 if (args.length == 2) {
-                    if (Main.getGameSytem().isActive()) {
+                    if (Main.getGameSystem().isActive()) {
                         Main.getLogger().log("ROX", "Game System is already running!");
                     } else {
-                        Main.getGameSytem().start();
+                        Main.getGameSystem().start();
                         Main.getLogger().log("ROX", "Started Game System.");
                     }
                 } else {
@@ -31,8 +31,8 @@ public class GSCommand implements MainCommandExecutor {
 
             case "stop":
                 if (args.length == 2) {
-                    if (Main.getGameSytem().isActive()) {
-                        Main.getGameSytem().stop();
+                    if (Main.getGameSystem().isActive()) {
+                        Main.getGameSystem().stop();
                         Main.getLogger().log("ROX", "Stopped Game System.");
                     } else {
                         Main.getLogger().log("ROX", "Game System isn't running.");

@@ -9,7 +9,7 @@ public class FastDebugStartCommand implements MainCommandExecutor {
 
         if (args.length == 1) {
             Main.getMainServer().start();
-            Main.getGameSytem().start();
+            Main.getGameSystem().start();
             Main.setInformatics(1, Main.getFileConfiguration().getValue("discordToken"));
             Main.getDiscordBot().setToken((String) Main.getFileConfiguration().getValue("discordToken"));
             Main.getDiscordBot().connect();

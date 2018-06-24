@@ -52,7 +52,7 @@ public class Main {
 
     private static LuaLoader luaLoader;
 
-    private static GameSystem gameSytem;
+    private static GameSystem gameSystem;
 
     private static MathUtil mathUtil = new MathUtil();
 
@@ -117,7 +117,7 @@ public class Main {
         (threads[1] = new Thread(() -> mainServer = new MainServer(8981))).start(); // main server
         (threads[2] = new Thread(() -> discordBot = new DiscordBot((String) informatics[1]))).start(); // discord bot
         (threads[3] = new Thread(() -> mainCommandLoader.initCommandHandle())).start(); // system command handler
-        (threads[4] = new Thread(() -> gameSytem = new GameSystem(8982))).start(); // game system
+        (threads[4] = new Thread(() -> gameSystem = new GameSystem(8982))).start(); // game system
         (threads[5] = new Thread(() -> httpServer = new HTTPServer(8081))).start(); // http server
         (threads[6] = new Thread(() -> tsBot = new TsBot((String) fileConfiguration.getTsValues().get("hostname"), (String) fileConfiguration.getTsValues().get("username"), (String) fileConfiguration.getTsValues().get("password")))).start(); // ts bot
         (threads[7] = new Thread(() -> newsSystem = new NewsSystem())).start(); // news system
@@ -169,7 +169,7 @@ public class Main {
             }
             pluginManager.stop();
             discordBot.disconnect();
-            gameSytem.stop();
+            gameSystem.stop();
             httpServer.getServer().stop(0);
             mainServer.stop();
         }
@@ -263,8 +263,8 @@ public class Main {
         return luaLoader;
     }
 
-    public static GameSystem getGameSytem() {
-        return gameSytem;
+    public static GameSystem getGameSystem() {
+        return gameSystem;
     }
 
     public static void setLogger(Logger logger) {

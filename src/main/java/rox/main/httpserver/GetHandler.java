@@ -29,8 +29,8 @@ public class GetHandler implements HttpHandler {
             switch (key){
                 case "gsUUID":
                     UUID uuid = UUID.fromString((String)parameters.get(key));
-                    if(Main.getGameSytem().getConnections().containsKey(uuid)){
-                        response.append(Main.getGameSytem().getConnections().get(uuid).toJSONString());
+                    if(Main.getGameSystem().getConnections().containsKey(uuid)){
+                        response.append(Main.getGameSystem().getConnections().get(uuid).toJSONString());
                     }else{
                         response.append(new JSONObject().toJSONString());
                     }

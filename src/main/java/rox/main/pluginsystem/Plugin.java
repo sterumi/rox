@@ -75,7 +75,7 @@ public class Plugin {
     }
 
     public static GameSystem getGameSystem(){
-        return Main.getGameSytem();
+        return Main.getGameSystem();
     }
 
 }
