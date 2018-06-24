@@ -1,1 +1,1 @@
-{"databaseType":"mysql","debug":false,"discordToken":"TOKEN","maintenance":false,"maxConnections":20}
+{"databaseType":"mysql","debug":false,"scriptEngine":["javascript","lua"],"maintenance":false,"maxConnections":20}

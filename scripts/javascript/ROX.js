@@ -26,7 +26,7 @@ function __onEnable(__engine, __plugin, __script) {
     }
 
     function _canonize(file) {
-        return '' + file.getCanonicalPath().replaceAll('\\\\', '/');
+        return '' + file.canonicalPath;
     }
 
     function _save(objToSave, filename) {
@@ -135,7 +135,7 @@ function __onEnable(__engine, __plugin, __script) {
     }
 
     function _onDisable(/* evt */) {
-        _save(global.config, new File(jsPluginsRootDir, 'data/global-config.json'));
+        _save(global.config, new File(jsPluginsRootDir, '/javascript/data/global-config.json'));
         _runUnloadHandlers();
     }
 
@@ -273,7 +273,7 @@ function __onEnable(__engine, __plugin, __script) {
         jsPluginsRootDirName = _canonize(jsPluginsRootDir),
         unloadHandlers = [];
 
-    var configFile = new File(jsPluginsRootDir, 'data/');
+    var configFile = new File(jsPluginsRootDir, '/javascript/data/');
     configFile.mkdirs();
     configFile = new File(configFile, 'global-config.json');
     var config = _load(configFile);
@@ -284,7 +284,7 @@ function __onEnable(__engine, __plugin, __script) {
     global.__plugin = __plugin;
     (function () {
         var jsonFileReader = new FileReader(
-            new File(jsPluginsRootDirName + '/lib/json2.js')
+            new File(jsPluginsRootDirName + '/javascript/lib/json2.js')
         );
         __engine['eval(java.io.Reader)'](jsonFileReader);
     })();
@@ -297,11 +297,11 @@ function __onEnable(__engine, __plugin, __script) {
     global.scsave = _save;
     global.scloadJSON = _loadJSON;
     global.isOp = _isOp;
-    var configRequire = _load(jsPluginsRootDirName + '/lib/require.js', true);
+    var configRequire = _load(jsPluginsRootDirName + '/javascript/lib/require.js', true);
 
     var modulePaths = [
-        jsPluginsRootDirName + '/lib/',
-        jsPluginsRootDirName + '/modules/'
+        jsPluginsRootDirName + '/javascript/lib/',
+        jsPluginsRootDirName + '/javascript/modules/'
     ];
 
     if (config.verbose) {
