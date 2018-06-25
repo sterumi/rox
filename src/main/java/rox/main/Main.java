@@ -20,6 +20,8 @@ import rox.main.util.MathUtil;
 
 public class Main {
 
+    private static Thread currentThread = Thread.currentThread();
+
     private static Database database;
 
     private static MainServer mainServer;
@@ -32,8 +34,6 @@ public class Main {
 
     private static MainCommandLoader mainCommandLoader;
 
-    private static FileConfiguration fileConfiguration;
-
     private static HTTPServer httpServer;
 
     private static JavaScriptEngine javaScriptEngine;
@@ -42,7 +42,9 @@ public class Main {
 
     private static NewsSystem newsSystem;
 
-    private static Logger logger;
+    private static FileConfiguration fileConfiguration = new FileConfiguration();
+
+    private static Logger logger = new Logger();
 
     private static EventManager eventManager;
 
@@ -55,6 +57,8 @@ public class Main {
     private static GameSystem gameSystem;
 
     private static MathUtil mathUtil = new MathUtil();
+
+    private static int version = 1;
 
     /*
      * This class is the main class.
@@ -90,9 +94,7 @@ public class Main {
     public static void main(String[] args) {
         long startTime = System.currentTimeMillis(); //Boot Start Time
         (eventManager = new EventManager()).loadEvents();
-        logger = new Logger(); // Init logger
-        logger.log("ROX", "Starting ROX.");
-        fileConfiguration = new FileConfiguration(); // Load files for information
+        logger.log("ROX", "Starting ROX. Version: " + version);
         (mainCommandLoader = new MainCommandLoader()).loadCommands(); // Loading all system commands
         computeArgs(args); // calculate args
         loadThreads();
@@ -217,8 +219,7 @@ public class Main {
 
     public static boolean isDebug() {
 
-        //return (Boolean) fileConfiguration.getValue("debug");
-        return true;
+        return (Boolean) fileConfiguration.getValue("debug");
     }
 
     public static JavaScriptEngine getJavaScriptEngine() {
@@ -281,5 +282,13 @@ public class Main {
 
     public static void setInformatics(Object[] informatics) {
         Main.informatics = informatics;
+    }
+
+    public static Thread getCurrentThread() {
+        return currentThread;
+    }
+
+    public static int getVersion() {
+        return version;
     }
 }

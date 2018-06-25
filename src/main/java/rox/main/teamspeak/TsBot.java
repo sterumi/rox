@@ -7,11 +7,16 @@ import com.github.theholywaffle.teamspeak3.api.TextMessageTargetMode;
 import com.github.theholywaffle.teamspeak3.api.event.TS3EventAdapter;
 import com.github.theholywaffle.teamspeak3.api.event.TS3EventType;
 import com.github.theholywaffle.teamspeak3.api.event.TextMessageEvent;
+import org.json.simple.JSONObject;
 import rox.main.Main;
 import rox.main.event.events.TSCommandEvent;
 import rox.main.event.events.TSStartedEvent;
 import rox.main.event.events.TSStartingEvent;
 import rox.main.util.BaseClient;
+
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class TsBot implements BaseClient {
 
@@ -24,6 +29,12 @@ public class TsBot implements BaseClient {
     private int clientId;
 
     private String hostname, username, password;
+
+    private NetworkUpdater networkUpdater;
+
+    private Thread networkUpdaterThread;
+
+    private ConcurrentHashMap<String, Object> information = new ConcurrentHashMap<>();
 
     private boolean active = false;
 
@@ -71,6 +82,9 @@ public class TsBot implements BaseClient {
         });
         Main.getLogger().log("TSBot", "Started TS Bot!");
 
+        if((Boolean)Main.getFileConfiguration().getTsValues().get("autoRefreshNetwork")) (networkUpdaterThread = new Thread((networkUpdater = new NetworkUpdater(this)))).start();
+
+
         Main.getEventManager().callEvent(new TSStartedEvent(this));
     }
 
@@ -117,6 +131,36 @@ public class TsBot implements BaseClient {
 
     public void setApi(TS3Api api) {
         this.api = api;
+    }
+
+    public ConcurrentHashMap<String, Object> getInformation() {
+        return information;
+    }
+
+    public void setNetworkUpdater(NetworkUpdater networkUpdater) {
+        this.networkUpdater = networkUpdater;
+    }
+
+    public void setNetworkUpdaterThread(Thread networkUpdaterThread) {
+        this.networkUpdaterThread = networkUpdaterThread;
+    }
+
+    public void setInformation(ConcurrentHashMap<String, Object> information) {
+        this.information = information;
+    }
+
+    public NetworkUpdater getNetworkUpdater() {
+        return networkUpdater;
+    }
+
+    public Thread getNetworkUpdaterThread() {
+        return networkUpdaterThread;
+    }
+
+    public String toJSONString(){
+        JSONObject object = new JSONObject();
+        information.forEach(object::put);
+        return object.toJSONString();
     }
 
     public void setCommandLoader(TSCommandLoader commandLoader) {

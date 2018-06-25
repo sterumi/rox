@@ -1,5 +1,9 @@
 package rox.main.gamesystem;
 
+import rox.main.Main;
+
+import java.net.SocketException;
+
 public class GameServerInputThread extends Thread {
 
     private DataService dataService;
@@ -17,23 +21,32 @@ public class GameServerInputThread extends Thread {
                 // §<information>§<value>
                 if(input.startsWith("§")) {
                     String[] content = input.split("§");
-                    dataService.getInformation().put(content[0], content[1]);
+                    dataService.getInformation().put(content[1], content[2]);
                 }else if(input.startsWith("?")){
                     // ?<information>
                     switch(input.substring(1)){
                         case "ping":
-                            dataService.getWriter().println("Pong");
+                            dataService.getWriter().println(a(input) + "Pong");
                             break;
                         case "onlineServers":
-                            dataService.getWriter().println("TODO");
+                            dataService.getWriter().println(a(input) + "TODO");
                             break;
                     }
                 }
             }
         }catch (Exception e){
+            if(e instanceof SocketException){
+                Main.getLogger().log("GameServer", dataService.getName() + " disconnected!");
+                Main.getGameSystem().disconnect(dataService.getUUID());
+                return;
+            }
             e.printStackTrace();
         }
 
+    }
+
+    private String a(String str){
+        return "?" + str.substring(1) + "§";
     }
 
     @Override

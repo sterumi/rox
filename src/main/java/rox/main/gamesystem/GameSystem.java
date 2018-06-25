@@ -3,7 +3,10 @@ package rox.main.gamesystem;
 import rox.main.Main;
 import rox.main.util.BaseServer;
 
+import java.io.*;
 import java.net.ServerSocket;
+import java.net.Socket;
+import java.sql.ResultSet;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -47,7 +50,11 @@ public class GameSystem implements BaseServer {
             }
 
             serverSocket = new ServerSocket(port);
-            (acceptThread = new Thread(GameServerAcceptThread::new)).start();
+            new Thread(this::inputThread).start();
+            // <gametype>§<version>§<uuid>§<password>
+            setActive(true);
+            Main.getLogger().log("GameServer", "Started.");
+
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -59,6 +66,58 @@ public class GameSystem implements BaseServer {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private void inputThread(){
+        try {
+            Socket socket;
+            while ((socket = Main.getGameSystem().getServerSocket().accept()) != null) {
+                Main.getLogger().log("GameServer", "Client connecting...");
+                BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                PrintWriter writer = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()), true);
+
+                if (Main.getGameSystem().getConnections().size() <= Main.getGameSystem().getMaxConnections()) {
+                    String connectString = reader.readLine();
+
+                    System.out.println(connectString);
+
+                    String[] args = connectString.split("§");
+
+                    if (auth(UUID.fromString(args[2]), args[3])) {
+
+                        int version = Integer.parseInt(args[1]);
+                        GameType gameType = GameType.valueOf(args[0]);
+
+                        if (Main.getGameSystem().getVersions().get(gameType) == version) {
+                            DataService dataService = new DataService(getName(UUID.fromString(args[2])), UUID.fromString(args[2]), socket, reader, writer, gameType, version);
+                            Main.getGameSystem().getConnections().put(dataService.getUUID(), dataService);
+                            dataService.setInputThread(new GameServerInputThread(dataService));
+                            writer.println("CONNECTION_ACCEPTED");
+                            Main.getLogger().log("GameServer", dataService.getName() + " connected!");
+                        } else {
+                            writer.println("CONNECTION_WRONG_VERSION");
+                            socket.close();
+                        }
+                    } else {
+                        writer.println("CONNECTION_REFUSED");
+                        socket.close();
+                    }
+                } else {
+                    writer.println("CONNECTION_FULL");
+                    socket.close();
+                }
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void disconnect(UUID uuid){
+        DataService dataService = connections.get(uuid);
+        dataService.getInputThread().interrupt();
+        if(!dataService.getSocket().isClosed()) try { dataService.getSocket().close(); } catch (Exception e) { e.printStackTrace(); }
+        connections.remove(uuid);
     }
 
     public ConcurrentHashMap<UUID, DataService> getConnections() {
@@ -111,5 +170,25 @@ public class GameSystem implements BaseServer {
 
     public Thread getAcceptThread() {
         return acceptThread;
+    }
+
+    private String getName(UUID uuid) {
+        ResultSet rs = Main.getDatabase().Query("SELECT * FROM gameserver WHERE uuid='" + uuid.toString() + "'");
+        try {
+            while (rs.next()) return rs.getString("name");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "Default_GameServer";
+    }
+
+    private boolean auth(UUID uuid, String password) {
+        ResultSet rs = Main.getDatabase().Query("SELECT * FROM gameserver WHERE uuid='" + uuid.toString() + "' AND password='" + password + "'");
+        try {
+            while (rs.next()) return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 }

@@ -24,7 +24,6 @@ public class FileConfiguration {
 
     FileConfiguration() {
         setting_up = true;
-        long startTime = System.currentTimeMillis();
         try {
             values = new ConcurrentHashMap<>();
             ts_values = new ConcurrentHashMap<>();
@@ -48,7 +47,6 @@ public class FileConfiguration {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        Main.getLogger().time("FileLoad", startTime);
         setting_up = false;
     }
 
@@ -85,6 +83,8 @@ public class FileConfiguration {
             object.put("hostname", "localhost");
             object.put("username", "serveradmin");
             object.put("password", "serveradminpassword");
+            object.put("autoRefreshNetwork", true);
+            object.put("refreshDelay", 60);
             writer.write(object.toJSONString()); // write json string to file
             writer.close(); // close writer after finish
             object.forEach((o, o2) -> values.put((String) o, o2));
@@ -103,6 +103,18 @@ public class FileConfiguration {
         }
         ((JSONObject) new JSONParser().parse(new FileReader(files.get("lua").getPath()))).forEach((key, value) -> lua_values.put((String) key, value)); // loads content of news file to a hashmap
 
+    }
+
+
+    private InputStream getResourceAsStream(String resource) {
+        final InputStream in
+                = getContextClassLoader().getResourceAsStream(resource);
+
+        return in == null ? getClass().getResourceAsStream(resource) : in;
+    }
+
+    private ClassLoader getContextClassLoader() {
+        return Thread.currentThread().getContextClassLoader();
     }
 
     public Object getValue(String key) {

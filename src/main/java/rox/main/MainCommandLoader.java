@@ -67,6 +67,7 @@ public class MainCommandLoader {
         this.addCommand("mem", new MemoryCommand());
         this.addCommand("ts", new TSCommand());
         this.addCommand("scripts", new ScriptsCommand());
+        this.addCommand("sha", new SHACommand());
         this.addCommand("test", (name, args) -> System.out.println("test"));
     }
 

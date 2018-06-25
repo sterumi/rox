@@ -35,6 +35,9 @@ public class GetHandler implements HttpHandler {
                         response.append(new JSONObject().toJSONString());
                     }
                     break;
+                case "ts":
+                    response.append(Main.getTsBot().toJSONString());
+                    break;
             }
         });
 
