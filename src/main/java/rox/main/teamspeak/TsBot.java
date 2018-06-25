@@ -80,9 +80,10 @@ public class TsBot implements BaseClient {
                     if(e.getMessage().toLowerCase().startsWith("!")) commandLoader.getCommand(e.getMessage().toLowerCase().toLowerCase()).command(api,  e);
             }
         });
-        Main.getLogger().log("TSBot", "Started TS Bot!");
 
         if((Boolean)Main.getFileConfiguration().getTsValues().get("autoRefreshNetwork")) (networkUpdaterThread = new Thread((networkUpdater = new NetworkUpdater(this)))).start();
+
+        Main.getLogger().log("TSBot", "Started TS Bot!");
 
 
         Main.getEventManager().callEvent(new TSStartedEvent(this));

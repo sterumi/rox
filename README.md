@@ -36,8 +36,9 @@ All information in files or internet is sent via JSON.
  - Minecraft as mod<br><br>
  
  <h3>Website Links</h3>
- - (hostname)/ts            (To get your teamspeak server information)<br>
- - (hostname)/gsUUID=(uuid) (Replace (uuid) with a registered uuid. If the game server is running, it will send information to the rox server and is readable as json string)
+ - (domain)/get?ts            (To get your teamspeak server information)<br>
+ - (domain)/get?gsUUID=(uuid) (Replace (uuid) with a registered uuid. If the game server is running, it will send information to the rox server and is readable as json string)
+ - (domain)/get?discord       (To get information from the discord bot)
  <br><br>
  To register a server you must add a entry in your database (gameserver). To get a uuid type /uuid in the console. The password is in SHA-256. You can create a password with /sha (text). It will return a sha 256 password.
  

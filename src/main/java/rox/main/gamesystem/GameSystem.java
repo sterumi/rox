@@ -79,9 +79,13 @@ public class GameSystem implements BaseServer {
                 if (Main.getGameSystem().getConnections().size() <= Main.getGameSystem().getMaxConnections()) {
                     String connectString = reader.readLine();
 
-                    System.out.println(connectString);
-
                     String[] args = connectString.split("§");
+
+                    if(connections.containsKey(UUID.fromString(args[2]))){
+                        writer.println("CONNECTION_REFUSED");
+                        socket.close();
+                        return;
+                    }
 
                     if (auth(UUID.fromString(args[2]), args[3])) {
 

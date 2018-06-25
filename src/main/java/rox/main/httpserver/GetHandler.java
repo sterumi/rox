@@ -38,6 +38,8 @@ public class GetHandler implements HttpHandler {
                 case "ts":
                     response.append(Main.getTsBot().toJSONString());
                     break;
+                case "discord":
+                    response.append(Main.getDiscordBot().toJSONString());
             }
         });
 
