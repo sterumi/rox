@@ -33,7 +33,8 @@ All information in files or internet is sent via JSON.
  - Avorion<br>
  - ARK<br>
  - CS:S<br>
- - Minecraft as mod<br><br>
+ - Minecraft as mod<br>
+ <h2></h2>
  
  <h3>Website Links</h3>
  - (domain)/get?ts            (To get your teamspeak server information)<br>
