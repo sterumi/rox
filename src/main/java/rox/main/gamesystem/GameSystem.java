@@ -195,4 +195,8 @@ public class GameSystem implements BaseServer {
         }
         return false;
     }
+
+    public void register(String name, UUID uuid, String password, GameType type){
+        Main.getDatabase().Update("INSERT INTO gameserver(name, uuid, gametype, password) VALUES ('" + name + "','" + uuid + "','" + type.toString() + "','" + Main.getMathUtil().computeSHA256(password) + "')");
+    }
 }

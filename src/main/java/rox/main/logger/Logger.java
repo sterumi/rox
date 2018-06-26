@@ -30,7 +30,7 @@ public class Logger {
 
         if(name.startsWith("[") || name.endsWith("]"))name = name.substring(1, name.length() - 1);
 
-        System.out.println("[WARN] " + construct.replace("[WARN]", "[" + LocalDateTime.now() + "]")
+        System.out.println("[WARN] " + construct.replace("[TIME]", "[" + LocalDateTime.now() + "]")
                 .replace("[CLASS]", "[" + name + "]").replace("[MESSAGE]", message));
     }
 

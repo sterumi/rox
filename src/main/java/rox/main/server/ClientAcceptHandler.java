@@ -8,6 +8,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.net.SocketException;
 import java.nio.charset.Charset;
 import java.util.UUID;
 
@@ -87,6 +88,10 @@ public class ClientAcceptHandler extends Thread {
 
             }
         } catch (Exception e) {
+            if(e instanceof SocketException){
+                Main.getLogger().warn("MainServer", "Interrupted the accepting for clients.");
+                return;
+            }
             e.printStackTrace();
         }
 

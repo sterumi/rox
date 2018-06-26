@@ -8,6 +8,7 @@ import rox.main.discord.DiscordBot;
 import rox.main.event.EventManager;
 import rox.main.event.events.MainStartedEvent;
 import rox.main.gamesystem.GameSystem;
+import rox.main.gui.GUIManager;
 import rox.main.httpserver.HTTPServer;
 import rox.main.logger.Logger;
 import rox.main.lua.LuaLoader;
@@ -58,6 +59,8 @@ public class Main {
 
     private static MathUtil mathUtil = new MathUtil();
 
+    private static GUIManager guiManager;
+
     private static int version = 1;
 
     /*
@@ -82,6 +85,7 @@ public class Main {
      * [7] - NEWS SYSTEM THREAD
      * [8] - PLUGIN LOADER THREAD
      * [9] - SCRIPT ENGINE THREAD
+     * [10] - GUI THREAD
      */
 
     /**
@@ -128,7 +132,7 @@ public class Main {
         ((JSONArray) Main.getFileConfiguration().getValue("scriptEngine")).parallelStream().forEach(o -> {
             switch ((String) o) {
                 case "lua":
-                    (threads[10] = new Thread(() -> luaLoader = new LuaLoader())).start(); // javascript engine
+                    (threads[9] = new Thread(() -> luaLoader = new LuaLoader())).start(); // javascript engine
                     break;
 
                 case "javascript":
@@ -136,6 +140,8 @@ public class Main {
                     break;
             }
         });
+        guiManager = new GUIManager();
+        (threads[10] = new Thread(() -> guiManager.show())).start(); // plugin system
         Runtime.getRuntime().addShutdownHook(new Thread(Main::shutdown)); // Function if system exit
         logger.time("ThreadLoad", startTime); // writing to console how long it take to init threads
     }
