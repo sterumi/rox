@@ -15,7 +15,7 @@ public class TokenCommand implements MainCommandExecutor {
                 Main.getLogger().log("ROX", "You must set a token!");
             }
         } else {
-            Main.getLogger().log("ROX", "discord (token,start,stop) <tokenCode>");
+            Main.getLogger().log("ROX", "discord (token, start, stop) <tokenCode>");
         }
     }
 }

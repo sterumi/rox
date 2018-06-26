@@ -14,7 +14,7 @@ public class FileConfiguration {
 
     private JSONParser parser;
 
-    private ConcurrentHashMap<String, Object> values, ts_values, lua_values;
+    private ConcurrentHashMap<String, Object> values, ts_values, lua_values, commands_values;
 
     private boolean setting_up;
 
@@ -28,10 +28,12 @@ public class FileConfiguration {
             values = new ConcurrentHashMap<>();
             ts_values = new ConcurrentHashMap<>();
             lua_values = new ConcurrentHashMap<>();
+            commands_values = new ConcurrentHashMap<>();
             files.put("config", new File("config/", "config.json"));
             files.put("tsbot", new File("config/", "tsbot.json"));
             files.put("news", new File("config/", "news.json"));
             files.put("lua", new File("config/", "lua.json"));
+            files.put("commands", new File("commands.json"));
             for (File file : Objects.requireNonNull(new File("config/").listFiles())) {
                 if (!files.containsKey(file.getName().replace(".json", "").toLowerCase()))
                     files.put(file.getName().replace(".json", ""), file);
@@ -74,7 +76,7 @@ public class FileConfiguration {
             writer.close(); // close writer after finish
             object.forEach((o, o2) -> values.put((String) o, o2));
         }
-        ((JSONObject) new JSONParser().parse(new FileReader(files.get("config").getPath()))).forEach((key, value) -> values.put((String) key, value)); // loads content of news file to a hashmap
+        ((JSONObject) new JSONParser().parse(new FileReader(files.get("config").getPath()))).forEach((key, value) -> values.put((String) key, value)); // loads content of config file to a hashmap
 
 
         if (!files.get("tsbot").exists()) {
@@ -89,7 +91,7 @@ public class FileConfiguration {
             writer.close(); // close writer after finish
             object.forEach((o, o2) -> values.put((String) o, o2));
         }
-        ((JSONObject) new JSONParser().parse(new FileReader(files.get("tsbot").getPath()))).forEach((key, value) -> ts_values.put((String) key, value)); // loads content of news file to a hashmap
+        ((JSONObject) new JSONParser().parse(new FileReader(files.get("tsbot").getPath()))).forEach((key, value) -> ts_values.put((String) key, value)); // loads content of tsbot file to a hashmap
 
 
         if (!files.get("lua").exists()) {
@@ -101,7 +103,34 @@ public class FileConfiguration {
             writer.close(); // close writer after finish
             object.forEach((o, o2) -> values.put((String) o, o2));
         }
-        ((JSONObject) new JSONParser().parse(new FileReader(files.get("lua").getPath()))).forEach((key, value) -> lua_values.put((String) key, value)); // loads content of news file to a hashmap
+        ((JSONObject) new JSONParser().parse(new FileReader(files.get("lua").getPath()))).forEach((key, value) -> lua_values.put((String) key, value)); // loads content of lua file to a hashmap
+
+        if (!files.get("commands").exists()) {
+            PrintWriter writer = new PrintWriter(new OutputStreamWriter(new FileOutputStream(files.get("commands")), "utf-8"), true); // create writer to file
+            JSONObject object = new JSONObject();
+            JSONObject commands = new JSONObject();
+            commands.put("discord", "To start the discord bot.");
+            commands.put("exe", "To execute a internal command via a extra command.");
+            commands.put("exit", "To safe-exit the program.");
+            commands.put("fds", "Starting all server and bots directly.");
+            commands.put("gs", "To start the game system service.");
+            commands.put("help", "To display all commands.");
+            commands.put("mem", "To display used memory and free memory.");
+            commands.put("say", "Say something in this console.");
+            commands.put("scripts", "to show all available script engines, to reload or execute a script file.");
+            commands.put("server", "The main command of the main server for the client service.");
+            commands.put("sha", "To create a SHA-256 password.");
+            commands.put("token", "to set the discord token easily.");
+            commands.put("ts", "To start the teamspeak bot.");
+            commands.put("uuid", "To create a UUID randomly.");
+            commands.put("test", "Just a test command.");
+            object.put("commands", commands);
+            writer.write(object.toJSONString()); // write json string to file
+            writer.close(); // close writer after finish
+            object.forEach((o, o2) -> commands_values.put((String) o, o2));
+        }
+        ((JSONObject) new JSONParser().parse(new FileReader(files.get("commands").getPath()))).forEach((key, value) -> commands_values.put((String) key, value)); // loads content of commands file to a hashmap
+
 
     }
 
@@ -176,7 +205,7 @@ public class FileConfiguration {
     }
 
     public File getNewsFile() {
-        return files.get("config");
+        return files.get("news");
     }
 
     public ConcurrentHashMap<String, Object> getLuaValues() {
@@ -205,5 +234,9 @@ public class FileConfiguration {
 
     public void setValues(ConcurrentHashMap<String, Object> values) {
         this.values = values;
+    }
+
+    public ConcurrentHashMap<String, Object> getCommandsValues() {
+        return commands_values;
     }
 }

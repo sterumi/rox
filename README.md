@@ -41,8 +41,17 @@ All information in files or internet is sent via JSON.
  - (domain)/get?ds            (To get information from the discord bot)
  <br><br>
  To register a server you must add a entry in your database (gameserver). To get a uuid type /uuid in the console. The password is in SHA-256. You can create a password with /sha (text). It will return a sha 256 password.
+
+ <br><br>
+ You can add own websites. The server will ask for files in the http/ folder. If a index.html file was found, it will directly opened if the domain ends with no file name. Php is not currently included as engine.
  
- 
+ <h3>Contact</h3>
+ Skype: bleikind11 <br>
+ Steam: bleikind <br>
+ YouTube: bleikind <br>
+ Discord: bleikind#1100 <br>
+ E-Mail: bleikindOnline@gmail.com <br>
+ Twitch: bleikind <br>
  
 <h3>Libraries using</h3>
  - Cassandra<br>

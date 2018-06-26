@@ -10,7 +10,7 @@ public class GSCommand implements MainCommandExecutor {
         // gs (start,stop) <tokenCode>
 
         if (args.length == 1) {
-            Main.getLogger().log("ROX", "gs (start,stop)");
+            Main.getLogger().log("ROX", "gs (start, stop)");
             return;
         }
 
@@ -24,7 +24,7 @@ public class GSCommand implements MainCommandExecutor {
                         Main.getLogger().log("ROX", "Started Game System.");
                     }
                 } else {
-                    Main.getLogger().log("ROX", "discord start");
+                    Main.getLogger().log("ROX", "gs start");
                 }
 
                 break;

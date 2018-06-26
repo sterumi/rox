@@ -32,7 +32,7 @@ public class ServerCommand implements MainCommandExecutor {
                     break;
             }
         } else {
-            Main.getLogger().log("ROX", "server (start,stop)");
+            Main.getLogger().log("ROX", "server (start, stop)");
         }
 
     }

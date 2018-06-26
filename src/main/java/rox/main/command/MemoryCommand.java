@@ -13,6 +13,8 @@ public class MemoryCommand implements MainCommandExecutor {
             Main.getLogger().log("MemoryInfo", "Max Memory (VM): " + maxMemory + "MB");
             Main.getLogger().log("MemoryInfo", "Used Memory: " + usedMemory + "MB");
             Main.getLogger().log("MemoryInfo", "Free Memory: " + (maxMemory - usedMemory) + "MB");
+        }else{
+            Main.getLogger().log("MemoryInfo", "Only 'mem'.");
         }
     }
 }

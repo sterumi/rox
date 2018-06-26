@@ -27,11 +27,11 @@ public class TSCommand implements MainCommandExecutor {
                     break;
 
                 default:
-                    Main.getLogger().log("ROX", "ts (start,stop)");
+                    Main.getLogger().log("ROX", "ts (start, stop)");
                     break;
             }
         } else {
-            Main.getLogger().log("ROX", "ts (start,stop)");
+            Main.getLogger().log("ROX", "ts (start, stop)");
         }
     }
 }

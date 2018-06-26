@@ -1,4 +1,5 @@
 Manifest-Version: 1.0
+Name: ROX
 Class-Path: ./lib/mysql-connector-java-8.0.11.jar ./lib/JDA-3.6.0_354.
  jar ./lib/okhttp-3.8.1.jar ./lib/okio-1.14.0.jar ./lib/nv-websocket-c
  lient-2.2.jar ./lib/commons-collections4-4.1.jar ./lib/jna-4.4.0.jar 
@@ -7,7 +8,6 @@ Class-Path: ./lib/mysql-connector-java-8.0.11.jar ./lib/JDA-3.6.0_354.
  b/javamp3-1.0.1.jar ./lib/json-simple-1.1.1.jar ./lib/jedis-2.9.0.jar
   ./lib/teamspeak3-api-1.1.0.jar ./lib/luaj-jme-3.0.1.jar ./lib/luaj-j
  se-3.0.1.jar ./lib/luaj-sources-3.0.1.jar
-Main-Class: rox.main.Main
 Created-By: Bleikind
-Name: ROX
+Main-Class: rox.main.Main
 
