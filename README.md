@@ -42,8 +42,8 @@ All information in files or internet is sent via JSON.
  - (domain)/get?gsUUID=(uuid)                                       (Replace (uuid) with a registered uuid. If the game server is running, it will send information to the rox server and is readable as json string)<br>
  - (domain)/get?gsUUID=(uuid)&style=true                            (To display the gameserver information in a table)<br>
  - (domain)/get?gsUUID=(uuid)&style=true&customStyle=(fileName)     (To get a self-written css file for the table. The css files a searched in: (root)/http/css/)<br>
- - (domain)/get?gsUUID=(uuid)&style=true&&advanced=true             (If advanced is true: all informations will showing up. If it is false, it will only show version, gametype, name and uuid)<br>
- - (domain)/get?gsUUID=(uuid)&style=true&&advanced=true&customStyle=(fileName) <br>
+ - (domain)/get?gsUUID=(uuid)&style=true&advanced=true             (If advanced is true: all informations will showing up. If it is false, it will only show version, gametype, name and uuid)<br>
+ - (domain)/get?gsUUID=(uuid)&style=true&advanced=true&customStyle=(fileName) <br>
  - (domain)/get?ds                                   (To get information from the discord bot)<br>
  - (domain)/news                                     (To get the news as default json)<br>
  - (domain)/news?style=true                          (To get the default table style for easy web implementation)<br>
