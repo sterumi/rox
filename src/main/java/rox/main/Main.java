@@ -141,7 +141,7 @@ public class Main {
             }
         });
         guiManager = new GUIManager();
-        (threads[10] = new Thread(() -> guiManager.show())).start(); // plugin system
+        (threads[10] = new Thread(() -> guiManager.a())).start(); // plugin system
         Runtime.getRuntime().addShutdownHook(new Thread(Main::shutdown)); // Function if system exit
         logger.time("ThreadLoad", startTime); // writing to console how long it take to init threads
     }
@@ -296,5 +296,9 @@ public class Main {
 
     public static int getVersion() {
         return version;
+    }
+
+    public static GUIManager getGuiManager() {
+        return guiManager;
     }
 }

@@ -37,9 +37,12 @@ All information in files or internet is sent via JSON.
  <h2></h2>
  
  <h3>Website Links</h3>
- - (domain)/get?ts            (To get your teamspeak server information)<br>
- - (domain)/get?gsUUID=(uuid) (Replace (uuid) with a registered uuid. If the game server is running, it will send information to the rox server and is readable as json string)<br>
- - (domain)/get?ds            (To get information from the discord bot)
+ - (domain)/get?ts                                   (To get your teamspeak server information)<br>
+ - (domain)/get?gsUUID=(uuid)                        (Replace (uuid) with a registered uuid. If the game server is running, it will send information to the rox server and is readable as json string)<br>
+ - (domain)/get?ds                                   (To get information from the discord bot)
+ - (domain)/news                                     (To get the news as default json).<br>
+ - (domain)/news?style=true                          (To get the default table style for easy web implementation).<br>
+ - (domain)/news?style=true?customStyle=<fileName>   (To get a self-written css file for the table. The css files a searched in: <root>/http/css/).
  <br><br>
  To register a server you must add a entry in your database (gameserver). To get a uuid type /uuid in the console. The password is in SHA-256. You can create a password with /sha (text). It will return a sha 256 password.
 

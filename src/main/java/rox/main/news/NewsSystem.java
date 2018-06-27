@@ -53,7 +53,6 @@ public class NewsSystem {
             jsonObject.put(jsonObject.size() + 1, list);
 
             news.putAll(jsonObject);
-
             save();
         } catch (Exception e) {
             e.printStackTrace();

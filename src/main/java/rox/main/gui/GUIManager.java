@@ -11,6 +11,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -22,11 +23,20 @@ import java.util.UUID;
 
 public class GUIManager extends Application {
 
+    public ChoiceBox rankType;
+    public TextField userName;
+    public PasswordField userPassword;
+    public Button gameServerRegister;
+    public ToggleButton tsBotToggle;
+    public ToggleButton discordBotToggle;
+    public ToggleButton gameServerToggle;
     private Parent root;
 
     private FXMLLoader loader;
 
     private Timeline timeline;
+
+    private Stage primaryStage;
 
     @FXML
     private TextField serverName;
@@ -50,8 +60,7 @@ public class GUIManager extends Application {
     private Label usedMemory, freeMemory, maxMemory, responseServer;
 
     @Override
-    public void init(){
-    }
+    public void init(){ }
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -59,7 +68,8 @@ public class GUIManager extends Application {
         root = (loader = new FXMLLoader(getClass().getResource("/fxml/GUI.fxml"))).load();
         root.getStylesheets().add(getClass().getResource("/fxml/css/style.css").toExternalForm());
         primaryStage.setScene(new Scene(root));
-        primaryStage.show();
+        this.primaryStage = primaryStage;
+        if((Boolean)Main.getFileConfiguration().getValue("gui")) primaryStage.show();
     }
 
 
@@ -68,7 +78,7 @@ public class GUIManager extends Application {
         super.stop();
     }
 
-    public void toggleMainServer(){
+    public void toggleMainServer(MouseEvent mouseEvent){
         if(mainServerToggle.isSelected()){
             mainServerToggle.setText("Online");
             Main.getMainServer().start();
@@ -90,6 +100,7 @@ public class GUIManager extends Application {
                     }));
 
             timeline.setCycleCount(Animation.INDEFINITE);
+            timeline.setAutoReverse(true);
             timeline.play();
         }else{
             timeline.stop();
@@ -110,7 +121,57 @@ public class GUIManager extends Application {
 
     }
 
-    public void show(){
+    public void a(){
         launch();
+    }
+
+    public void show(){
+        primaryStage.show();
+    }
+
+    public void hide(){
+        primaryStage.hide();
+    }
+
+    public boolean isActive(){
+        return primaryStage.isShowing();
+    }
+
+    public FXMLLoader getLoader() {
+        return loader;
+    }
+
+    public Parent getRoot() {
+        return root;
+    }
+
+    public void toggleTsBot(MouseEvent mouseEvent) {
+        if(tsBotToggle.isSelected()){
+            tsBotToggle.setText("Online");
+            Main.getTsBot().connect();
+        }else{
+            tsBotToggle.setText("Offline");
+            Main.getTsBot().disconnect();
+        }
+    }
+
+    public void toggleGameServer(MouseEvent mouseEvent) {
+        if(gameServerToggle.isSelected()){
+            gameServerToggle.setText("Online");
+            Main.getGameSystem().start();
+        }else{
+            gameServerToggle.setText("Offline");
+            Main.getGameSystem().stop();
+        }
+    }
+
+    public void toggleDiscordBot(MouseEvent mouseEvent) {
+        if(discordBotToggle.isSelected()){
+            discordBotToggle.setText("Online");
+            Main.getDiscordBot().connect();
+        }else{
+            discordBotToggle.setText("Offline");
+            Main.getDiscordBot().disconnect();
+        }
     }
 }

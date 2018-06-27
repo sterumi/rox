@@ -70,6 +70,7 @@ public class FileConfiguration {
             object.put("maintenance", false);
             object.put("debug", false);
             object.put("maxConnections", 20);
+            object.put("gui", true);
             object.put("databaseType", "mysql");
             object.put("scriptEngine", new JSONArray().put("javascript").put("lua"));
             writer.write(object.toJSONString()); // write json string to file

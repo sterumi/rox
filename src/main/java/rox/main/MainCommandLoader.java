@@ -83,14 +83,13 @@ public class MainCommandLoader {
                 MainCommandExecuteEvent event = new MainCommandExecuteEvent(input.split(" ")[0], input.split(" "));
                 Main.getEventManager().callEvent(event);
                 if (event.isCancelled()) return;
-
-                this.getCommand(input.split(" ")[0]).command(input.split(" ")[0], input.split(" "));
-            } catch (Exception e) {
-                if (e instanceof NullPointerException) {
-                    Main.getLogger().log("ROX", "Command not found.");
+                if (classes.containsKey(input.split(" ")[0])) {
+                    this.getCommand(input.split(" ")[0]).command(input.split(" ")[0], input.split(" "));
                 } else {
-                    e.printStackTrace();
+                    Main.getLogger().log("ROX", "Command not found.");
                 }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
     }

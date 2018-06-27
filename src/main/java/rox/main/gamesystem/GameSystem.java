@@ -6,6 +6,7 @@ import rox.main.util.BaseServer;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 import java.sql.ResultSet;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -62,6 +63,7 @@ public class GameSystem implements BaseServer {
 
     public void stop(){
         try {
+            connections.keySet().forEach(this::disconnect);
             serverSocket.close();
         } catch (Exception e) {
             e.printStackTrace();
@@ -113,12 +115,17 @@ public class GameSystem implements BaseServer {
 
             }
         } catch (Exception e) {
+            if(e instanceof SocketException){
+                Main.getLogger().warn("MainServer", "Interrupted the accepting for clients.");
+                return;
+            }
             e.printStackTrace();
         }
     }
 
     public void disconnect(UUID uuid){
         DataService dataService = connections.get(uuid);
+        dataService.getWriter().println("DISCONNECT");
         dataService.getInputThread().interrupt();
         if(!dataService.getSocket().isClosed()) try { dataService.getSocket().close(); } catch (Exception e) { e.printStackTrace(); }
         connections.remove(uuid);
