@@ -38,11 +38,27 @@ public class NewsHandler implements HttpHandler {
                     if(!fileName.endsWith(".css")) fileName += ".css";
                     customCss = new File("http/css", fileName);
                     if(!customCss.exists()){
-                        response.append("<p>Could not find custom css file.</p>");
+                        response.append("<!DOCTYPE html><html><head><meta charset=\"UTF-8\"><style>table {font-family: arial, sans-serif;" +
+                                "border-collapse: collapse;width: 100%;}" +
+                                "td, th {border: 1px solid #dddddd;text-align: left;padding: 8px;}" +
+                                "tr:nth-child(even) {background-color: #dddddd;}</style></head><body>" +
+                                "<p>Could not find custom css file.</p>" +
+                                "<table><tr><th>News</th><th>Author</th><th>Date</th></tr>");
+                        Main.getNewsSystem().getNews().forEach((integer, jsonArray) -> response.append("<tr><td>" + jsonArray.get(0) + "</td><td>" + jsonArray.get(1) + "</td><td>" + jsonArray.get(2) + "</td></tr>"));
+                        response.append("</table></body></html>");
+
+                        HTTPNewsEvent event = new HTTPNewsEvent(Main.getHttpServer().getServer(), he, response.toString());
+                        Main.getEventManager().callEvent(event);
+                        if (event.isCancelled()) return;
+
+                        OutputStream os = he.getResponseBody();
+                        os.write(response.toString().getBytes());
+                        os.close();
+                        return;
                     }else{
                         StringBuilder cssContent = new StringBuilder();
                         new BufferedReader(new InputStreamReader(new FileInputStream(customCss))).lines().forEach(cssContent::append);
-                        response.append("<html><head><meta charset=\"UTF-8\"><style>" + cssContent.toString() + "</style></head>");
+                        response.append("<html><head><meta charset=\"UTF-8\"><style>").append(cssContent.toString()).append("</style></head>");
                     }
                 }else{
                     response.append("<!DOCTYPE html>" +
