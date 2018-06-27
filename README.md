@@ -39,7 +39,7 @@ All information in files or internet is sent via JSON.
  <h3>Website Links</h3>
  - (domain)/get?ts                                   (To get your teamspeak server information)<br>
  - (domain)/get?gsUUID=(uuid)                        (Replace (uuid) with a registered uuid. If the game server is running, it will send information to the rox server and is readable as json string)<br>
- - (domain)/get?ds                                   (To get information from the discord bot)
+ - (domain)/get?ds                                   (To get information from the discord bot)<br>
  - (domain)/news                                     (To get the news as default json).<br>
  - (domain)/news?style=true                          (To get the default table style for easy web implementation).<br>
  - (domain)/news?style=true?customStyle=(fileName)   (To get a self-written css file for the table. The css files a searched in: (root)/http/css/).
