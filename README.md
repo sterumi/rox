@@ -42,7 +42,7 @@ All information in files or internet is sent via JSON.
  - (domain)/get?ds                                   (To get information from the discord bot)<br>
  - (domain)/news                                     (To get the news as default json).<br>
  - (domain)/news?style=true                          (To get the default table style for easy web implementation).<br>
- - (domain)/news?style=true?customStyle=(fileName)   (To get a self-written css file for the table. The css files a searched in: (root)/http/css/).
+ - (domain)/news?style=true&customStyle=(fileName)   (To get a self-written css file for the table. The css files a searched in: (root)/http/css/).
  <br><br>
  To register a server you must add a entry in your database (gameserver). To get a uuid type /uuid in the console. The password is in SHA-256. You can create a password with /sha (text). It will return a sha 256 password.
 
