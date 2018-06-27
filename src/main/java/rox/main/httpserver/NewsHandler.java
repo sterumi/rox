@@ -69,7 +69,7 @@ public class NewsHandler implements HttpHandler {
                             "</style></head>");
                 }
                 response.append("<body><table><tr><th>News</th><th>Author</th><th>Date</th></tr>");
-                Main.getNewsSystem().getNews().forEach((integer, jsonArray) -> response.append("<tr><td>" + jsonArray.get(0) + "</td><td>" + jsonArray.get(1) + "</td><td>" + jsonArray.get(2) + "</td></tr>"));
+                Main.getNewsSystem().getNews().forEach((integer, jsonArray) -> response.append("<tr><td>").append(jsonArray.get(0)).append("</td><td>").append(jsonArray.get(1)).append("</td><td>").append(jsonArray.get(2)).append("</td></tr>"));
                 response.append("</table></body></html>");
             }
         }

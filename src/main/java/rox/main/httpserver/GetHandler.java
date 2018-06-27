@@ -6,8 +6,7 @@ import org.json.simple.JSONObject;
 import rox.main.Main;
 import rox.main.event.events.HTTPGetEvent;
 
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -26,13 +25,28 @@ public class GetHandler implements HttpHandler {
         StringBuilder response = new StringBuilder();
 
         parameters.keySet().forEach(key -> {
-            switch (key){
+            switch (key) {
                 case "gsUUID":
-                    UUID uuid = UUID.fromString((String)parameters.get(key));
-                    if(Main.getGameSystem().getConnections().containsKey(uuid)){
-                        response.append(Main.getGameSystem().getConnections().get(uuid).toJSONString());
+
+                    if(parameters.get("gsUUID") != null){
+                        UUID uuid = UUID.fromString((String) parameters.get(key));
+                        if (Main.getGameSystem().getConnections().containsKey(uuid)) {
+                            try {
+                                computeGameServer(response, parameters, uuid);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        } else {
+                            response.append(new JSONObject().toJSONString());
+                        }
                     }else{
-                        response.append(new JSONObject().toJSONString());
+                        Main.getGameSystem().getConnections().keySet().forEach(uuid -> {
+                            try {
+                                computeGameServer(response, parameters, uuid);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        });
                     }
                     break;
                 case "ts":
@@ -47,5 +61,105 @@ public class GetHandler implements HttpHandler {
         OutputStream os = he.getResponseBody();
         os.write(response.toString().getBytes());
         os.close();
+    }
+
+    private void computeGameServer(StringBuilder response, Map<String, Object> parameters, UUID uuid) throws Exception{
+        if (parameters.containsKey("style")) {
+            if (((String) parameters.get("style")).equalsIgnoreCase("true")) {
+                File customCss;
+                if(parameters.containsKey("customStyle")){
+                    if(parameters.get("customStyle") != null){
+                        String fileName = (String)parameters.get("customStyle");
+                        if(!fileName.endsWith(".css")) fileName += ".css";
+                        customCss = new File("http/css", fileName);
+                        if(!customCss.exists()){
+                            response.append("<!DOCTYPE html>" +
+                                    "<html><head><meta charset=\"UTF-8\"><style>" +
+                                    "table {font-family: arial, sans-serif;    border-collapse: collapse;width: 100%;}" +
+                                    " td, th {border: 1px solid #dddddd;text-align: left;padding: 8px;}" +
+                                    "tr:nth-child(even) {background-color: #dddddd;}" +
+                                    "</style></head><body><p>Could not find custom css file.</p><table><tr><th>ServerName</th><th>Type</th><th>UUID</th><th>Version</th>");
+                        }else{
+                            StringBuilder cssContent = new StringBuilder();
+                            new BufferedReader(new InputStreamReader(new FileInputStream(customCss))).lines().forEach(cssContent::append);
+                            response.append("<html><head><meta charset=\"UTF-8\"><style>").append(cssContent.toString()).append("</style></head><table><tr><th>ServerName</th><th>Type</th><th>UUID</th><th>Version</th>");
+                        }
+                    }else{
+                        response.append("<!DOCTYPE html>" +
+                                "<html><head><meta charset=\"UTF-8\"><style>" +
+                                "table {font-family: arial, sans-serif;    border-collapse: collapse;width: 100%;}" +
+                                " td, th {border: 1px solid #dddddd;text-align: left;padding: 8px;}" +
+                                "tr:nth-child(even) {background-color: #dddddd;}" +
+                                "</style></head><body><p>Could not find custom css file.</p><table><tr><th>ServerName</th><th>Type</th><th>UUID</th><th>Version</th>");
+
+                    }
+                }else{
+                    response.append("<!DOCTYPE html>" +
+                            "<html><head><meta charset=\"UTF-8\"><style>" +
+                            "table {font-family: arial, sans-serif;    border-collapse: collapse;width: 100%;}" +
+                            " td, th {border: 1px solid #dddddd;text-align: left;padding: 8px;}" +
+                            "tr:nth-child(even) {background-color: #dddddd;}" +
+                            "</style></head><body><table><tr><th>ServerName</th><th>Type</th><th>UUID</th><th>Version</th>");
+                }
+
+                if(parameters.containsKey("advanced")){
+                    if(((String)parameters.get("advanced")).equalsIgnoreCase("true")){
+                        if (!Main.getGameSystem().getConnections().get(uuid).getInformation().isEmpty())
+                            Main.getGameSystem().getConnections().get(uuid).getInformation().keySet().forEach(s ->
+                                    response.append("<th>").append(s).append("</th>"));
+                        response.append("</tr>");
+
+                        Main.getGameSystem().getConnections().forEach((uid, o) ->
+                                response.append("<tr><td>")
+                                        .append(o.getName())
+                                        .append("</td><td>")
+                                        .append(o.getGameType().toString())
+                                        .append("</td><td>")
+                                        .append(uid)
+                                        .append("</td><td>")
+                                        .append(o.getVersion())
+                                        .append("</td>"));
+
+                        if (!Main.getGameSystem().getConnections().get(uuid).getInformation().isEmpty())
+                            Main.getGameSystem().getConnections().get(uuid).getInformation().forEach((s, o) ->
+                                    response.append("<td>").append(o).append("</td>"));
+
+                        response.append("</tr></table></body></html>");
+                    }else{
+                        response.append("</tr>");
+
+                        Main.getGameSystem().getConnections().forEach((uid, o) ->
+                                response.append("<tr><td>")
+                                        .append(o.getName())
+                                        .append("</td><td>")
+                                        .append(o.getGameType().toString())
+                                        .append("</td><td>")
+                                        .append(uid)
+                                        .append("</td><td>")
+                                        .append(o.getVersion())
+                                        .append("</td>"));
+                    }
+                }else{
+                    response.append("</tr>");
+
+                    Main.getGameSystem().getConnections().forEach((uid, o) ->
+                            response.append("<tr><td>")
+                                    .append(o.getName())
+                                    .append("</td><td>")
+                                    .append(o.getGameType().toString())
+                                    .append("</td><td>")
+                                    .append(uid)
+                                    .append("</td><td>")
+                                    .append(o.getVersion())
+                                    .append("</td>"));
+                }
+
+                response.append("</tr></table></body></html>");
+            } else {
+                response.append(Main.getGameSystem().getConnections().get(uuid).toJSONString());
+            }
+        } else {
+            response.append(Main.getGameSystem().getConnections().get(uuid).toJSONString());
+        }
     }
 }
