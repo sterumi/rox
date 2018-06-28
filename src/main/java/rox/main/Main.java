@@ -112,7 +112,7 @@ public class Main {
         switch (((String) fileConfiguration.getValue("databaseType")).toLowerCase()) {
             default:
             case "mysql":
-                (threads[0] = new Thread(() -> database = new Database(new DBData("localhost", 3306, "root", "", "rox")))).start(); // main server
+                (threads[0] = new Thread(() -> database = new Database(new DBData((String)fileConfiguration.getDatabaseValues().get("hostname"), Math.toIntExact((Long)fileConfiguration.getDatabaseValues().get("port")), (String)fileConfiguration.getDatabaseValues().get("username"), (String)fileConfiguration.getDatabaseValues().get("password"), (String)fileConfiguration.getDatabaseValues().get("database"))))).start(); // main server
                 break;
 
             case "jedis":
@@ -120,11 +120,11 @@ public class Main {
                 break;
 
         }
-        (threads[1] = new Thread(() -> mainServer = new MainServer(8981))).start(); // main server
+        (threads[1] = new Thread(() -> mainServer = new MainServer(Math.toIntExact((Long)fileConfiguration.getPortsValues().get("mainServer"))))).start(); // main server
         (threads[2] = new Thread(() -> discordBot = new DiscordBot((String) informatics[1]))).start(); // discord bot
         (threads[3] = new Thread(() -> mainCommandLoader.initCommandHandle())).start(); // system command handler
-        (threads[4] = new Thread(() -> gameSystem = new GameSystem(8982))).start(); // game system
-        (threads[5] = new Thread(() -> httpServer = new HTTPServer(8081))).start(); // http server
+        (threads[4] = new Thread(() -> gameSystem = new GameSystem(Math.toIntExact((Long)fileConfiguration.getPortsValues().get("gameSystem"))))).start(); // game system
+        (threads[5] = new Thread(() -> httpServer = new HTTPServer(Math.toIntExact((Long)fileConfiguration.getPortsValues().get("httpServer"))))).start(); // http server
         (threads[6] = new Thread(() -> tsBot = new TsBot((String) fileConfiguration.getTsValues().get("hostname"), (String) fileConfiguration.getTsValues().get("username"), (String) fileConfiguration.getTsValues().get("password")))).start(); // ts bot
         (threads[7] = new Thread(() -> newsSystem = new NewsSystem())).start(); // news system
         (threads[8] = new Thread(() -> pluginManager = new PluginManager())).start(); // plugin system
@@ -224,7 +224,6 @@ public class Main {
     }
 
     public static boolean isDebug() {
-
         return (Boolean) fileConfiguration.getValue("debug");
     }
 

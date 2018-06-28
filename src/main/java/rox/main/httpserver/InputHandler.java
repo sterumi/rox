@@ -11,7 +11,6 @@ public class InputHandler implements HttpHandler {
     @Override
     public void handle(HttpExchange e) {
         e.getResponseHeaders().add("Content-type", "text/html");
-
         File file;
         if (e.getRequestURI().getPath().equals("/")) {
             file = new File("http/", "index.html");
@@ -26,7 +25,6 @@ public class InputHandler implements HttpHandler {
             } else {
                 new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/html/notFound.html"))).lines().forEach(response::append);
             }
-
             HTTPInputEvent event = new HTTPInputEvent(Main.getHttpServer().getServer(), e, file);
             Main.getEventManager().callEvent(event);
             if (event.isCancelled()) return;
@@ -41,10 +39,7 @@ public class InputHandler implements HttpHandler {
 
     private String usingBufferedReader(String filePath) throws IOException {
         StringBuilder contentBuilder = new StringBuilder();
-        String sCurrentLine;
-        while ((sCurrentLine = new BufferedReader(new FileReader(filePath)).readLine()) != null) {
-            contentBuilder.append(sCurrentLine).append("\n");
-        }
+        new BufferedReader(new InputStreamReader(new FileInputStream(filePath))).lines().forEach(s -> contentBuilder.append(s).append("\n"));
         return contentBuilder.toString();
 
     }

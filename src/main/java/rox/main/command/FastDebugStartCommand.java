@@ -13,6 +13,7 @@ public class FastDebugStartCommand implements MainCommandExecutor {
             Main.setInformatics(1, Main.getFileConfiguration().getValue("discordToken"));
             Main.getDiscordBot().setToken((String) Main.getFileConfiguration().getValue("discordToken"));
             Main.getDiscordBot().connect();
+            Main.getTsBot().connect();
         } else {
             Main.getLogger().log("ROX", "Only 'fds'.");
         }

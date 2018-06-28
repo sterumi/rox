@@ -5,8 +5,10 @@ import com.sun.net.httpserver.HttpHandler;
 import org.json.simple.JSONObject;
 import rox.main.Main;
 import rox.main.event.events.HTTPGetEvent;
+import rox.main.server.permission.Rank;
 
 import java.io.*;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -27,7 +29,6 @@ public class GetHandler implements HttpHandler {
         parameters.keySet().forEach(key -> {
             switch (key) {
                 case "gsUUID":
-
                     if(parameters.get("gsUUID") != null){
                         UUID uuid = UUID.fromString((String) parameters.get(key));
                         if (Main.getGameSystem().getConnections().containsKey(uuid)) {
@@ -49,11 +50,43 @@ public class GetHandler implements HttpHandler {
                         });
                     }
                     break;
+
                 case "ts":
                     response.append(Main.getTsBot().toJSONString());
                     break;
+
                 case "ds":
                     response.append(Main.getDiscordBot().toJSONString());
+                    break;
+
+                case "info":
+                    JSONObject jsonObject = new JSONObject();
+                    jsonObject.put("gsConnections", Main.getGameSystem().getConnections().size());
+                    jsonObject.put("gsMaxConnections", Main.getGameSystem().getMaxConnections());
+                    jsonObject.put("gsVersions", Main.getGameSystem().getVersions());
+                    jsonObject.put("gsVersion", Main.getGameSystem().getVersion());
+                    jsonObject.put("gsActive", Main.getGameSystem().isActive());
+                    jsonObject.put("gsPort", Main.getGameSystem().getPort());
+                    jsonObject.put("loggerConstruct", Main.getLogger().getConstruct());
+                    jsonObject.put("msConnections", Main.getMainServer().getClients().size());
+                    jsonObject.put("msRanks", Arrays.toString(Rank.values()));
+                    jsonObject.put("msPort", Main.getMainServer().getPort());
+                    jsonObject.put("msActive", Main.getMainServer().isActive());
+                    jsonObject.put("msWaitingConnection", Main.getMainServer().isWaitingConnection());
+                    jsonObject.put("dsActive", Main.getDiscordBot().isConnected());
+                    jsonObject.put("dsInformation", Main.getDiscordBot().getInformation());
+                    jsonObject.put("tsHostname", Main.getTsBot().getHostname());
+                    jsonObject.put("tsClientID", Main.getTsBot().getClientId());
+                    jsonObject.put("tsUsername", Main.getTsBot().getUsername());
+                    jsonObject.put("tsInformation", Main.getTsBot().getInformation());
+                    jsonObject.put("tsActive", Main.getTsBot().isActive());
+                    jsonObject.put("httpPort", Main.getHttpServer().getPort());
+                    jsonObject.put("httpAddress", Main.getHttpServer().getServer().getAddress());
+                    jsonObject.put("news", Main.getNewsSystem().getNews());
+                    jsonObject.put("loadedPlugins", Main.getPluginManager().getPlugins().keySet());
+                    jsonObject.put("version", Main.getVersion());
+                    response.append(jsonObject.toJSONString());
+                    break;
             }
         });
 

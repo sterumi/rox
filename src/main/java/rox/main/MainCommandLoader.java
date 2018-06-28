@@ -54,21 +54,21 @@ public class MainCommandLoader {
      */
 
     void loadCommands() {
-        this.addCommand("discord", new DiscordCommand());
-        this.addCommand("exit", new ExitCommand());
-        this.addCommand("say", new SayCommand());
-        this.addCommand("server", new ServerCommand());
-        this.addCommand("token", new TokenCommand());
-        this.addCommand("help", new HelpCommand());
-        this.addCommand("uuid", new UUIDCommand());
-        this.addCommand("fds", new FastDebugStartCommand());
-        this.addCommand("gs", new GSCommand());
-        this.addCommand("exe", new ExecuteCommand());
-        this.addCommand("mem", new MemoryCommand());
-        this.addCommand("ts", new TSCommand());
-        this.addCommand("scripts", new ScriptsCommand());
-        this.addCommand("sha", new SHACommand());
-        this.addCommand("test", (name, args) -> System.out.println("test"));
+        this.addCommand("/discord", new DiscordCommand());
+        this.addCommand("/exit", new ExitCommand());
+        this.addCommand("/say", new SayCommand());
+        this.addCommand("/server", new ServerCommand());
+        this.addCommand("/token", new TokenCommand());
+        this.addCommand("/help", new HelpCommand());
+        this.addCommand("/uuid", new UUIDCommand());
+        this.addCommand("/fds", new FastDebugStartCommand());
+        this.addCommand("/gs", new GSCommand());
+        this.addCommand("/exe", new ExecuteCommand());
+        this.addCommand("/mem", new MemoryCommand());
+        this.addCommand("/ts", new TSCommand());
+        this.addCommand("/scripts", new ScriptsCommand());
+        this.addCommand("/sha", new SHACommand());
+        this.addCommand("/test", (name, args) -> System.out.println("test"));
     }
 
     /**
@@ -80,13 +80,17 @@ public class MainCommandLoader {
         String input;
         while ((input = new Scanner(System.in).nextLine()) != null) {
             try {
-                MainCommandExecuteEvent event = new MainCommandExecuteEvent(input.split(" ")[0], input.split(" "));
-                Main.getEventManager().callEvent(event);
-                if (event.isCancelled()) return;
-                if (classes.containsKey(input.split(" ")[0])) {
-                    this.getCommand(input.split(" ")[0]).command(input.split(" ")[0], input.split(" "));
-                } else {
-                    Main.getLogger().log("ROX", "Command not found.");
+                if(input.startsWith("/")){
+                    MainCommandExecuteEvent event = new MainCommandExecuteEvent(input.split(" ")[0], input.split(" "));
+                    Main.getEventManager().callEvent(event);
+                    if (event.isCancelled()) return;
+                    if (classes.containsKey(input.split(" ")[0])) {
+                        this.getCommand(input.split(" ")[0]).command(input.split(" ")[0], input.split(" "));
+                    } else {
+                        Main.getLogger().log("ROX", "Command not found.");
+                    }
+                }else{
+                    Main.getLogger().log("ROX", "Command not found. Please use /help.");
                 }
             } catch (Exception e) {
                 e.printStackTrace();

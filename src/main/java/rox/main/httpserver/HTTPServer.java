@@ -19,16 +19,6 @@ public class HTTPServer {
 
     private HttpServer server;
 
-    /*
-     * Added root and get/post handler.
-     * Currently not used but implemented.
-     * gets/posts currently not saved.
-     * Only groundwork.
-     *
-     * Used for news system
-     *
-     */
-
     public HTTPServer(int port) {
         this.port = port;
         start();
