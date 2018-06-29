@@ -1,21 +1,20 @@
 package rox.main.database;
 
 import com.mysql.cj.jdbc.exceptions.CommunicationsException;
+import org.json.simple.JSONArray;
 import rox.main.Main;
 import rox.main.event.events.DatabaseConnectEvent;
 import rox.main.event.events.DatabaseDisconnectEvent;
 import rox.main.event.events.DatabaseQueryEvent;
 import rox.main.event.events.DatabaseUpdateEvent;
-import rox.main.server.permission.Rank;
+import rox.main.util.RandomString;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
-public class Database implements DatabaseStructure{
+public class Database implements DatabaseStructure {
 
     private final DBData dbData;
 
@@ -23,23 +22,18 @@ public class Database implements DatabaseStructure{
 
     private boolean connected = false;
 
-    private BaseContent baseContent = new BaseContent();
-
-    private List<String> newCreatedTables = new ArrayList<>();
-
-    public Database(DBData dbData){
+    public Database(DBData dbData) {
         this.dbData = dbData;
         connect();
     }
 
     /**
      * Create the database connection and save them to the conn var
-     *
      */
 
-    public void connect(){
+    public void connect() {
         long startTime = System.currentTimeMillis();
-        try{
+        try {
             DatabaseConnectEvent event = new DatabaseConnectEvent();
             Main.getEventManager().callEvent(event);
             if (event.isCancelled()) return;
@@ -48,7 +42,7 @@ public class Database implements DatabaseStructure{
             setup();
             connected = true;
 
-        }catch (Exception e){
+        } catch (Exception e) {
             if (e instanceof CommunicationsException) {
                 Main.getLogger().err("Database", "Database is not active! SQLState: " + ((CommunicationsException) e).getSQLState());
             } else {
@@ -59,61 +53,76 @@ public class Database implements DatabaseStructure{
         Main.getLogger().time("DatabaseConnect", startTime);
     }
 
-    private void setup(){
+    private void setup() {
         Main.getLogger().debug("Database", "Checking tables...");
         try {
-            ResultSet rs = conn.getMetaData().getTables(null, null, null, new String[]{"TABLE"});
-            List<String> registeredTables = new ArrayList<>(), unregisteredTables = new ArrayList<>();
-            while(rs.next()){
-                registeredTables.add(rs.getString("TABLE_NAME"));
-            }
+            Update("CREATE TABLE IF NOT EXISTS `users` (" +
+                    "  `id` int(11) NOT NULL AUTO_INCREMENT," +
+                    "  `username` text NOT NULL," +
+                    "  `uuid` text NOT NULL," +
+                    "  `password` text NOT NULL," +
+                    "  `discord_user_id` text ," +
+                    "  `points` int(11) ," +
+                    "  `bandate` text," +
+                    "  `rank` text NOT NULL," +
+                    "  PRIMARY KEY (`id`)" +
+                    ") ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;");
 
-            for (int i = 0; i < baseContent.getStandardTables().length; i++) {
-                if(!registeredTables.contains(baseContent.getStandardTables()[i])){
-                    unregisteredTables.add(baseContent.getStandardTables()[i]);
-                }
-            }
+            Update("CREATE TABLE IF NOT EXISTS `gameserver` (" +
+                    "  `id` int(11) NOT NULL AUTO_INCREMENT," +
+                    "  `name` text NOT NULL," +
+                    "  `uuid` text NOT NULL," +
+                    "  `gametype` enum('ARK','MINECRAFT','ARMA3','CSS','CSGO','AVORTION','FACTORIO') NOT NULL," +
+                    "  `lastlogin` mediumtext," +
+                    "  `password` text NOT NULL," +
+                    "  PRIMARY KEY (`id`)" +
+                    ") ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;");
 
+            Update("CREATE TABLE IF NOT EXISTS `ranks` (" +
+                    "  `id` int(11) NOT NULL AUTO_INCREMENT," +
+                    "  `rankName` text NOT NULL," +
+                    "  `permissions` text," +
+                    "  PRIMARY KEY (`id`)" +
+                    ") ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;");
+            Update("CREATE TABLE IF NOT EXISTS `ranks_default` (" +
+                    "  `id` int(11) NOT NULL AUTO_INCREMENT," +
+                    "  `normal` text NOT NULL," +
+                    "  `admin` text NOT NULL," +
+                    "  PRIMARY KEY (`id`)" +
+                    ") ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;");
 
-            unregisteredTables.parallelStream().forEach(s -> {
-                switch (s){
-                    case "users":
-                        Update("CREATE TABLE `users` (\n" +
-                                "  `id` int(11) NOT NULL AUTO_INCREMENT,\n" +
-                                "  `username` text NOT NULL,\n" +
-                                "  `uuid` text NOT NULL,\n" +
-                                "  `password` text NOT NULL,\n" +
-                                "  `discord_user_id` text NOT NULL,\n" +
-                                "  `points` int(11) NOT NULL,\n" +
-                                "  `bandate` text,\n" +
-                                "  `rank` text NOT NULL,\n" +
-                                "  PRIMARY KEY (`id`)\n" +
-                                ") ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;");
-                        break;
+            Main.getLogger().debug("Database", "Checking tables done!");
 
-                    case "gameserver":
-                        Update("CREATE TABLE `gameserver` (\n" +
-                                "  `id` int(11) NOT NULL AUTO_INCREMENT,\n" +
-                                "  `name` text NOT NULL,\n" +
-                                "  `uuid` text NOT NULL,\n" +
-                                "  `gametype` enum('ARK','MINECRAFT','ARMA3','CSS','CSGO','AVORTION','FACTORIO') NOT NULL,\n" +
-                                "  `lastlogin` mediumtext NOT NULL,\n" +
-                                "  `password` text NOT NULL,\n" +
-                                "  PRIMARY KEY (`id`)\n" +
-                                ") ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;");
-                        break;
-                }
-
-                newCreatedTables.add(s);
-                Main.getLogger().debug("Database", "Created table: " + s);
-                Main.getLogger().debug("Database", "Checking tables done!");
-            });
-
-            if(newCreatedTables.contains("users")){
-                String password = Main.getMathUtil().getRandomString(8);
+            if (!Query("SELECT * FROM users").next()){
+                String password = new RandomString().nextString();
                 Main.getLogger().log("Database", "Users table created first time. Creating temporary account for connection. Username: admin. Passwort: " + password);
-                Update("INSERT INTO users(username, uuid, password, rank) VALUES ('admin','" + UUID.randomUUID() + "','" + password + "','" + Rank.MANAGER + "')");
+                Update("INSERT INTO users(username, uuid, password, rank) VALUES ('admin','" + UUID.randomUUID() + "','" + password + "','Admin')");
             }
+            if (!Query("SELECT * FROM ranks_default").next()) Update("INSERT INTO ranks_default(normal, admin) VALUES ('User','Admin')");
+
+            if(!Query("SELECT * FROM ranks").next()){
+                JSONArray admn = new JSONArray(), hlp = new JSONArray(), dev, mod = new JSONArray(), sup, usr = new JSONArray();
+                admn.add("rox.admin");
+                hlp.add("rox.commands.*");
+                hlp.add("rox.bypass.join");
+                hlp.add("rox.bypass.ban");
+                dev = hlp;
+                mod.add("rox.commands.ban");
+                mod.add("rox.commands.msg");
+                mod.add("rox.commands.info");
+                mod.add("rox.bypass.join");
+                sup = mod;
+                usr.add("rox.commands.info");
+                usr.add("rox.commands.msg");
+
+                Update("INSERT INTO ranks(rankName, permissions) VALUES ('Admin','" + admn.toJSONString() + "')");
+                Update("INSERT INTO ranks(rankName, permissions) VALUES ('Helper','" + hlp.toJSONString() + "')");
+                Update("INSERT INTO ranks(rankName, permissions) VALUES ('Developer','" + dev.toJSONString() + "')");
+                Update("INSERT INTO ranks(rankName, permissions) VALUES ('Moderator','" + mod.toJSONString() + "')");
+                Update("INSERT INTO ranks(rankName, permissions) VALUES ('Supporter','" + sup.toJSONString() + "')");
+                Update("INSERT INTO ranks(rankName, permissions) VALUES ('User','" + usr.toJSONString() + "')");
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -121,10 +130,6 @@ public class Database implements DatabaseStructure{
 
     public boolean isConnected() {
         return connected;
-    }
-
-    public List<String> getNewCreatedTables() {
-        return newCreatedTables;
     }
 
     /**
@@ -184,16 +189,8 @@ public class Database implements DatabaseStructure{
         return dbData;
     }
 
-    public BaseContent getBaseContent() {
-        return baseContent;
-    }
-
     public Connection getConn() {
         return conn;
-    }
-
-    public void setBaseContent(BaseContent baseContent) {
-        this.baseContent = baseContent;
     }
 
     public void setConn(Connection conn) {
@@ -202,9 +199,5 @@ public class Database implements DatabaseStructure{
 
     public void setConnected(boolean connected) {
         this.connected = connected;
-    }
-
-    public void setNewCreatedTables(List<String> newCreatedTables) {
-        this.newCreatedTables = newCreatedTables;
     }
 }

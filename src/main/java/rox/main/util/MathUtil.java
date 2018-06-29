@@ -1,13 +1,12 @@
 package rox.main.util;
 
 import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.commons.lang.RandomStringUtils;
 
 import java.security.MessageDigest;
 
 public class MathUtil {
 
-    private char[] possibleCharacters = ("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789~`!@#$%^&*()-_=+[{]}\\|;:\'\",<.>/?").toCharArray();
+    private char[] possibleCharacters = ("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789").toCharArray();
 
 
 
@@ -33,10 +32,6 @@ public class MathUtil {
         } catch(Exception e){
             throw new RuntimeException(e);
         }
-    }
-
-    public String getRandomString(int length){
-        return RandomStringUtils.random(length, possibleCharacters);
     }
 
     public char[] getPossibleCharacters() {

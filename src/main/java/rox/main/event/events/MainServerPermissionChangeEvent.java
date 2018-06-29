@@ -2,7 +2,6 @@ package rox.main.event.events;
 
 import rox.main.event.Event;
 import rox.main.event.IHandler;
-import rox.main.server.permission.Rank;
 
 import java.util.UUID;
 
@@ -14,17 +13,17 @@ public class MainServerPermissionChangeEvent extends Event {
 
     private UUID uuid;
 
-    private Rank beforeChange, newRank;
+    private String beforeChange, newRank;
 
     private String name;
 
-    public MainServerPermissionChangeEvent(UUID uuid, Rank beforeChange, Rank newRank) {
+    public MainServerPermissionChangeEvent(UUID uuid, String beforeChange, String newRank) {
         this.uuid = uuid;
         this.beforeChange = beforeChange;
         this.newRank = newRank;
     }
 
-    public MainServerPermissionChangeEvent(String name, Rank beforeChange, Rank newRank) {
+    public MainServerPermissionChangeEvent(String name, String beforeChange, String newRank) {
         this.name = name;
         this.beforeChange = beforeChange;
         this.newRank = newRank;
@@ -34,11 +33,11 @@ public class MainServerPermissionChangeEvent extends Event {
         return name;
     }
 
-    public Rank getBeforeChange() {
+    public String getBeforeChange() {
         return beforeChange;
     }
 
-    public Rank getNewRank() {
+    public String getNewRank() {
         return newRank;
     }
 

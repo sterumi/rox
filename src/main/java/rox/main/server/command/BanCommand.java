@@ -2,7 +2,6 @@ package rox.main.server.command;
 
 import rox.main.Main;
 import rox.main.server.ServerCommandExecutor;
-import rox.main.server.permission.Rank;
 
 import java.io.PrintWriter;
 import java.util.UUID;
@@ -13,7 +12,7 @@ public class BanCommand implements ServerCommandExecutor {
 
         // §ban§<user>
         if (args.length == 1) {
-            if ((Main.getMainServer().getPermissionManager().hasRank((UUID) user[6], Rank.MAIN_SUPPORTER))) {
+            if ((Main.getMainServer().getPermissionManager().hasPermission((String)user[5], "rox.commands.ban"))) {
                 UUID targetUUID = Main.getMainServer().getStaticManager().getUUID(command.split("§")[1]);
                 if (Main.getMainServer().getStaticManager().isUserOnline(targetUUID)) {
                     Main.getMainServer().getStaticManager().banUser(targetUUID);

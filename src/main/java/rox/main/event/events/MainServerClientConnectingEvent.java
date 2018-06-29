@@ -2,7 +2,6 @@ package rox.main.event.events;
 
 import rox.main.event.Event;
 import rox.main.event.IHandler;
-import rox.main.server.permission.Rank;
 
 import java.io.BufferedReader;
 import java.io.PrintWriter;
@@ -50,8 +49,8 @@ public class MainServerClientConnectingEvent extends Event {
         return (PrintWriter) clientObject[4];
     }
 
-    public Rank getRank() {
-        return (Rank) clientObject[5];
+    public String getRank() {
+        return (String) clientObject[5];
     }
 
     public UUID getUUID() {

@@ -5,7 +5,6 @@ import rox.main.event.events.MainServerStartingEvent;
 import rox.main.event.events.MainServerStoppingEvent;
 import rox.main.server.command.*;
 import rox.main.server.permission.PermissionManager;
-import rox.main.server.permission.Rank;
 import rox.main.util.BaseServer;
 
 import java.io.*;
@@ -89,6 +88,7 @@ public class MainServer implements BaseServer {
             acceptThread.interrupt();
             clients.forEach(((s, objects) -> ((Thread) objects[2]).interrupt()));
             clients.clear();
+            permissionManager.updatePermission();
             Main.getLogger().log("MainServer", "Stopped.");
             return true;
         } catch (IOException e) {
@@ -156,7 +156,7 @@ public class MainServer implements BaseServer {
 
 
     void createUser(String username, String password) {
-        Main.getDatabase().Update("INSERT INTO users(username, uuid, password, points, rank) VALUES ('" + username + "','" + UUID.randomUUID() + "','" + password + "','0','" + Rank.USER + "')");
+        Main.getDatabase().Update("INSERT INTO users(username, uuid, password, points, rank) VALUES ('" + username + "','" + UUID.randomUUID() + "','" + password + "','0','" + permissionManager.getDefault() + "')");
     }
 
     public boolean isMaintenance() {

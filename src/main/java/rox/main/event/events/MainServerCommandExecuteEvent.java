@@ -2,7 +2,6 @@ package rox.main.event.events;
 
 import rox.main.event.Event;
 import rox.main.event.IHandler;
-import rox.main.server.permission.Rank;
 
 import java.io.BufferedReader;
 import java.io.PrintWriter;
@@ -51,8 +50,8 @@ public class MainServerCommandExecuteEvent extends Event {
         return (PrintWriter) objects[4];
     }
 
-    public Rank getRank() {
-        return (Rank) objects[5];
+    public String getRank() {
+        return (String) objects[5];
     }
 
     public UUID getUUID() {

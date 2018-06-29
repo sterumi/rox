@@ -5,7 +5,6 @@ import com.sun.net.httpserver.HttpHandler;
 import org.json.simple.JSONObject;
 import rox.main.Main;
 import rox.main.event.events.HTTPGetEvent;
-import rox.main.server.permission.Rank;
 
 import java.io.*;
 import java.util.Arrays;
@@ -69,7 +68,9 @@ public class GetHandler implements HttpHandler {
                     jsonObject.put("gsPort", Main.getGameSystem().getPort());
                     jsonObject.put("loggerConstruct", Main.getLogger().getConstruct());
                     jsonObject.put("msConnections", Main.getMainServer().getClients().size());
-                    jsonObject.put("msRanks", Arrays.toString(Rank.values()));
+                    jsonObject.put("msRanks", Arrays.toString(Main.getMainServer().getPermissionManager().getRanks().keySet().toArray()));
+                    jsonObject.put("msDefaultRank", Main.getMainServer().getPermissionManager().getDefault());
+                    jsonObject.put("msAdminRank", Main.getMainServer().getPermissionManager().getDefaultAdmin());
                     jsonObject.put("msPort", Main.getMainServer().getPort());
                     jsonObject.put("msActive", Main.getMainServer().isActive());
                     jsonObject.put("msWaitingConnection", Main.getMainServer().isWaitingConnection());
