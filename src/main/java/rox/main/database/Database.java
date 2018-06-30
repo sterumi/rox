@@ -96,7 +96,7 @@ public class Database implements DatabaseStructure {
             if (!Query("SELECT * FROM users").next()){
                 String password = new RandomString().nextString();
                 Main.getLogger().log("Database", "Users table created first time. Creating temporary account for connection. Username: admin. Passwort: " + password);
-                Update("INSERT INTO users(username, uuid, password, rank) VALUES ('admin','" + UUID.randomUUID() + "','" + password + "','Admin')");
+                Update("INSERT INTO users(username, uuid, password, rank) VALUES ('admin','" + UUID.randomUUID() + "','" + Main.getMathUtil().computeSHA256(password) + "','Admin')");
             }
             if (!Query("SELECT * FROM ranks_default").next()) Update("INSERT INTO ranks_default(normal, admin) VALUES ('User','Admin')");
 

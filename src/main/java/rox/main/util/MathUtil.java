@@ -8,8 +8,6 @@ public class MathUtil {
 
     private char[] possibleCharacters = ("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789").toCharArray();
 
-
-
     public String computeSHAHex(String string){
         return DigestUtils.shaHex(string);
     }

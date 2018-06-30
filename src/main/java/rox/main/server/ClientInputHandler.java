@@ -7,10 +7,10 @@ import java.io.*;
 
 public class ClientInputHandler extends Thread {
 
-    private final Object[] objects;
+    private final Client client;
 
-    ClientInputHandler(Object[] objects) {
-        this.objects = objects;
+    ClientInputHandler(Client client) {
+        this.client = client;
     }
 
     /**
@@ -21,19 +21,20 @@ public class ClientInputHandler extends Thread {
     public void run() {
         try {
             String input;
-            while ((input = ((BufferedReader) objects[3]).readLine()) != null) { // While loop: execute code below if something is incoming from the user
+            while ((input = client.getReader().readLine()) != null) { // While loop: execute code below if something is incoming from the user
+
                 long startTime = System.currentTimeMillis(); // to calculate the time
-                String[] args = input.split("[§ ]+"); // splitting message to string array
+                String[] args = input.substring(1).split("[§ ]+"); // splitting message to string array
 
                 if (input.startsWith("§")) { // if the message start with § then execute
 
-                    MainServerCommandExecuteEvent event = new MainServerCommandExecuteEvent(objects, args[0], args);
+                    MainServerCommandExecuteEvent event = new MainServerCommandExecuteEvent(client, args[0], args);
                     Main.getEventManager().callEvent(event);
                     if (event.isCancelled()) return;
 
-                    Main.getMainServer().getServerCommandLoader().getCommand(args[0]).command(objects, args[0], args); // execute command if exist
+                    Main.getMainServer().getServerCommandLoader().getCommand(args[0].toUpperCase()).command(client, args[0].toUpperCase(), args); // execute command if exist
                 } else {
-                    ((PrintWriter) objects[4]).println("§INVALID_COMMAND_STRUCTURE"); // sending if command doesn't start with §
+                    client.getWriter().println("§INVALID_COMMAND_STRUCTURE"); // sending if command doesn't start with §
                 }
                 Main.getLogger().time("MSInputCommand (" + args[0] + ")", startTime); // Print the time it took to execute
             }
@@ -63,8 +64,8 @@ public class ClientInputHandler extends Thread {
         return super.getState();
     }
 
-    public Object[] getObjects() {
-        return objects;
+    public Client getClient() {
+        return client;
     }
 
     @Override

@@ -1,6 +1,7 @@
 package rox.main.server.command;
 
 import rox.main.Main;
+import rox.main.server.Client;
 import rox.main.server.ServerCommandExecutor;
 
 import java.io.IOException;
@@ -9,13 +10,13 @@ import java.util.UUID;
 
 public class DisconnectCommand implements ServerCommandExecutor {
     @Override
-    public boolean command(Object[] user, String command, String[] args) {
+    public boolean command(Client user, String command, String[] args) {
 
-        Socket socket = (Socket) user[1];
+        Socket socket = user.getSocket();
         try {
-            ((Thread) user[2]).interrupt();
-            Main.getMainServer().saveUser((UUID) user[6]);
-            Main.getMainServer().getClients().remove((UUID) user[6]);
+            user.getInputThread().interrupt();
+            Main.getMainServer().saveUser(user.getUUID());
+            Main.getMainServer().getClients().remove(user.getUUID());
             socket.close();
         } catch (IOException e) {
             e.printStackTrace();

@@ -11,6 +11,6 @@ public interface ServerCommandExecutor {
      * @return A bool if success to complete the function
      */
 
-    boolean command(Object[] user, String command, String[] args);
+    boolean command(Client user, String command, String[] args);
 
 }

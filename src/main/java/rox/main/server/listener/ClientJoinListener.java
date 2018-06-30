@@ -15,10 +15,10 @@ public class ClientJoinListener implements Listener {
     @EventAnnotation
     public void onJoin(MainServerClientConnectingEvent e){
         try {
-            if(!Main.getDatabase().Query("SELECT * FROM ranks WHERE rankName='" + e.getRank() + "'").next()){
-                e.getPrintWriter().println("§RANK_NOT_FOUND");
-                Main.getMainServer().getClients().get(e.getUUID())[5] = Main.getMainServer().getPermissionManager().getDefault();
-                e.getPrintWriter().println("§UPDATED_RANK§" + Main.getMainServer().getPermissionManager().getDefault());
+            if(!Main.getDatabase().Query("SELECT * FROM ranks WHERE rankName='" + e.getClient().getRank() + "'").next()){
+                e.getClient().getWriter().println("§RANK_NOT_FOUND");
+                Main.getMainServer().getClients().get(e.getClient().getUUID()).setRank(Main.getMainServer().getPermissionManager().getDefault());
+                e.getClient().getWriter().println("§UPDATED_RANK§" + Main.getMainServer().getPermissionManager().getDefault());
             }
         } catch (SQLException e1) {
             e1.printStackTrace();

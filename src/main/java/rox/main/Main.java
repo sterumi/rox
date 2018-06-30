@@ -107,18 +107,11 @@ public class Main {
     }
 
     private static void loadThreads() { // starts all servers and some system functions in a own thread
-
         long startTime = System.currentTimeMillis(); //Loading Time
         switch (((String) fileConfiguration.getValue("databaseType")).toLowerCase()) {
             default:
-            case "mysql":
-                (threads[0] = new Thread(() -> database = new Database(new DBData((String)fileConfiguration.getDatabaseValues().get("hostname"), Math.toIntExact((Long)fileConfiguration.getDatabaseValues().get("port")), (String)fileConfiguration.getDatabaseValues().get("username"), (String)fileConfiguration.getDatabaseValues().get("password"), (String)fileConfiguration.getDatabaseValues().get("database"))))).start(); // main server
-                break;
-
-            case "jedis":
-                (threads[0] = new Thread(() -> jedisClient = new Jedis(new DBData("localhost", 3306, "root", "", "rox")))).start(); // Jed
-                break;
-
+            case "mysql": (threads[0] = new Thread(() -> database = new Database(new DBData((String)fileConfiguration.getDatabaseValues().get("hostname"), Math.toIntExact((Long)fileConfiguration.getDatabaseValues().get("port")), (String)fileConfiguration.getDatabaseValues().get("username"), (String)fileConfiguration.getDatabaseValues().get("password"), (String)fileConfiguration.getDatabaseValues().get("database"))))).start(); break;
+            case "jedis": (threads[0] = new Thread(() -> jedisClient = new Jedis(new DBData("localhost", 3306, "root", "", "rox")))).start(); break;
         }
         (threads[1] = new Thread(() -> mainServer = new MainServer(Math.toIntExact((Long)fileConfiguration.getPortsValues().get("mainServer"))))).start(); // main server
         (threads[2] = new Thread(() -> discordBot = new DiscordBot((String) informatics[1]))).start(); // discord bot
@@ -129,19 +122,11 @@ public class Main {
         (threads[7] = new Thread(() -> newsSystem = new NewsSystem())).start(); // news system
         (threads[8] = new Thread(() -> pluginManager = new PluginManager())).start(); // plugin system
 
-        ((JSONArray) Main.getFileConfiguration().getValue("scriptEngine")).parallelStream().forEach(o -> {
-            switch ((String) o) {
-                case "lua":
-                    (threads[9] = new Thread(() -> luaLoader = new LuaLoader())).start(); // javascript engine
-                    break;
-
-                case "javascript":
-                    (threads[9] = new Thread(() -> javaScriptEngine = new JavaScriptEngine())).start(); // javascript engine
-                    break;
-            }
-        });
-        guiManager = new GUIManager();
-        (threads[10] = new Thread(() -> guiManager.a())).start(); // plugin system
+        ((JSONArray) Main.getFileConfiguration().getValue("scriptEngine")).parallelStream().forEach(o -> { switch ((String) o) {
+                case "lua": (threads[9] = new Thread(() -> luaLoader = new LuaLoader())).start(); break;
+                case "javascript": (threads[9] = new Thread(() -> javaScriptEngine = new JavaScriptEngine())).start(); break;
+            }});
+        (threads[10] = new Thread(() -> (guiManager = new GUIManager()).a())).start();
         Runtime.getRuntime().addShutdownHook(new Thread(Main::shutdown)); // Function if system exit
         logger.time("ThreadLoad", startTime); // writing to console how long it take to init threads
     }

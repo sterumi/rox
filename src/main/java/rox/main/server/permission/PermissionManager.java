@@ -18,6 +18,13 @@ public class PermissionManager {
         try{
             ResultSet rs = Main.getDatabase().Query("SELECT * FROM ranks");
             while(rs.next()) ranks.put(rs.getString("rankName"), (JSONArray) new JSONParser().parse(rs.getString("permissions")));
+
+            ResultSet rs1 = Main.getDatabase().Query("SELECT * FROM ranks_default");
+            while(rs1.next()){
+                defaults.put("normal", rs1.getString("normal"));
+                defaults.put("admin", rs1.getString("admin"));
+            }
+
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -41,6 +48,9 @@ public class PermissionManager {
 
 
     public boolean hasPermission(String rankName, String permission) {
+        System.out.println(rankName);
+        System.out.println(getDefaultAdmin());
+        if(rankName.equalsIgnoreCase(getDefaultAdmin())) return true;
         return ranks.get(rankName).contains(permission);
     }
 
@@ -119,7 +129,7 @@ public class PermissionManager {
         if(ranks.containsKey(rankName)){
             ranks.remove(rankName);
             Main.getDatabase().Update("DELETE FROM ranks WHERE rankName='" + rankName + "'");
-            Main.getMainServer().getClients().forEach((uuid, objects) -> { if(((String)objects[5]).equalsIgnoreCase(rankName)) objects[5] = defaults.get("normal"); });
+            Main.getMainServer().getClients().forEach((uuid, objects) -> { if(objects.getRank().equalsIgnoreCase(rankName)) objects.setRank(defaults.get("normal")); });
             return true;
         }else return false;
     }

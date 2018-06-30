@@ -4,6 +4,7 @@ import rox.main.Main;
 import rox.main.event.events.MainServerStartingEvent;
 import rox.main.event.events.MainServerStoppingEvent;
 import rox.main.server.command.*;
+import rox.main.server.dummy.TestClient;
 import rox.main.server.permission.PermissionManager;
 import rox.main.util.BaseServer;
 
@@ -20,7 +21,7 @@ public class MainServer implements BaseServer {
 
     private boolean waitingConnection = true, isActive = false;
 
-    private ConcurrentHashMap<UUID, Object[]> clients = new ConcurrentHashMap<>();
+    private ConcurrentHashMap<UUID, Client> clients = new ConcurrentHashMap<>();
 
 
     private Thread acceptThread;
@@ -66,6 +67,9 @@ public class MainServer implements BaseServer {
             loadCommands(); // Loading all commands for the clients
             Main.getLogger().log("MainServer", "Started.");
             isActive = true; // Global boolean to check if server is active
+
+            if((Boolean)Main.getFileConfiguration().getDummyValues().get("enable")) new TestClient().connect();
+
             return true;
         } catch (IOException e) {
             e.printStackTrace();
@@ -86,10 +90,13 @@ public class MainServer implements BaseServer {
 
             serverSocket.close();
             acceptThread.interrupt();
-            clients.forEach(((s, objects) -> ((Thread) objects[2]).interrupt()));
+            clients.forEach(((s, client) -> (client.getInputThread()).interrupt()));
             clients.clear();
             permissionManager.updatePermission();
             Main.getLogger().log("MainServer", "Stopped.");
+
+
+
             return true;
         } catch (IOException e) {
             e.printStackTrace();
@@ -97,7 +104,7 @@ public class MainServer implements BaseServer {
         return false;
     }
 
-    public ConcurrentHashMap<UUID, Object[]> getClients() {
+    public ConcurrentHashMap<UUID, Client> getClients() {
         return clients;
     }
 
@@ -105,7 +112,7 @@ public class MainServer implements BaseServer {
         return serverSocket.isClosed();
     }
 
-    public void setClients(ConcurrentHashMap<UUID, Object[]> clients) {
+    public void setClients(ConcurrentHashMap<UUID, Client> clients) {
         if (this.clients != null) this.clients.clear();
         this.clients = clients;
     }
@@ -131,11 +138,11 @@ public class MainServer implements BaseServer {
     }
 
     private void loadCommands() {
-        serverCommandLoader.addCommand("§DISCONNECT", new DisconnectCommand());
-        serverCommandLoader.addCommand("§MSG", new MsgCommand());
-        serverCommandLoader.addCommand("§INFO", new InfoCommand());
-        serverCommandLoader.addCommand("§BAN", new BanCommand());
-        serverCommandLoader.addCommand("§RANK", new RankCommand());
+        serverCommandLoader.addCommand("DISCONNECT", new DisconnectCommand());
+        serverCommandLoader.addCommand("MSG", new MsgCommand());
+        serverCommandLoader.addCommand("INFO", new InfoCommand());
+        serverCommandLoader.addCommand("BAN", new BanCommand());
+        serverCommandLoader.addCommand("RANK", new RankCommand());
     }
 
     public ServerCommandLoader getServerCommandLoader() {
@@ -147,7 +154,7 @@ public class MainServer implements BaseServer {
     }
 
     public void saveUser(UUID uuid) {
-        Main.getDatabase().Update("UPDATE users SET rank='" + getClients().get(uuid)[5].toString().toUpperCase() + "'");
+        Main.getDatabase().Update("UPDATE users SET rank='" + getClients().get(uuid).getRank() + "'");
     }
 
     public PermissionManager getPermissionManager() {

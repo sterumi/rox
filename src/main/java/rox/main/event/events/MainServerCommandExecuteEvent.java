@@ -2,6 +2,7 @@ package rox.main.event.events;
 
 import rox.main.event.Event;
 import rox.main.event.IHandler;
+import rox.main.server.Client;
 
 import java.io.BufferedReader;
 import java.io.PrintWriter;
@@ -14,12 +15,20 @@ public class MainServerCommandExecuteEvent extends Event {
 
     private boolean cancel;
 
-    private Object[] objects, args;
+    private Client client;
+    private String[] args;
 
     private String command;
 
 
-    public MainServerCommandExecuteEvent(Object[] objects, String command, String[] args) {
+    public MainServerCommandExecuteEvent(Client client, String command, String[] args) {
+        this.client = client;
+        this.command = command;
+        this.args = args;
+    }
+
+    public Client getClient() {
+        return client;
     }
 
     public String getCommand() {
@@ -28,34 +37,6 @@ public class MainServerCommandExecuteEvent extends Event {
 
     public Object[] getArgs() {
         return args;
-    }
-
-    public String getUsername() {
-        return (String) objects[0];
-    }
-
-    public Socket getSocket() {
-        return (Socket) objects[1];
-    }
-
-    public Thread getClientInputThread() {
-        return (Thread) objects[2];
-    }
-
-    public BufferedReader getBufferedReader() {
-        return (BufferedReader) objects[3];
-    }
-
-    public PrintWriter getPrintWriter() {
-        return (PrintWriter) objects[4];
-    }
-
-    public String getRank() {
-        return (String) objects[5];
-    }
-
-    public UUID getUUID() {
-        return (UUID) objects[6];
     }
 
     public boolean isCancelled() {

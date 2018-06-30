@@ -14,7 +14,7 @@ public class FileConfiguration {
 
     private JSONParser parser;
 
-    private ConcurrentHashMap<String, Object> values, ts_values, lua_values, commands_values, ports_values, database_values;
+    private ConcurrentHashMap<String, Object> values, ts_values, lua_values, commands_values, ports_values, database_values, dummy_values;
 
     private boolean setting_up;
 
@@ -31,11 +31,13 @@ public class FileConfiguration {
             ports_values = new ConcurrentHashMap<>();
             commands_values = new ConcurrentHashMap<>();
             database_values = new ConcurrentHashMap<>();
+            dummy_values = new ConcurrentHashMap<>();
             files.put("config", new File("config/", "config.json"));
             files.put("tsbot", new File("config/", "tsbot.json"));
             files.put("news", new File("config/", "news.json"));
             files.put("lua", new File("config/", "lua.json"));
             files.put("commands", new File("commands.json"));
+            files.put("dummy", new File("config/dummy.json"));
             files.put("ports", new File("config/ports.json"));
             files.put("database", new File("config/database.json"));
             for (File file : Objects.requireNonNull(new File("config/").listFiles())) {
@@ -156,6 +158,22 @@ public class FileConfiguration {
         }
         ((JSONObject) new JSONParser().parse(new FileReader(files.get("database").getPath()))).forEach((key, value) -> database_values.put((String) key, value)); // loads content of commands file to a hashmap
 
+
+        if (!files.get("dummy").exists()) {
+            PrintWriter writer = new PrintWriter(new OutputStreamWriter(new FileOutputStream(files.get("dummy")), "utf-8"), true); // create writer to file
+            JSONObject object = new JSONObject();
+            object.put("enable", false);
+            object.put("hostname", "localhost");
+            object.put("port", 8981);
+            object.put("username", "admin");
+            object.put("password", "CBxYkC4XWgx");
+            object.put("command", "info");
+            object.put("key", "onlineClients");
+            writer.write(object.toJSONString()); // write json string to file
+            writer.close(); // close writer after finish
+        }
+        ((JSONObject) new JSONParser().parse(new FileReader(files.get("dummy").getPath()))).forEach((key, value) -> dummy_values.put((String) key, value)); // loads content of commands file to a hashmap
+
     }
 
 
@@ -270,5 +288,10 @@ public class FileConfiguration {
 
     public ConcurrentHashMap<String, Object> getDatabaseValues() {
         return database_values;
+    }
+
+
+    public ConcurrentHashMap<String, Object> getDummyValues() {
+        return dummy_values;
     }
 }

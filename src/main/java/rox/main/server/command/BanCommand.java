@@ -1,6 +1,7 @@
 package rox.main.server.command;
 
 import rox.main.Main;
+import rox.main.server.Client;
 import rox.main.server.ServerCommandExecutor;
 
 import java.io.PrintWriter;
@@ -8,22 +9,24 @@ import java.util.UUID;
 
 public class BanCommand implements ServerCommandExecutor {
     @Override
-    public boolean command(Object[] user, String command, String[] args) {
+    public boolean command(Client user, String command, String[] args) {
 
         // §ban§<user>
-        if (args.length == 1) {
-            if ((Main.getMainServer().getPermissionManager().hasPermission((String)user[5], "rox.commands.ban"))) {
-                UUID targetUUID = Main.getMainServer().getStaticManager().getUUID(command.split("§")[1]);
+        if (args.length == 2) {
+            if ((Main.getMainServer().getPermissionManager().hasPermission(user.getRank(), "rox.commands.ban"))) {
+                UUID targetUUID = Main.getMainServer().getStaticManager().getUUID(args[1]);
                 if (Main.getMainServer().getStaticManager().isUserOnline(targetUUID)) {
                     Main.getMainServer().getStaticManager().banUser(targetUUID);
+                    return true;
                 } else {
                     Main.getMainServer().getStaticManager().banOfflineUser(targetUUID);
+                    return true;
                 }
             } else {
-                ((PrintWriter) user[4]).println("§ban§NO_PERM");
+                user.getWriter().println("§ban§NO_PERM");
             }
         } else {
-            ((PrintWriter) user[4]).println("§ban§ARGS_NOT_ALLOWED");
+            user.getWriter().println("§ban§ARGS_NOT_ALLOWED");
         }
 
         return false;

@@ -2,6 +2,7 @@ package rox.main.event.events;
 
 import rox.main.event.Event;
 import rox.main.event.IHandler;
+import rox.main.server.Client;
 
 import java.io.BufferedReader;
 import java.io.PrintWriter;
@@ -23,38 +24,14 @@ public class MainServerClientConnectingEvent extends Event {
         return list;
     }
 
-    private Object[] clientObject;
+    private Client client;
 
-    public MainServerClientConnectingEvent(Object[] clientObject) {
-        this.clientObject = clientObject;
+    public MainServerClientConnectingEvent(Client client) {
+        this.client = client;
     }
 
-    public String getName() {
-        return (String) clientObject[0];
-    }
-
-    public Socket getSocket() {
-        return (Socket) clientObject[1];
-    }
-
-    public Thread getClientInputThread() {
-        return (Thread) clientObject[2];
-    }
-
-    public BufferedReader getBufferedReader() {
-        return (BufferedReader) clientObject[3];
-    }
-
-    public PrintWriter getPrintWriter() {
-        return (PrintWriter) clientObject[4];
-    }
-
-    public String getRank() {
-        return (String) clientObject[5];
-    }
-
-    public UUID getUUID() {
-        return (UUID) clientObject[6];
+    public Client getClient() {
+        return client;
     }
 
     public boolean isCancelled() {

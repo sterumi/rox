@@ -47,8 +47,7 @@ public class ClientAcceptHandler extends Thread {
                 BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream(), Charset.forName("UTF-8")));
                 PrintWriter writer = new PrintWriter(new OutputStreamWriter(socket.getOutputStream(), Charset.forName("UTF-8")), true);
 
-                String[] input = reader.readLine().substring(1).split("§"); // split incoming message to array with §. Connectionstring with informations
-
+                String[] input = reader.readLine().split("§"); // split incoming message to array with §. Connectionstring with informations
                 if (Main.getDatabase().Query("SELECT * FROM users WHERE username='" + input[0] + "' AND password='" + input[1] + "'") != null) {
                     // if the username is registered in the database
 
@@ -57,26 +56,20 @@ public class ClientAcceptHandler extends Thread {
                         writer.println("§BANNED");
                         return;
                     }
-
-                    Object[] objects = new Object[8]; // new object array to save the information
+                    UUID uuid = Main.getMainServer().getStaticManager().getUUID(input[0]);
                     Thread thread; // the input thread for the client
-                    objects[0] = input[0]; // username
-                    objects[1] = socket; // socket
-                    objects[3] = reader; // reader to avoid to create every time a new (new (new (new ()))).. shit
-                    objects[4] = writer; // same here for the writer
-                    objects[6] = Main.getMainServer().getStaticManager().getUUID(input[0]); // uuid
-                    objects[5] = Main.getMainServer().getPermissionManager().getRankDatabase((UUID) objects[6]); // the rank of the user
-                    (thread = new ClientInputHandler(objects)).start(); // starting input thread
-                    objects[2] = thread; //thread
+                    Client client = new Client(input[0], socket, reader, writer, uuid, Main.getMainServer().getPermissionManager().getRankDatabase(uuid));
+                    client.setInputThread(new ClientInputHandler(client));
+                    (thread = new ClientInputHandler(client)).start(); // starting input thread
 
-                    MainServerClientConnectingEvent event = new MainServerClientConnectingEvent(objects);
+                    MainServerClientConnectingEvent event = new MainServerClientConnectingEvent(client);
                     Main.getEventManager().callEvent(event);
                     if (event.isCancelled()) {
                         writer.println("§CONNECTION_CANCELLED");
                         return;
                     }
 
-                    Main.getMainServer().getClients().put(Main.getMainServer().getStaticManager().getUUID(input[0]), objects); // saving user to a async hashMap
+                    Main.getMainServer().getClients().put(Main.getMainServer().getStaticManager().getUUID(input[0]), client); // saving user to a async hashMap
                     writer.println("§SERVER_CONNECTED"); // writing user he is connected
                 } else {
                     writer.println("§SERVER_WRONG_LOGIN"); // if user is not found in database
