@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="de" aria-atomic="true">
+<head>
+    <title>ROX - Default Site</title>
+    <link rel="stylesheet" type="text/css" href="css/main_style.css" media="screen">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+</head>
+
+<body onload="load()">
+
+<div class="head">
+    <h1 class="head" align="center">ROX - Default Site</h1>
+</div>
+<ul class="navi">
+    <li><a href="#">Übersicht</a></li>
+    <li><a href="#">News</a></li>
+    <li><a href="#">Statistik</a></li>
+    <li><a href="#">Über</a></li>
+</ul>
+
+<div class="overview-pc-container">
+    <h1 class="head" align="center">Informationen</h1>
+    <div class="overview-pc"></div>
+</div>
+
+</body>
+
+<script>
+    var xmlhttp = new XMLHttpRequest();
+    var url = "localhost:8983/web?overview-pc";
+
+    xmlhttp.onreadystatechange = function() {
+        if (this.readyState === 4 && this.status === 200) {
+            var myArr = JSON.parse(this.responseText);
+            load(myArr);
+        }
+    };
+
+    xmlhttp.open("GET", url, true);
+    xmlhttp.send();
+
+    function load(arr) {
+        var out = "";
+        var i;
+        for(i = 0; i < arr.length; i++) {
+            out += '<a href="' + arr[i].url + '">' +
+                arr[i].display + '</a><br>';
+        }
+        document.getElementById("overview-pc").innerHTML = out;
+    }
+</script>
+
+</html>

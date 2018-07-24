@@ -36,6 +36,7 @@ public class HTTPServer {
             server.createContext("/get", new GetHandler());
             server.createContext("/post", new PostHandler());
             server.createContext("/news", new NewsHandler());
+            server.createContext("/web", new WebHandler());
             server.setExecutor(null);
             server.start();
             Main.getLogger().log("HTTP", "Started.");

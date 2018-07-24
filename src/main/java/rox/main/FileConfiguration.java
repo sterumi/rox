@@ -78,6 +78,7 @@ public class FileConfiguration {
             object.put("maxConnections", 20);
             object.put("gui", true);
             object.put("databaseType", "mysql");
+            object.put("useDefaultIndex", true);
             object.put("scriptEngine", new JSONArray().put("javascript").put("lua"));
             writer.write(object.toJSONString()); // write json string to file
             writer.close(); // close writer after finish

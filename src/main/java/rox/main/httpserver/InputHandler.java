@@ -12,14 +12,26 @@ public class InputHandler implements HttpHandler {
     public void handle(HttpExchange e) {
         e.getResponseHeaders().add("Content-type", "text/html");
         File file;
+        StringBuilder response = new StringBuilder();
+
         if (e.getRequestURI().getPath().equals("/")) {
             file = new File("http/", "index.html");
         } else {
             file = new File("http/", e.getRequestURI().getPath());
         }
 
-        StringBuilder response = new StringBuilder();
         try {
+
+            if(e.getRequestURI().getPath().endsWith("index.html")){
+                if((Boolean) Main.getFileConfiguration().getValue("useDefaultIndex")){
+                    new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/html/notFound.html"))).lines().forEach(response::append);
+                    e.sendResponseHeaders(200, response.toString().length());
+                    e.getResponseBody().write(response.toString().getBytes());
+                    e.getResponseBody().close();
+                    return;
+                }
+            }
+
             if (file.exists()) {
                 response.append(usingBufferedReader(file.getCanonicalPath()));
             } else {
