@@ -39,9 +39,8 @@ public class JavaScriptEngine implements Script {
             if (this.scriptEngine == null) {
                 Main.getLogger().log("JavaScript", "Engine not found!");
             } else {
-                Invocable inv = (Invocable) this.scriptEngine;
                 this.scriptEngine.eval(new InputStreamReader(getClass().getResourceAsStream("/js/boot.js")));
-                inv.invokeFunction("__boot", this, scriptEngine);
+                ((Invocable) this.scriptEngine).invokeFunction("__boot", this, scriptEngine);
             }
         } catch (Exception e) {
             if (e instanceof ScriptException) {
@@ -64,7 +63,6 @@ public class JavaScriptEngine implements Script {
             StringBuilder content = new StringBuilder();
             try {
                 new BufferedReader(new InputStreamReader(new FileInputStream(file))).lines().forEach(content::append);
-
                 scriptEngine.eval(content.toString());
             } catch (Exception e) {
                 e.printStackTrace();

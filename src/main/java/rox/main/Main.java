@@ -155,17 +155,12 @@ public class Main {
 
 
     private static void shutdown() {
-
-        for (Thread thread : threads) {
-            if (thread != null) {
-                thread.interrupt();
-            }
-            pluginManager.stop();
-            discordBot.disconnect();
-            gameSystem.stop();
-            httpServer.getServer().stop(0);
-            mainServer.stop();
-        }
+        for (Thread thread : threads) if (thread != null) thread.interrupt();
+        pluginManager.stop();
+        discordBot.disconnect();
+        gameSystem.stop();
+        httpServer.getServer().stop(0);
+        mainServer.stop();
     }
 
     public static MainCommandLoader getMainCommandLoader() {
@@ -177,11 +172,8 @@ public class Main {
     }
 
     public static void setThread(int i, Thread thread) {
-        if (threads[i] == null) {
-            threads[threads.length + 1] = thread;
-        } else {
-            threads[i] = thread;
-        }
+        if (threads[i] == null) threads[threads.length + 1] = thread;
+         else threads[i] = thread;
     }
 
     public static Object[] getInformatics() {
