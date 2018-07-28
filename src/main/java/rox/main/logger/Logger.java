@@ -3,12 +3,16 @@ package rox.main.logger;
 import rox.main.Main;
 import rox.main.event.events.LoggerEvent;
 
+import java.io.File;
 import java.time.LocalDateTime;
+import java.util.logging.ConsoleHandler;
+import java.util.logging.FileHandler;
+import java.util.logging.Handler;
+import java.util.logging.Level;
 
 public class Logger {
 
     private String construct = "[TIME] [CLASS] [MESSAGE]";
-
 
     public void log(String name, String message) {
 
@@ -17,7 +21,6 @@ public class Logger {
         if (event.isCancelled()) return;
 
         if(name.startsWith("[") || name.endsWith("]"))name = name.substring(1, name.length() - 1);
-
         System.out.println("[INFO] " + construct.replace("[TIME]", "[" + LocalDateTime.now() + "]")
                 .replace("[CLASS]", "[" + name + "]").replace("[MESSAGE]", message));
     }

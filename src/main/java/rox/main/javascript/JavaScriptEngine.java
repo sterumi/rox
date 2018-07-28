@@ -15,9 +15,9 @@ import java.io.InputStreamReader;
 
 public class JavaScriptEngine implements Script {
 
-    private ScriptEngineManager scriptEngineManager;
+    private final ScriptEngineManager scriptEngineManager = new ScriptEngineManager();
 
-    private ScriptEngine scriptEngine = null;
+    private final ScriptEngine scriptEngine = scriptEngineManager.getEngineByName("JavaScript");
 
     private File rootPath = new File("scripts/javascript/");
 
@@ -34,11 +34,8 @@ public class JavaScriptEngine implements Script {
         if(rootPath.mkdirs())Main.getLogger().log("ROX", "Created javascript root path.");
 
         try {
-            scriptEngineManager = new ScriptEngineManager();
-            this.scriptEngine = scriptEngineManager.getEngineByName("JavaScript");
-            if (this.scriptEngine == null) {
-                Main.getLogger().log("JavaScript", "Engine not found!");
-            } else {
+            if (this.scriptEngine == null) Main.getLogger().log("JavaScript", "Engine not found!");
+            else {
                 this.scriptEngine.eval(new InputStreamReader(getClass().getResourceAsStream("/js/boot.js")));
                 ((Invocable) this.scriptEngine).invokeFunction("__boot", this, scriptEngine);
             }
@@ -67,9 +64,7 @@ public class JavaScriptEngine implements Script {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        }else{
-            Main.getLogger().err("ROX", "Could not find javascript file: " + filename);
-        }
+        }else Main.getLogger().err("ROX", "Could not find javascript file: " + filename);
     }
 
     public ScriptEngine getScriptEngine() {
@@ -88,11 +83,4 @@ public class JavaScriptEngine implements Script {
         this.rootPath = rootPath;
     }
 
-    public void setScriptEngine(ScriptEngine scriptEngine) {
-        this.scriptEngine = scriptEngine;
-    }
-
-    public void setScriptEngineManager(ScriptEngineManager scriptEngineManager) {
-        this.scriptEngineManager = scriptEngineManager;
-    }
 }
