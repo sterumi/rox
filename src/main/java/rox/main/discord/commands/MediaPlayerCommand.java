@@ -15,8 +15,8 @@ public class MediaPlayerCommand implements DiscordCommandExecutor {
 
     @Override
     public void command(JDA jda, Guild guild, Member sender, TextChannel currentChannel, String name, String[] args) {
-        if (sender.getRoles().get(0).getPosition() >= 7) {
-            musicStreamThread = new Thread(() -> musicStreamClass = new MusicStreamThread(guild, 451033355136401415L));
+        if (sender.getRoles().get(0).getName().equals("Idiot")) {
+            musicStreamThread = new Thread(() -> musicStreamClass = new MusicStreamThread(guild, 348114778641793024L));
             musicStreamThread.start();
         } else {
             sender.getUser().openPrivateChannel().queue((channel) -> channel.sendMessage("Du hast keine Berechtigung dafür!").complete());

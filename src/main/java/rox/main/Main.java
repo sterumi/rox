@@ -8,7 +8,7 @@ import rox.main.discord.DiscordBot;
 import rox.main.event.EventManager;
 import rox.main.event.events.MainStartedEvent;
 import rox.main.gamesystem.GameSystem;
-import rox.main.gui.GUIManager;
+//import rox.main.gui.GUIManager;
 import rox.main.httpserver.HTTPServer;
 import rox.main.logger.Logger;
 import rox.main.lua.LuaLoader;
@@ -18,6 +18,12 @@ import rox.main.pluginsystem.PluginManager;
 import rox.main.server.MainServer;
 import rox.main.teamspeak.TsBot;
 import rox.main.util.MathUtil;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 public class Main {
 
@@ -59,7 +65,7 @@ public class Main {
 
     private static MathUtil mathUtil = new MathUtil();
 
-    private static GUIManager guiManager;
+    //private static GUIManager guiManager;
 
     private static int version = 1;
 
@@ -114,7 +120,7 @@ public class Main {
             case "jedis": (threads[0] = new Thread(() -> jedisClient = new Jedis(new DBData("localhost", 3306, "root", "", "rox")))).start(); break;
         }
         (threads[1] = new Thread(() -> mainServer = new MainServer(Math.toIntExact((Long)fileConfiguration.getPortsValues().get("mainServer"))))).start(); // main server
-        (threads[2] = new Thread(() -> discordBot = new DiscordBot((String) informatics[1]))).start(); // discord bot
+        (threads[2] = new Thread(() -> discordBot = new DiscordBot(fileConfiguration.getValues().get("discordtoken").toString()))).start(); // discord bot
         (threads[3] = new Thread(() -> mainCommandLoader.initCommandHandle())).start(); // system command handler
         (threads[4] = new Thread(() -> gameSystem = new GameSystem(Math.toIntExact((Long)fileConfiguration.getPortsValues().get("gameSystem"))))).start(); // game system
         (threads[5] = new Thread(() -> httpServer = new HTTPServer(Math.toIntExact((Long)fileConfiguration.getPortsValues().get("httpServer"))))).start(); // http server
@@ -126,7 +132,7 @@ public class Main {
                 case "lua": (threads[9] = new Thread(() -> luaLoader = new LuaLoader())).start(); break;
                 case "javascript": (threads[9] = new Thread(() -> javaScriptEngine = new JavaScriptEngine())).start(); break;
             }});
-        (threads[10] = new Thread(() -> (guiManager = new GUIManager()).a())).start();
+        //(threads[10] = new Thread(() -> (guiManager = new GUIManager()).a())).start();
         Runtime.getRuntime().addShutdownHook(new Thread(Main::shutdown)); // Function if system exit
         logger.time("ThreadLoad", startTime); // writing to console how long it take to init threads
     }
@@ -140,11 +146,15 @@ public class Main {
 
     private static void computeArgs(String[] args) {
         try {
-            informatics[1] = args[0];
-            discordBot.setToken(args[0]);
+            //informatics[1] = args[0];
+            //discordBot.setToken(args[0]);
         } catch (ArrayIndexOutOfBoundsException e) {
             logger.log("ROX", "No arguments given.");
         }
+    }
+
+    public static String getExternalAddress() throws Exception {
+        return new BufferedReader(new InputStreamReader(new URL("http://checkip.amazonaws.com").openStream())).readLine();
     }
 
     /**
@@ -274,7 +284,5 @@ public class Main {
         return version;
     }
 
-    public static GUIManager getGuiManager() {
-        return guiManager;
-    }
+    //public static GUIManager getGuiManager() {return guiManager;}
 }

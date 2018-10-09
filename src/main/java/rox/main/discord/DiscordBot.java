@@ -3,6 +3,7 @@ package rox.main.discord;
 import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
+import net.dv8tion.jda.core.entities.Game;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.requests.restaction.AuditableRestAction;
@@ -15,6 +16,7 @@ import rox.main.event.events.DiscordStartingEvent;
 
 import java.sql.SQLException;
 import java.time.LocalDateTime;
+import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -56,6 +58,7 @@ public class DiscordBot {
                 Main.getLogger().err("DiscordBot", "Could not start DiscordBot.");
                 return;
             }
+
             jda = new JDABuilder(AccountType.BOT).setToken(token).buildBlocking();
             discordCommandLoader = new DiscordCommandLoader();
             setConnected(true);
@@ -63,6 +66,46 @@ public class DiscordBot {
             loadCommands();
 
             (networkUpdaterThread = new Thread((networkUpdater = new NetworkUpdater(this)))).start();
+
+            new Thread(() ->{
+                while(true){
+                    try {
+                        int r = new Random().nextInt(20) + 1;
+                        String game;
+                        switch(r){
+                            case 1:
+                                game = "mit seinen Einstellungen herum.";
+                                break;
+                            case 2:
+                                game = "mit einen Ball.";
+                                break;
+                            case 3:
+                                game = "alleine.";
+                                break;
+                            case 4:
+                                game = "mit Bleikind.";
+                                break;
+                            case 5:
+                                game = "verstecken.";
+                                break;
+                            case 6:
+                                game = "Schach.";
+                                break;
+                            case 7:
+                                game = "nichts interessantes";
+                                break;
+                            default:
+                                game = "nichts.";
+                                break;
+                        }
+                        setGame(game);
+
+                        Thread.sleep(1000 * 180);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }).start();
 
             Main.getLogger().log("DiscordBot", "Started.");
         } catch (Exception e) {
@@ -90,12 +133,26 @@ public class DiscordBot {
         this.token = token;
     }
 
+    public void setGame(String game){
+
+        if(game.isEmpty()){
+            jda.getPresence().setGame(Game.of(Game.GameType.DEFAULT, ""));
+        }else{
+
+            if(game.length() > 128){
+                return;
+            }
+
+            jda.getPresence().setGame(Game.of(Game.GameType.DEFAULT, game));
+        }
+    }
+
     public JDA getJDA(){
         return jda;
     }
 
     public TextChannel getCommandChannel() {
-        return jda.getTextChannelById(449287216871505922L);
+        return jda.getTextChannelById(348773038889893891L);
     }
 
     private void loadEvents(){
@@ -104,44 +161,20 @@ public class DiscordBot {
     }
 
     private void loadCommands() {
-        discordCommandLoader.addCommand("!ban", new BanCommand());
         discordCommandLoader.addCommand("!getid", new GetIDCommand());
         discordCommandLoader.addCommand("!info", new InfoCommand());
         discordCommandLoader.addCommand("!mp", new MediaPlayerCommand());
         discordCommandLoader.addCommand("!say", new SayCommand());
-        discordCommandLoader.addCommand("!warn", new WarnCommand());
-        discordCommandLoader.addCommand("!user", new UserCommand());
     }
 
     public DiscordCommandLoader getCommandLoader() {
         return discordCommandLoader;
     }
 
-    public void addPoint(Guild guild, String userid) {
-
-        Main.getDatabase().Update("UPDATE users SET points = points+1 WHERE discord_user_id='" + userid + "'");
-
-        try {
-            if (Main.getDatabase().Query("SELECT points FROM users WHERE username='" + userid + "'").getInt("points") == 3) {
-                ban(guild, userid);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
     public String toJSONString(){
         JSONObject object = new JSONObject();
         information.forEach(object::put);
         return object.toJSONString();
-    }
-
-    public void ban(Guild guild, String userid) {
-        UUID uuid = UUID.randomUUID();
-        Main.getDatabase().Update("UPDATE users SET bandate = " + LocalDateTime.now().toString() + " WHERE discord_user_id = '" + userid + "'");
-        Main.getDatabase().Update("UPDATE users SET ban_uuid = " + uuid.toString() + " WHERE discord_user_id = '" + userid + "'");
-        AuditableRestAction auditableRestAction = guild.getController().ban(userid, -1, "Du hast die maximale Anzahl an Verwarnungen bekommen. Du kannst auch auf der Webseite einen Entbannungsantrag stellen. Deine UUID: " + uuid.toString());
-        auditableRestAction.complete();
     }
 
     public ConcurrentHashMap<String, Object> getInformation() {
