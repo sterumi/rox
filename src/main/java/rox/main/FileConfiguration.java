@@ -80,6 +80,7 @@ public class FileConfiguration {
             object.put("databaseType", "mysql");
             object.put("useDefaultIndex", true);
             object.put("scriptEngine", new JSONArray().put("javascript").put("lua"));
+            object.put("discordtoken", "token");
             writer.write(object.toJSONString()); // write json string to file
             writer.close(); // close writer after finish
         }

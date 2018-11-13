@@ -22,10 +22,12 @@ public class GetHandler implements HttpHandler {
 
         Map<String, Object> parameters = new HashMap<>();
         HTTPServer.parseQuery(he.getRequestURI().getQuery(), parameters);
-
         StringBuilder response = new StringBuilder();
 
+        he.getResponseHeaders().set("Content-Type", "charset=UTF-8");
+
         parameters.keySet().forEach(key -> {
+
             switch (key) {
                 case "gsUUID":
                     if(parameters.get("gsUUID") != null){
@@ -75,15 +77,18 @@ public class GetHandler implements HttpHandler {
                     jsonObject.put("msActive", Main.getMainServer().isActive());
                     jsonObject.put("msWaitingConnection", Main.getMainServer().isWaitingConnection());
                     jsonObject.put("dsActive", Main.getDiscordBot().isConnected());
-                    jsonObject.put("dsInformation", Main.getDiscordBot().getInformation());
                     jsonObject.put("tsHostname", Main.getTsBot().getHostname());
                     jsonObject.put("tsClientID", Main.getTsBot().getClientId());
                     jsonObject.put("tsUsername", Main.getTsBot().getUsername());
-                    jsonObject.put("tsInformation", Main.getTsBot().getInformation());
                     jsonObject.put("tsActive", Main.getTsBot().isActive());
                     jsonObject.put("httpPort", Main.getHttpServer().getPort());
-                    jsonObject.put("httpAddress", Main.getHttpServer().getServer().getAddress());
-                    jsonObject.put("news", Main.getNewsSystem().getNews());
+
+                    try {
+                        jsonObject.put("httpAddress", Main.getExternalAddress());
+                    } catch (Exception e) {
+                        jsonObject.put("httpAddress", null);
+                    }
+
                     jsonObject.put("loadedPlugins", Main.getPluginManager().getPlugins().keySet());
                     jsonObject.put("version", Main.getVersion());
                     response.append(jsonObject.toJSONString());
@@ -91,9 +96,10 @@ public class GetHandler implements HttpHandler {
             }
         });
 
-        he.sendResponseHeaders(200, response.length());
+        he.sendResponseHeaders(200, response.toString().getBytes("UTF-8").length);
         OutputStream os = he.getResponseBody();
-        os.write(response.toString().getBytes());
+        os.write(response.toString().getBytes("UTF-8"));
+        os.flush();
         os.close();
     }
 
@@ -138,7 +144,7 @@ public class GetHandler implements HttpHandler {
 
                 if(parameters.containsKey("advanced")){
                     if(((String)parameters.get("advanced")).equalsIgnoreCase("true")){
-                        if (!Main.getGameSystem().getConnections().get(uuid).getInformation().isEmpty())
+                        if(uuid != null) if (!Main.getGameSystem().getConnections().get(uuid).getInformation().isEmpty())
                             Main.getGameSystem().getConnections().get(uuid).getInformation().keySet().forEach(s ->
                                     response.append("<th>").append(s).append("</th>"));
                         response.append("</tr>");
@@ -154,7 +160,7 @@ public class GetHandler implements HttpHandler {
                                         .append(o.getVersion())
                                         .append("</td>"));
 
-                        if (!Main.getGameSystem().getConnections().get(uuid).getInformation().isEmpty())
+                        if(uuid != null) if (!Main.getGameSystem().getConnections().get(uuid).getInformation().isEmpty())
                             Main.getGameSystem().getConnections().get(uuid).getInformation().forEach((s, o) ->
                                     response.append("<td>").append(o).append("</td>"));
 
@@ -190,10 +196,10 @@ public class GetHandler implements HttpHandler {
 
                 response.append("</tr></table></body></html>");
             } else {
-                response.append(Main.getGameSystem().getConnections().get(uuid).toJSONString());
+                if(uuid != null) response.append(Main.getGameSystem().getConnections().get(uuid).toJSONString());
             }
         } else {
-            response.append(Main.getGameSystem().getConnections().get(uuid).toJSONString());
+            if(uuid != null) response.append(Main.getGameSystem().getConnections().get(uuid).toJSONString());
         }
     }
 }

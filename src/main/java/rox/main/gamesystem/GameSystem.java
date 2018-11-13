@@ -7,6 +7,7 @@ import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
+import java.nio.charset.Charset;
 import java.sql.ResultSet;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -75,13 +76,15 @@ public class GameSystem implements BaseServer {
             Socket socket;
             while ((socket = Main.getGameSystem().getServerSocket().accept()) != null) {
                 Main.getLogger().log("GameServer", "Client connecting...");
-                BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                PrintWriter writer = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()), true);
+                BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream(), Charset.forName("utf8")));
+                PrintWriter writer = new PrintWriter(new OutputStreamWriter(socket.getOutputStream(), Charset.forName("utf8")), true);
 
                 if (Main.getGameSystem().getConnections().size() <= Main.getGameSystem().getMaxConnections()) {
                     String connectString = reader.readLine();
 
                     String[] args = connectString.split("§");
+
+                    System.out.println(connectString);
 
                     if(connections.containsKey(UUID.fromString(args[2]))){
                         writer.println("CONNECTION_REFUSED");
