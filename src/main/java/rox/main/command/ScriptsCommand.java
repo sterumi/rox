@@ -7,7 +7,7 @@ import rox.main.MainCommandExecutor;
 public class ScriptsCommand implements MainCommandExecutor {
     @Override
     public void command(String name, String[] args) {
-        switch (args.length) {
+        /*switch (args.length) {
             case 1:
                 Main.getLogger().log("ROX", "javascript, lua");
                 break;
@@ -50,6 +50,6 @@ public class ScriptsCommand implements MainCommandExecutor {
             default:
                 Main.getLogger().log("ROX", "scripts (reload, execute) <filename>");
                 break;
-        }
+        }*/
     }
 }

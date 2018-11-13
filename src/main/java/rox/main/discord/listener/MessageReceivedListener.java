@@ -12,9 +12,12 @@ public class MessageReceivedListener implements EventListener {
     public void onEvent(Event event) {
         if(event instanceof MessageReceivedEvent){
 
-            String[] args = ((MessageReceivedEvent) event).getMessage().getContentRaw().split(" ");
+            if(((MessageReceivedEvent) event).getMessage().getContentRaw().contains("fuck")){
+                ((MessageReceivedEvent) event).getMessage().editMessage(((MessageReceivedEvent) event).getMessage().getContentRaw().replace("fuck", "firetruck")).complete();
+            }
 
-            if (((MessageReceivedEvent) event).getMessage().getContentRaw().startsWith("!")) {
+            String[] args = ((MessageReceivedEvent) event).getMessage().getContentRaw().split(" ");
+            if (((MessageReceivedEvent) event).getMessage().getContentRaw().startsWith("#")) {
 
                 DiscordCommandExecuteEvent discordCommandExecuteEvent = new DiscordCommandExecuteEvent(event.getJDA(), ((MessageReceivedEvent) event).getGuild(),
                         ((MessageReceivedEvent) event).getMember(),

@@ -4,9 +4,9 @@ import org.apache.commons.codec.digest.DigestUtils;
 
 import javax.management.Attribute;
 import javax.management.AttributeList;
-import javax.management.MBeanServer;
 import javax.management.ObjectName;
 import java.lang.management.ManagementFactory;
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 
 public class MathUtil {
@@ -25,7 +25,7 @@ public class MathUtil {
         try {
             StringBuilder hexString = new StringBuilder();
 
-            for (byte aHash : MessageDigest.getInstance("SHA-256").digest(string.getBytes("UTF-8"))) {
+            for (byte aHash : MessageDigest.getInstance("SHA-256").digest(string.getBytes(StandardCharsets.UTF_8))) {
                 String hex = Integer.toHexString(0xff & aHash);
                 if (hex.length() == 1) hexString.append('0');
                 hexString.append(hex);
@@ -65,6 +65,19 @@ public class MathUtil {
     public long getTotalRAMSize(){
         return ((com.sun.management.OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean()).getTotalPhysicalMemorySize();
     }
+
+    public long getUptime(){
+        return ManagementFactory.getRuntimeMXBean().getUptime();
+    }
+
+    public int getRegisteredThreads(){
+        return ManagementFactory.getThreadMXBean().getThreadCount();
+    }
+
+    public long getTotalCompilationTime(){
+        return ManagementFactory.getCompilationMXBean().getTotalCompilationTime();
+    }
+
     public double getUsedRAMSize(){
         return Runtime.getRuntime().totalMemory() / (1024.0 * 1024.0 * 1024.0);
     }

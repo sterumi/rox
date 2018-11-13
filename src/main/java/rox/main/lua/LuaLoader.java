@@ -1,6 +1,5 @@
-package rox.main.lua;
+/*package rox.main.lua;
 
-import org.luaj.vm2.script.LuaScriptEngine;
 import rox.main.Main;
 import rox.main.util.Script;
 
@@ -102,3 +101,4 @@ public class LuaLoader implements Script {
         this.mainFile = mainFile;
     }
 }
+*/

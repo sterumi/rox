@@ -42,6 +42,8 @@ public class DiscordBot {
 
     private ConcurrentHashMap<String, Object> information = new ConcurrentHashMap<>();
 
+    private RankManager rankManager = new RankManager();
+
     public DiscordBot(String token){ this.token = token; }
 
     public void connect(){
@@ -104,13 +106,15 @@ public class DiscordBot {
     }
 
     private void loadCommands() {
-        discordCommandLoader.addCommand("!ban", new BanCommand());
-        discordCommandLoader.addCommand("!getid", new GetIDCommand());
-        discordCommandLoader.addCommand("!info", new InfoCommand());
-        discordCommandLoader.addCommand("!mp", new MediaPlayerCommand());
-        discordCommandLoader.addCommand("!say", new SayCommand());
-        discordCommandLoader.addCommand("!warn", new WarnCommand());
-        discordCommandLoader.addCommand("!user", new UserCommand());
+        discordCommandLoader.addCommand("#ban", new BanCommand());
+        discordCommandLoader.addCommand("#getid", new GetIDCommand());
+        discordCommandLoader.addCommand("#info", new InfoCommand());
+        discordCommandLoader.addCommand("#mp", new MediaPlayerCommand());
+        discordCommandLoader.addCommand("#say", new SayCommand());
+        discordCommandLoader.addCommand("#warn", new WarnCommand());
+        discordCommandLoader.addCommand("#user", new UserCommand());
+        discordCommandLoader.addCommand("#dice", new DiceCommand());
+        discordCommandLoader.addCommand("#:", new EmoteCommand());
     }
 
     public DiscordCommandLoader getCommandLoader() {
@@ -154,5 +158,9 @@ public class DiscordBot {
 
     public String getToken() {
         return token;
+    }
+
+    public RankManager getRankManager() {
+        return rankManager;
     }
 }

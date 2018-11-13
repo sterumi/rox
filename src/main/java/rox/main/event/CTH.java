@@ -2,11 +2,10 @@ package rox.main.event;
 
 import java.io.PrintStream;
 import java.util.Iterator;
-import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class CTH {
-    private static Queue<CTH> HANDLERS = new ConcurrentLinkedQueue();
+    private static ConcurrentLinkedQueue HANDLERS = new ConcurrentLinkedQueue();
     private final String name;
     private final CTH parent;
     private long count;
@@ -135,7 +134,7 @@ public class CTH {
         return violations;
     }
 
-    public static Queue<CTH> getHANDLERS() {
+    public static ConcurrentLinkedQueue getHANDLERS() {
         return HANDLERS;
     }
 
@@ -147,7 +146,7 @@ public class CTH {
         this.curTickTotal = curTickTotal;
     }
 
-    public static void setHANDLERS(Queue<CTH> HANDLERS) {
+    public static void setHANDLERS(ConcurrentLinkedQueue HANDLERS) {
         CTH.HANDLERS = HANDLERS;
     }
 

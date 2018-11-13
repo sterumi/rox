@@ -27,10 +27,8 @@ public class NetworkUpdater extends Thread{
                 bot.getInformation().put("cloudFlareRays", bot.getJDA().getCloudflareRays().size());
                 bot.getInformation().put("guilds", bot.getJDA().getGuilds().size());
                 bot.getInformation().put("ping", bot.getJDA().getPing());
-                bot.getInformation().put("shard", bot.getJDA().getShardInfo().getShardString());
                 bot.getInformation().put("selfID", bot.getJDA().getSelfUser().getId());
                 bot.getInformation().put("selfCreationTime", bot.getJDA().getSelfUser().getCreationTime());
-                bot.getInformation().put("selfEmail", bot.getJDA().getSelfUser().getEmail());
                 ConcurrentHashMap<String, String> users = new ConcurrentHashMap<>();
                 bot.getJDA().getUsers().parallelStream().forEach(user -> users.put(user.getName(), user.getId()));
                 bot.getInformation().put("users", users);

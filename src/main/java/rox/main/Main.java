@@ -11,7 +11,7 @@ import rox.main.gamesystem.GameSystem;
 import rox.main.gui.GUIManager;
 import rox.main.httpserver.HTTPServer;
 import rox.main.logger.Logger;
-import rox.main.lua.LuaLoader;
+//import rox.main.lua.LuaLoader;
 import rox.main.news.NewsSystem;
 import rox.main.javascript.JavaScriptEngine;
 import rox.main.pluginsystem.PluginManager;
@@ -53,15 +53,17 @@ public class Main {
 
     private static TsBot tsBot;
 
-    private static LuaLoader luaLoader;
+    private static GUIManager guiManager;
+
+    //private static LuaLoader luaLoader;
 
     private static GameSystem gameSystem;
 
     private static MathUtil mathUtil = new MathUtil();
 
-    private static GUIManager guiManager;
-
     private static int version = 1;
+
+    private static boolean javaFxInstalled = false;
 
     /*
      * This class is the main class.
@@ -114,7 +116,7 @@ public class Main {
             case "jedis": (threads[0] = new Thread(() -> jedisClient = new Jedis(new DBData("localhost", 3306, "root", "", "rox")))).start(); break;
         }
         (threads[1] = new Thread(() -> mainServer = new MainServer(Math.toIntExact((Long)fileConfiguration.getPortsValues().get("mainServer"))))).start(); // main server
-        (threads[2] = new Thread(() -> discordBot = new DiscordBot((String) informatics[1]))).start(); // discord bot
+        (threads[2] = new Thread(() -> discordBot = new DiscordBot(fileConfiguration.getValues().get("discordtoken").toString()))).start(); // discord bot
         (threads[3] = new Thread(() -> mainCommandLoader.initCommandHandle())).start(); // system command handler
         (threads[4] = new Thread(() -> gameSystem = new GameSystem(Math.toIntExact((Long)fileConfiguration.getPortsValues().get("gameSystem"))))).start(); // game system
         (threads[5] = new Thread(() -> httpServer = new HTTPServer(Math.toIntExact((Long)fileConfiguration.getPortsValues().get("httpServer"))))).start(); // http server
@@ -123,10 +125,10 @@ public class Main {
         (threads[8] = new Thread(() -> pluginManager = new PluginManager())).start(); // plugin system
 
         ((JSONArray) Main.getFileConfiguration().getValue("scriptEngine")).parallelStream().forEach(o -> { switch ((String) o) {
-                case "lua": (threads[9] = new Thread(() -> luaLoader = new LuaLoader())).start(); break;
+                //case "lua": (threads[9] = new Thread(() -> luaLoader = new LuaLoader())).start(); break;
                 case "javascript": (threads[9] = new Thread(() -> javaScriptEngine = new JavaScriptEngine())).start(); break;
             }});
-        (threads[10] = new Thread(() -> (guiManager = new GUIManager()).a())).start();
+        //(threads[10] = new Thread(() -> (guiManager = new GUIManager()).a())).start();
         Runtime.getRuntime().addShutdownHook(new Thread(Main::shutdown)); // Function if system exit
         logger.time("ThreadLoad", startTime); // writing to console how long it take to init threads
     }
@@ -242,9 +244,9 @@ public class Main {
         return threads;
     }
 
-    public static LuaLoader getLuaLoader() {
+    /*public static LuaLoader getLuaLoader() {
         return luaLoader;
-    }
+    }*/
 
     public static GameSystem getGameSystem() {
         return gameSystem;
@@ -272,9 +274,5 @@ public class Main {
 
     public static int getVersion() {
         return version;
-    }
-
-    public static GUIManager getGuiManager() {
-        return guiManager;
     }
 }

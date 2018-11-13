@@ -1,6 +1,5 @@
 package rox.main.database;
 
-import com.mysql.cj.jdbc.exceptions.CommunicationsException;
 import org.json.simple.JSONArray;
 import rox.main.Main;
 import rox.main.event.events.DatabaseConnectEvent;
@@ -43,11 +42,7 @@ public class Database implements DatabaseStructure {
             connected = true;
 
         } catch (Exception e) {
-            if (e instanceof CommunicationsException) {
-                Main.getLogger().err("Database", "Database is not active! SQLState: " + ((CommunicationsException) e).getSQLState());
-            } else {
-                e.printStackTrace();
-            }
+                Main.getLogger().err("Database", "Database is not active! State: " + e.getLocalizedMessage());
         }
 
         Main.getLogger().time("DatabaseConnect", startTime);

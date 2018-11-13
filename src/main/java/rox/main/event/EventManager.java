@@ -152,11 +152,9 @@ public class EventManager {
                         ret.put(eventClass, eventSet);
                     }
 
-                    for (Class clazz = eventClass; Event.class.isAssignableFrom(clazz); clazz = clazz.getSuperclass()) {
-                        if (clazz.getAnnotation(Deprecated.class) != null) {
-                            break;
-                        }
-                    }
+                    for (Class clazz = eventClass; Event.class.isAssignableFrom(clazz); clazz = clazz.getSuperclass())
+                        if (clazz.getAnnotation(Deprecated.class) != null) break;
+
 
                     final CTH timings = new CTH("CTH");
                     Method finalMethod = method;
@@ -164,14 +162,12 @@ public class EventManager {
                         try {
                             if (eventClass.isAssignableFrom(event.getClass())) {
                                 boolean isAsync = event.isAsync();
-                                if (!isAsync) {
-                                    timings.startTiming();
-                                }
+
+                                if (!isAsync) timings.startTiming();
+
 
                                 finalMethod.invoke(listener1, event);
-                                if (!isAsync) {
-                                    timings.stopTiming();
-                                }
+                                if (!isAsync) timings.stopTiming();
 
                             }
                         } catch (InvocationTargetException e) {
@@ -180,6 +176,7 @@ public class EventManager {
                             throw new Exception(e);
                         }
                     };
+
                     eventSet.add(new RegisteredListener(listener, executor, main, eh.priority()));
                 } else {
                     Main.getLogger().err("[Event]", "Could not execute Handler.");
