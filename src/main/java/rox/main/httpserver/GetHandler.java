@@ -82,13 +82,6 @@ public class GetHandler implements HttpHandler {
                     jsonObject.put("tsUsername", Main.getTsBot().getUsername());
                     jsonObject.put("tsActive", Main.getTsBot().isActive());
                     jsonObject.put("httpPort", Main.getHttpServer().getPort());
-
-                    try {
-                        jsonObject.put("httpAddress", Main.getExternalAddress());
-                    } catch (Exception e) {
-                        jsonObject.put("httpAddress", null);
-                    }
-
                     jsonObject.put("loadedPlugins", Main.getPluginManager().getPlugins().keySet());
                     jsonObject.put("version", Main.getVersion());
                     response.append(jsonObject.toJSONString());

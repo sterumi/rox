@@ -106,13 +106,10 @@ public class DiscordBot {
     }
 
     private void loadCommands() {
-        discordCommandLoader.addCommand("#ban", new BanCommand());
         discordCommandLoader.addCommand("#getid", new GetIDCommand());
         discordCommandLoader.addCommand("#info", new InfoCommand());
         discordCommandLoader.addCommand("#mp", new MediaPlayerCommand());
         discordCommandLoader.addCommand("#say", new SayCommand());
-        discordCommandLoader.addCommand("#warn", new WarnCommand());
-        discordCommandLoader.addCommand("#user", new UserCommand());
         discordCommandLoader.addCommand("#dice", new DiceCommand());
         discordCommandLoader.addCommand("#:", new EmoteCommand());
     }
