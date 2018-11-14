@@ -1,10 +1,12 @@
 package rox.main;
 
+import net.dv8tion.jda.core.entities.Game;
 import org.json.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -14,7 +16,7 @@ public class FileConfiguration {
 
     private JSONParser parser;
 
-    private ConcurrentHashMap<String, Object> values, ts_values, lua_values, commands_values, ports_values, database_values, dummy_values;
+    private ConcurrentHashMap<String, Object> values, ts_values, lua_values, commands_values, ports_values, database_values, dummy_values, discord_values;
 
     private boolean setting_up;
 
@@ -32,6 +34,7 @@ public class FileConfiguration {
             commands_values = new ConcurrentHashMap<>();
             database_values = new ConcurrentHashMap<>();
             dummy_values = new ConcurrentHashMap<>();
+            discord_values = new ConcurrentHashMap<>();
             files.put("config", new File("config/", "config.json"));
             files.put("tsbot", new File("config/", "tsbot.json"));
             files.put("news", new File("config/", "news.json"));
@@ -40,6 +43,7 @@ public class FileConfiguration {
             files.put("dummy", new File("config/dummy.json"));
             files.put("ports", new File("config/ports.json"));
             files.put("database", new File("config/database.json"));
+            files.put("discord", new File("config/discord.json"));
             for (File file : Objects.requireNonNull(new File("config/").listFiles())) {
                 if (!files.containsKey(file.getName().replace(".json", "").toLowerCase()))
                     files.put(file.getName().replace(".json", ""), file);
@@ -71,7 +75,7 @@ public class FileConfiguration {
     private void init() throws Exception {
         files.get("config").getParentFile().mkdirs(); // creates root dir if not exist
         if (!files.get("config").exists()) {
-            PrintWriter writer = new PrintWriter(new OutputStreamWriter(new FileOutputStream(files.get("config")), "utf-8"), true); // create writer to file
+            PrintWriter writer = new PrintWriter(new OutputStreamWriter(new FileOutputStream(files.get("config")), StandardCharsets.UTF_8), true); // create writer to file
             JSONObject object = new JSONObject();
             object.put("maintenance", false);
             object.put("debug", false);
@@ -88,7 +92,7 @@ public class FileConfiguration {
 
 
         if (!files.get("tsbot").exists()) {
-            PrintWriter writer = new PrintWriter(new OutputStreamWriter(new FileOutputStream(files.get("tsbot")), "utf-8"), true); // create writer to file
+            PrintWriter writer = new PrintWriter(new OutputStreamWriter(new FileOutputStream(files.get("tsbot")), StandardCharsets.UTF_8), true); // create writer to file
             JSONObject object = new JSONObject();
             object.put("hostname", "localhost");
             object.put("username", "serveradmin");
@@ -102,7 +106,7 @@ public class FileConfiguration {
 
 
         if (!files.get("lua").exists()) {
-            PrintWriter writer = new PrintWriter(new OutputStreamWriter(new FileOutputStream(files.get("lua")), "utf-8"), true); // create writer to file
+            PrintWriter writer = new PrintWriter(new OutputStreamWriter(new FileOutputStream(files.get("lua")), StandardCharsets.UTF_8), true); // create writer to file
             JSONObject object = new JSONObject();
             object.put("mainFile", "boot.lua");
             object.put("loadExternal", false);
@@ -112,7 +116,7 @@ public class FileConfiguration {
         ((JSONObject) new JSONParser().parse(new FileReader(files.get("lua").getPath()))).forEach((key, value) -> lua_values.put((String) key, value)); // loads content of lua file to a hashmap
 
         if (!files.get("commands").exists()) {
-            PrintWriter writer = new PrintWriter(new OutputStreamWriter(new FileOutputStream(files.get("commands")), "utf-8"), true); // create writer to file
+            PrintWriter writer = new PrintWriter(new OutputStreamWriter(new FileOutputStream(files.get("commands")), StandardCharsets.UTF_8), true); // create writer to file
             JSONObject object = new JSONObject();
             JSONObject commands = new JSONObject();
             commands.put("/discord", "To start the discord bot.");
@@ -137,7 +141,7 @@ public class FileConfiguration {
         ((JSONObject) new JSONParser().parse(new FileReader(files.get("commands").getPath()))).forEach((key, value) -> commands_values.put((String) key, value)); // loads content of commands file to a hashmap
 
         if (!files.get("ports").exists()) {
-            PrintWriter writer = new PrintWriter(new OutputStreamWriter(new FileOutputStream(files.get("ports")), "utf-8"), true); // create writer to file
+            PrintWriter writer = new PrintWriter(new OutputStreamWriter(new FileOutputStream(files.get("ports")), StandardCharsets.UTF_8), true); // create writer to file
             JSONObject object = new JSONObject();
             object.put("mainServer", 8981);
             object.put("gameSystem", 8982);
@@ -148,7 +152,7 @@ public class FileConfiguration {
         ((JSONObject) new JSONParser().parse(new FileReader(files.get("ports").getPath()))).forEach((key, value) -> ports_values.put((String) key, value)); // loads content of commands file to a hashmap
 
         if (!files.get("database").exists()) {
-            PrintWriter writer = new PrintWriter(new OutputStreamWriter(new FileOutputStream(files.get("database")), "utf-8"), true); // create writer to file
+            PrintWriter writer = new PrintWriter(new OutputStreamWriter(new FileOutputStream(files.get("database")), StandardCharsets.UTF_8), true); // create writer to file
             JSONObject object = new JSONObject();
             object.put("hostname", "localhost");
             object.put("port", 3306);
@@ -162,7 +166,7 @@ public class FileConfiguration {
 
 
         if (!files.get("dummy").exists()) {
-            PrintWriter writer = new PrintWriter(new OutputStreamWriter(new FileOutputStream(files.get("dummy")), "utf-8"), true); // create writer to file
+            PrintWriter writer = new PrintWriter(new OutputStreamWriter(new FileOutputStream(files.get("dummy")), StandardCharsets.UTF_8), true); // create writer to file
             JSONObject object = new JSONObject();
             object.put("enable", false);
             object.put("hostname", "localhost");
@@ -175,6 +179,25 @@ public class FileConfiguration {
             writer.close(); // close writer after finish
         }
         ((JSONObject) new JSONParser().parse(new FileReader(files.get("dummy").getPath()))).forEach((key, value) -> dummy_values.put((String) key, value)); // loads content of commands file to a hashmap
+
+        if (!files.get("discord").exists()) {
+            PrintWriter writer = new PrintWriter(new OutputStreamWriter(new FileOutputStream(files.get("discord")), StandardCharsets.UTF_8), true); // create writer to file
+            JSONObject object = new JSONObject();
+            JSONObject  games = new JSONObject();
+            games.put("mit Bleikind.", Game.GameType.DEFAULT.name());
+            games.put("mit seinen Einstellungen.", Game.GameType.DEFAULT.name());
+            games.put("mit Schach.", Game.GameType.DEFAULT.name());
+            games.put("Arma 3.", Game.GameType.DEFAULT.name());
+            games.put("mit Bill Gates.", Game.GameType.DEFAULT.name());
+            games.put("mit seinem Leben.", Game.GameType.DEFAULT.name());
+            games.put("mit Kaffebohnen.", Game.GameType.DEFAULT.name());
+            games.put("320 BPM in osu.", Game.GameType.STREAMING.name());
+            games.put("Bleikind zu beim Programmieren.", Game.GameType.WATCHING.name());
+            object.put("games", games);
+            writer.write(object.toJSONString()); // write json string to file
+            writer.close(); // close writer after finish
+        }
+        ((JSONObject) new JSONParser().parse(new FileReader(files.get("discord").getPath()))).forEach((key, value) -> discord_values.put((String) key, value)); // loads content of commands file to a hashmap
 
     }
 
@@ -292,8 +315,13 @@ public class FileConfiguration {
         return database_values;
     }
 
-
     public ConcurrentHashMap<String, Object> getDummyValues() {
         return dummy_values;
     }
+
+    public ConcurrentHashMap<String, Object> getDiscordValues() {
+        return discord_values;
+    }
+
+
 }

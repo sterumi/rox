@@ -3,9 +3,8 @@ package rox.main.discord;
 import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
-import net.dv8tion.jda.core.entities.Guild;
+import net.dv8tion.jda.core.entities.Game;
 import net.dv8tion.jda.core.entities.TextChannel;
-import net.dv8tion.jda.core.requests.restaction.AuditableRestAction;
 import org.json.simple.JSONObject;
 import rox.main.Main;
 import rox.main.discord.commands.*;
@@ -13,10 +12,9 @@ import rox.main.discord.listener.MessageReceivedListener;
 import rox.main.discord.listener.UserJoinListener;
 import rox.main.event.events.DiscordStartingEvent;
 
-import java.sql.SQLException;
-import java.time.LocalDateTime;
-import java.util.UUID;
+import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class DiscordBot {
 
@@ -63,6 +61,7 @@ public class DiscordBot {
             setConnected(true);
             loadEvents();
             loadCommands();
+            loadThreads();
 
             (networkUpdaterThread = new Thread((networkUpdater = new NetworkUpdater(this)))).start();
 
@@ -100,6 +99,28 @@ public class DiscordBot {
         return jda.getTextChannelById(449287216871505922L);
     }
 
+    private void loadThreads(){
+        new Thread(() ->{
+            while(true){
+                switchGame();
+                try {
+                    Thread.sleep(180000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+
+    public void switchGame(){
+        AtomicInteger count = new AtomicInteger();
+        ((JSONObject) Main.getFileConfiguration().getDiscordValues().get("games")).forEach((s, o) -> {
+            if (count.getAndIncrement() == new Random().nextInt(((JSONObject) Main.getFileConfiguration().getDiscordValues().get("games")).size())) {
+                setGame(Game.GameType.valueOf((String) o), (String) s);
+            }
+        });
+    }
+
     private void loadEvents(){
         jda.addEventListener(new MessageReceivedListener());
         jda.addEventListener(new UserJoinListener());
@@ -111,38 +132,22 @@ public class DiscordBot {
         discordCommandLoader.addCommand("#mp", new MediaPlayerCommand());
         discordCommandLoader.addCommand("#say", new SayCommand());
         discordCommandLoader.addCommand("#dice", new DiceCommand());
-        discordCommandLoader.addCommand("#:", new EmoteCommand());
+        discordCommandLoader.addCommand("#", new EmoteCommand());
+        discordCommandLoader.addCommand("#switchgame", new SwitchCommand());
+    }
+
+    public void setGame(Game.GameType game, String text){
+        jda.getPresence().setGame(Game.of(game, text));
     }
 
     public DiscordCommandLoader getCommandLoader() {
         return discordCommandLoader;
     }
 
-    public void addPoint(Guild guild, String userid) {
-
-        Main.getDatabase().Update("UPDATE users SET points = points+1 WHERE discord_user_id='" + userid + "'");
-
-        try {
-            if (Main.getDatabase().Query("SELECT points FROM users WHERE username='" + userid + "'").getInt("points") == 3) {
-                ban(guild, userid);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
     public String toJSONString(){
         JSONObject object = new JSONObject();
         information.forEach(object::put);
         return object.toJSONString();
-    }
-
-    public void ban(Guild guild, String userid) {
-        UUID uuid = UUID.randomUUID();
-        Main.getDatabase().Update("UPDATE users SET bandate = " + LocalDateTime.now().toString() + " WHERE discord_user_id = '" + userid + "'");
-        Main.getDatabase().Update("UPDATE users SET ban_uuid = " + uuid.toString() + " WHERE discord_user_id = '" + userid + "'");
-        AuditableRestAction auditableRestAction = guild.getController().ban(userid, -1, "Du hast die maximale Anzahl an Verwarnungen bekommen. Du kannst auch auf der Webseite einen Entbannungsantrag stellen. Deine UUID: " + uuid.toString());
-        auditableRestAction.complete();
     }
 
     public ConcurrentHashMap<String, Object> getInformation() {

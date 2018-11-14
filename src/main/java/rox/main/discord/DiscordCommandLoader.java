@@ -24,8 +24,8 @@ public class DiscordCommandLoader {
     }
 
     public DiscordCommandExecutor getCommand(String name) {
-        return classes.getOrDefault(name, (jda, guild, sender, currentChannel, name1, args)
-                -> currentChannel.sendMessage("Dieser Befehl exsistiert nicht!").complete());
+        return classes.getOrDefault(name.toLowerCase(), (jda, guild, sender, currentChannel, name1, args)
+                -> currentChannel.sendMessage("Dieser Befehl existiert nicht!").complete());
     }
 
     public ConcurrentHashMap<String, DiscordCommandExecutor> getClasses() {
