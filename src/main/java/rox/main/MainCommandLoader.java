@@ -68,6 +68,7 @@ public class MainCommandLoader {
         this.addCommand("/ts", new TSCommand());
         this.addCommand("/scripts", new ScriptsCommand());
         this.addCommand("/sha", new SHACommand());
+        this.addCommand("/news", new NewsCommand());
         this.addCommand("/test", (name, args) -> System.out.println("test"));
     }
 

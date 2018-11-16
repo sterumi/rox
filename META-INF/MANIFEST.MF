@@ -7,7 +7,7 @@ Class-Path: ./lib/mysql-connector-java-8.0.11.jar ./lib/JDA-3.6.0_354.
  l-0.8.1.jar ./lib/slf4j-jdk14-1.7.25.jar ./lib/trove4j-3.0.3.jar ./li
  b/javamp3-1.0.1.jar ./lib/json-simple-1.1.1.jar ./lib/jedis-2.9.0.jar
   ./lib/teamspeak3-api-1.1.0.jar ./lib/luaj-jme-3.0.1.jar ./lib/luaj-j
- se-3.0.1.jar ./lib/luaj-sources-3.0.1.jar
+ se-3.0.1.jar ./lib/luaj-sources-3.0.1.jar ./lib/JavaBridge.jar
 Created-By: Bleikind
 Main-Class: rox.main.Main
 

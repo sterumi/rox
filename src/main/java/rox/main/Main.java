@@ -63,8 +63,6 @@ public class Main {
 
     private static int version = 1;
 
-    private static boolean javaFxInstalled = false;
-
     /*
      * This class is the main class.
      * It will setup all servers in a own thread.
@@ -154,7 +152,6 @@ public class Main {
      * <p>
      * stops everything and disconnect all systems from clients or servers
      */
-
 
     private static void shutdown() {
         for (Thread thread : threads) if (thread != null) thread.interrupt();
