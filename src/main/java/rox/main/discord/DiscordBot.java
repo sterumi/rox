@@ -134,6 +134,7 @@ public class DiscordBot {
         discordCommandLoader.addCommand("#dice", new DiceCommand());
         discordCommandLoader.addCommand("#", new EmoteCommand());
         discordCommandLoader.addCommand("#switchgame", new SwitchCommand());
+        discordCommandLoader.addCommand("#register", new RegisterCommand());
     }
 
     public void setGame(Game.GameType game, String text){

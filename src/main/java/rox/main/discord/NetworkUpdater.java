@@ -33,7 +33,7 @@ public class NetworkUpdater extends Thread{
                 bot.getJDA().getUsers().parallelStream().forEach(user -> users.put(user.getName(), user.getId()));
                 bot.getInformation().put("users", users);
             }
-        }, 20, 20);
+        }, 1000, 1000);
     }
 
     @Override

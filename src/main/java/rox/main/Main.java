@@ -8,7 +8,6 @@ import rox.main.discord.DiscordBot;
 import rox.main.event.EventManager;
 import rox.main.event.events.MainStartedEvent;
 import rox.main.gamesystem.GameSystem;
-import rox.main.gui.GUIManager;
 import rox.main.httpserver.HTTPServer;
 import rox.main.logger.Logger;
 //import rox.main.lua.LuaLoader;
@@ -53,7 +52,7 @@ public class Main {
 
     private static TsBot tsBot;
 
-    private static GUIManager guiManager;
+    //private static GUIManager guiManager;
 
     //private static LuaLoader luaLoader;
 
