@@ -74,5 +74,6 @@
     <orderEntry type="library" scope="RUNTIME" name="Maven: org.jsoup:jsoup:1.11.2" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Maven: net.iharder:base64:2.3.9" level="project" />
     <orderEntry type="library" name="Maven: com.github.theholywaffle:teamspeak3-api:1.2.0" level="project" />
+    <orderEntry type="library" name="Maven: org.twitter4j:twitter4j-core:4.0.7" level="project" />
   </component>
 </module>
