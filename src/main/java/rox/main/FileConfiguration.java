@@ -24,7 +24,7 @@ public class FileConfiguration {
      * Load all files to a var.
      */
 
-    FileConfiguration() {
+    public FileConfiguration() {
         setting_up = true;
         try {
             values = new ConcurrentHashMap<>();
@@ -72,7 +72,7 @@ public class FileConfiguration {
         return setting_up;
     }
 
-    private void init() throws Exception {
+    public void init() throws Exception {
         files.get("config").getParentFile().mkdirs(); // creates root dir if not exist
         if (!files.get("config").exists()) {
             PrintWriter writer = new PrintWriter(new OutputStreamWriter(new FileOutputStream(files.get("config")), StandardCharsets.UTF_8), true); // create writer to file

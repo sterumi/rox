@@ -89,6 +89,10 @@ public class TsBot implements BaseClient {
         Main.getEventManager().callEvent(new TSStartedEvent(this));
     }
 
+    public void clear(){
+        information.clear();
+    }
+
     public TSCommandLoader getCommandLoader() {
         return commandLoader;
     }

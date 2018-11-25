@@ -1,3 +1,5 @@
 package rox.main.util;
 
-public interface BaseClient { }
+public interface BaseClient {
+    void clear();
+}

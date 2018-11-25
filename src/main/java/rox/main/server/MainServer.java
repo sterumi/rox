@@ -95,13 +95,16 @@ public class MainServer implements BaseServer {
             permissionManager.updatePermission();
             Main.getLogger().log("MainServer", "Stopped.");
 
-
-
+            isActive = false;
             return true;
         } catch (IOException e) {
             e.printStackTrace();
         }
         return false;
+    }
+
+    public void clear(){
+        clients.clear();
     }
 
     public ConcurrentHashMap<UUID, Client> getClients() {

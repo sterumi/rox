@@ -62,6 +62,10 @@ public class GameSystem implements BaseServer {
         }
     }
 
+    public void clear(){
+        connections.clear();
+    }
+
     public void stop(){
         try {
             connections.keySet().forEach(this::disconnect);

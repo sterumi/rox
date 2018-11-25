@@ -1,2 +1,4 @@
 package rox.main.util;
-public interface BaseServer { }
+public interface BaseServer {
+    void clear();
+}

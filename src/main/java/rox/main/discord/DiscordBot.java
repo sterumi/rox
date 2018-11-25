@@ -166,4 +166,8 @@ public class DiscordBot {
     public RankManager getRankManager() {
         return rankManager;
     }
+
+    public void clear() {
+        information.clear();
+    }
 }

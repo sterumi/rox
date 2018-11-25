@@ -9,7 +9,7 @@ public class DiscordCommand implements MainCommandExecutor {
 
     @Override
     public void command(String name, String[] args) {
-        // discord (token,start,stop) <tokenCode>
+        // discord (token, start, stop, reload) <tokenCode>
 
         if (args.length == 1) {
             Main.getLogger().log("ROX", "discord (token,start,stop) <tokenCode>");

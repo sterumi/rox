@@ -69,6 +69,8 @@ public class MainCommandLoader {
         this.addCommand("/scripts", new ScriptsCommand());
         this.addCommand("/sha", new SHACommand());
         this.addCommand("/news", new NewsCommand());
+        this.addCommand("/reload", new ReloadCommand());
+        this.addCommand("/rl", new ReloadCommand());
         this.addCommand("/test", (name, args) -> System.out.println("test"));
     }
 
